@@ -1,73 +1,97 @@
-# Welcome to your Lovable project
+# Buy Brisk Boutique
 
-## Project info
+Modern e-commerce frontend (Vite + React + TypeScript + Tailwind) with a Node/Express API.
 
-**URL**: https://lovable.dev/projects/1cd8c9b5-1732-43c6-b17d-62799ed4b1ed
+## Repository
 
-## How can I edit this code?
+- GitHub: https://github.com/ELMACHHOUNE/buy-brisk-boutique
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use Lovable**
+- Vite, React, TypeScript
+- Tailwind CSS
+- Node.js, Express (server)
+- MongoDB (via Mongoose)
+- JWT auth
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/1cd8c9b5-1732-43c6-b17d-62799ed4b1ed) and start prompting.
+## Project Structure
 
-Changes made via Lovable will be committed automatically to this repo.
+- /src — frontend application
+- /server — Express API (package.json, nodemon, etc.)
+- /public — static assets
+- /scripts — maintenance scripts
 
-**Use your preferred IDE**
+## Prerequisites
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- Node.js 18+ and npm
+- MongoDB connection string (for the server)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Setup
 
-Follow these steps:
+Clone and install:
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+git clone https://github.com/ELMACHHOUNE/buy-brisk-boutique.git
+cd buy-brisk-boutique
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
+# Frontend deps
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+# API deps
+cd server && npm i
 ```
 
-**Edit a file directly in GitHub**
+## Environment Variables
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Create the following files:
 
-**Use GitHub Codespaces**
+- Frontend: .env (at project root)
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+  - VITE_API_URL=http://localhost:5000
 
-## What technologies are used for this project?
+- Server: server/.env
+  - PORT=5000
+  - MONGO_URI=<your_mongo_connection_string>
+  - JWT_SECRET=<your_secret>
+  - CORS_ORIGIN=http://localhost:8080
 
-This project is built with:
+## Scripts
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Frontend (run in project root):
 
-## How can I deploy this project?
+```sh
+# Dev server (Vite)
+npm run dev
 
-Simply open [Lovable](https://lovable.dev/projects/1cd8c9b5-1732-43c6-b17d-62799ed4b1ed) and click on Share -> Publish.
+# Production build
+npm run build
 
-## Can I connect a custom domain to my Lovable project?
+# Preview built app
+npm run preview
+```
 
-Yes, you can!
+Server (run in ./server):
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```sh
+# Start in dev (nodemon)
+npm run dev
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+# Start in prod
+npm start
+```
+
+## Development
+
+- Start API first (server/.env configured), then run the frontend.
+- Update VITE_API_URL if the API runs on a different host/port.
+
+## Contributing
+
+1. Fork the repo on GitHub (ELMACHHOUNE/buy-brisk-boutique).
+2. Create a feature branch.
+3. Commit with clear messages.
+4. Open a Pull Request.
+
+## License
+
+Add your license of choice (e.g., MIT) or specify “All rights reserved”.
