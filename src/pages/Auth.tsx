@@ -1,26 +1,101 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const Auth = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
   const [signupName, setSignupName] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  useEffect(() => {
+    // Check if user is already logged in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        navigate('/');
+      }
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        navigate('/');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login:", { loginEmail, loginPassword });
+    setLoading(true);
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: loginEmail,
+        password: loginPassword,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success!",
+        description: "You've successfully logged in.",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to log in",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Signup:", { signupName, signupEmail, signupPassword });
+    setLoading(true);
+
+    try {
+      const redirectUrl = `${window.location.origin}/`;
+      
+      const { error } = await supabase.auth.signUp({
+        email: signupEmail,
+        password: signupPassword,
+        options: {
+          emailRedirectTo: redirectUrl,
+          data: {
+            full_name: signupName,
+          },
+        },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success!",
+        description: "Account created successfully! You can now log in.",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to create account",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -69,8 +144,8 @@ const Auth = () => {
                       required
                     />
                   </div>
-                  <Button type="submit" variant="accent" className="w-full" size="lg">
-                    Sign In
+                  <Button type="submit" variant="accent" className="w-full" size="lg" disabled={loading}>
+                    {loading ? "Signing in..." : "Sign In"}
                   </Button>
                 </form>
               </CardContent>
@@ -118,8 +193,8 @@ const Auth = () => {
                       required
                     />
                   </div>
-                  <Button type="submit" variant="accent" className="w-full" size="lg">
-                    Create Account
+                  <Button type="submit" variant="accent" className="w-full" size="lg" disabled={loading}>
+                    {loading ? "Creating account..." : "Create Account"}
                   </Button>
                 </form>
               </CardContent>
