@@ -1,88 +1,96 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+/* If you use typography, uncomment the next line */
+/* @plugin "@tailwindcss/typography"; */
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Tailwind v4 tokens */
+@theme {
+  /* Colors */
+  --color-background: hsl(0 0% 100%);
+  --color-foreground: hsl(220 13% 13%);
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 220 13% 13%;
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(220 13% 13%);
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 13% 13%;
+  --color-popover: hsl(0 0% 100%);
+  --color-popover-foreground: hsl(220 13% 13%);
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 13% 13%;
+  --color-primary: hsl(220 70% 12%);
+  --color-primary-foreground: hsl(0 0% 100%);
 
-    --primary: 220 70% 12%;
-    --primary-foreground: 0 0% 100%;
+  --color-secondary: hsl(220 13% 95%);
+  --color-secondary-foreground: hsl(220 70% 12%);
 
-    --secondary: 220 13% 95%;
-    --secondary-foreground: 220 70% 12%;
+  --color-muted: hsl(220 13% 95%);
+  --color-muted-foreground: hsl(220 9% 46%);
 
-    --muted: 220 13% 95%;
-    --muted-foreground: 220 9% 46%;
+  --color-accent: hsl(16 100% 50%);
+  --color-accent-foreground: hsl(0 0% 100%);
 
-    --accent: 16 100% 50%;
-    --accent-foreground: 0 0% 100%;
+  --color-destructive: hsl(0 84% 60%);
+  --color-destructive-foreground: hsl(0 0% 100%);
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+  --color-border: hsl(220 13% 91%);
+  --color-input: hsl(220 13% 91%);
+  --color-ring: hsl(220 70% 12%);
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 220 70% 12%;
+  /* Sidebar (if used) */
+  --color-sidebar: hsl(220 13% 95%);
+  --color-sidebar-foreground: hsl(220 13% 13%);
+  --color-sidebar-primary: hsl(220 70% 12%);
+  --color-sidebar-primary-foreground: hsl(0 0% 100%);
+  --color-sidebar-accent: hsl(220 13% 90%);
+  --color-sidebar-accent-foreground: hsl(220 13% 13%);
+  --color-sidebar-border: hsl(220 13% 91%);
+  --color-sidebar-ring: hsl(220 70% 12%);
 
-    --radius: 0.5rem;
-
-    --gradient-hero: linear-gradient(135deg, hsl(220 70% 12%) 0%, hsl(220 60% 20%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(16 100% 50%) 0%, hsl(28 100% 55%) 100%);
-    --shadow-soft: 0 2px 8px hsla(220, 13%, 13%, 0.08);
-    --shadow-medium: 0 4px 16px hsla(220, 13%, 13%, 0.12);
-    --shadow-strong: 0 8px 32px hsla(220, 13%, 13%, 0.16);
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .dark {
-    --background: 220 13% 9%;
-    --foreground: 0 0% 98%;
-
-    --card: 220 13% 12%;
-    --card-foreground: 0 0% 98%;
-
-    --popover: 220 13% 12%;
-    --popover-foreground: 0 0% 98%;
-
-    --primary: 0 0% 98%;
-    --primary-foreground: 220 70% 12%;
-
-    --secondary: 220 13% 16%;
-    --secondary-foreground: 0 0% 98%;
-
-    --muted: 220 13% 16%;
-    --muted-foreground: 220 9% 65%;
-
-    --accent: 16 100% 50%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 62% 50%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 220 13% 20%;
-    --input: 220 13% 20%;
-    --ring: 0 0% 98%;
-
-    --gradient-hero: linear-gradient(135deg, hsl(220 13% 12%) 0%, hsl(220 13% 18%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(16 100% 50%) 0%, hsl(28 100% 55%) 100%);
-    --shadow-soft: 0 2px 8px hsla(0, 0%, 0%, 0.3);
-    --shadow-medium: 0 4px 16px hsla(0, 0%, 0%, 0.4);
-    --shadow-strong: 0 8px 32px hsla(0, 0%, 0%, 0.5);
-  }
+  /* Radius tokens used by rounded-{sm,md,lg} */
+  --radius-sm: calc(0.5rem - 4px);
+  --radius-md: calc(0.5rem - 2px);
+  --radius-lg: 0.5rem;
 }
 
+/* Dark theme overrides */
+@theme .dark {
+  --color-background: hsl(220 13% 9%);
+  --color-foreground: hsl(0 0% 98%);
+
+  --color-card: hsl(220 13% 12%);
+  --color-card-foreground: hsl(0 0% 98%);
+
+  --color-popover: hsl(220 13% 12%);
+  --color-popover-foreground: hsl(0 0% 98%);
+
+  --color-primary: hsl(0 0% 98%);
+  --color-primary-foreground: hsl(220 70% 12%);
+
+  --color-secondary: hsl(220 13% 16%);
+  --color-secondary-foreground: hsl(0 0% 98%);
+
+  --color-muted: hsl(220 13% 16%);
+  --color-muted-foreground: hsl(220 9% 65%);
+
+  --color-accent: hsl(16 100% 50%);
+  --color-accent-foreground: hsl(0 0% 100%);
+
+  --color-destructive: hsl(0 62% 50%);
+  --color-destructive-foreground: hsl(0 0% 100%);
+
+  --color-border: hsl(220 13% 20%);
+  --color-input: hsl(220 13% 20%);
+  --color-ring: hsl(0 0% 98%);
+
+  --color-sidebar: hsl(220 13% 12%);
+  --color-sidebar-foreground: hsl(0 0% 98%);
+  --color-sidebar-primary: hsl(0 0% 98%);
+  --color-sidebar-primary-foreground: hsl(220 70% 12%);
+  --color-sidebar-accent: hsl(220 13% 18%);
+  --color-sidebar-accent-foreground: hsl(0 0% 98%);
+  --color-sidebar-border: hsl(220 13% 20%);
+  --color-sidebar-ring: hsl(0 0% 98%);
+}
+
+/* Base resets still fine with v4, now tokens exist so utilities are valid */
 @layer base {
   * {
     @apply border-border;

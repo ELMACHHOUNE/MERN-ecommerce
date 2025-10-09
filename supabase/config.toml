@@ -1,7 +1,0 @@
-project_id = "czyhrwbqjgtmvyhutsrp"
-
-[functions.products]
-verify_jwt = true
-
-[functions.orders]
-verify_jwt = true

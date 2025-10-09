@@ -2,15 +2,22 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
 const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { login, register } = useAuth();
   const [loading, setLoading] = useState(false);
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -20,20 +27,18 @@ const Auth = () => {
 
   useEffect(() => {
     // Check if user is already logged in
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        navigate('/');
-      }
-    });
-
+    // supabase.auth.getSession().then(({ data: { session } }) => {
+    //   if (session) {
+    //     navigate('/');
+    //   }
+    // });
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        navigate('/');
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    // const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    //   if (event === 'SIGNED_IN' && session) {
+    //     navigate('/');
+    //   }
+    // });
+    // return () => subscription.unsubscribe();
   }, [navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -41,17 +46,13 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: loginEmail,
-        password: loginPassword,
-      });
-
-      if (error) throw error;
+      await login(loginEmail, loginPassword);
 
       toast({
         title: "Success!",
         description: "You've successfully logged in.",
       });
+      navigate("/");
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -68,25 +69,13 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      const redirectUrl = `${window.location.origin}/`;
-      
-      const { error } = await supabase.auth.signUp({
-        email: signupEmail,
-        password: signupPassword,
-        options: {
-          emailRedirectTo: redirectUrl,
-          data: {
-            full_name: signupName,
-          },
-        },
-      });
-
-      if (error) throw error;
+      await register(signupEmail, signupPassword, signupName);
 
       toast({
         title: "Success!",
         description: "Account created successfully! You can now log in.",
       });
+      navigate("/");
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -103,9 +92,13 @@ const Auth = () => {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/">
-            <h1 className="text-4xl font-bold text-primary-foreground mb-2">ShopHub</h1>
+            <h1 className="text-4xl font-bold text-primary-foreground mb-2">
+              ShopHub
+            </h1>
           </Link>
-          <p className="text-primary-foreground/80">Welcome back! Please sign in to continue</p>
+          <p className="text-primary-foreground/80">
+            Welcome back! Please sign in to continue
+          </p>
         </div>
 
         <Tabs defaultValue="login" className="w-full">
@@ -118,7 +111,9 @@ const Auth = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Login to Your Account</CardTitle>
-                <CardDescription>Enter your credentials to access your account</CardDescription>
+                <CardDescription>
+                  Enter your credentials to access your account
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleLogin} className="space-y-4">
@@ -144,7 +139,13 @@ const Auth = () => {
                       required
                     />
                   </div>
-                  <Button type="submit" variant="accent" className="w-full" size="lg" disabled={loading}>
+                  <Button
+                    type="submit"
+                    variant="accent"
+                    className="w-full"
+                    size="lg"
+                    disabled={loading}
+                  >
                     {loading ? "Signing in..." : "Sign In"}
                   </Button>
                 </form>
@@ -156,7 +157,9 @@ const Auth = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Create an Account</CardTitle>
-                <CardDescription>Sign up to start shopping with us</CardDescription>
+                <CardDescription>
+                  Sign up to start shopping with us
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSignup} className="space-y-4">
@@ -193,7 +196,13 @@ const Auth = () => {
                       required
                     />
                   </div>
-                  <Button type="submit" variant="accent" className="w-full" size="lg" disabled={loading}>
+                  <Button
+                    type="submit"
+                    variant="accent"
+                    className="w-full"
+                    size="lg"
+                    disabled={loading}
+                  >
                     {loading ? "Creating account..." : "Create Account"}
                   </Button>
                 </form>
@@ -203,7 +212,10 @@ const Auth = () => {
         </Tabs>
 
         <div className="text-center mt-4">
-          <Link to="/" className="text-sm text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+          <Link
+            to="/"
+            className="text-sm text-primary-foreground/80 hover:text-primary-foreground transition-colors"
+          >
             ← Back to Home
           </Link>
         </div>

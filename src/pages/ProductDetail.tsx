@@ -2,42 +2,60 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Heart, Minus, Plus, Star } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import productShoes from "@/assets/product-shoes.jpg";
+import { api } from "@/lib/api";
+
+type Product = {
+  _id: string;
+  title: string;
+  description?: string;
+  price: number;
+  images?: string[];
+  stock?: number;
+  category?: string;
+};
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
 
-  const product = {
-    name: "Athletic Running Shoes",
-    price: 89.99,
-    image: productShoes,
-    category: "Footwear",
-    rating: 4.5,
-    reviews: 128,
-    description: "Experience ultimate comfort and performance with our premium athletic running shoes. Designed for both casual runners and serious athletes, these shoes feature advanced cushioning technology and breathable materials.",
-    features: [
-      "Advanced cushioning technology",
-      "Breathable mesh upper",
-      "Durable rubber outsole",
-      "Lightweight design",
-      "Available in multiple colors"
-    ]
-  };
+  useEffect(() => {
+    if (!id) return;
+    let mounted = true;
+    (async () => {
+      try {
+        const data = await api.get<Product>(`/products/${id}`);
+        if (mounted) setProduct(data);
+      } catch (e: any) {
+        if (mounted) setError(e.message || "Failed to load product");
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [id]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+  if (!product) return <div>Product not found</div>;
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      
+
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
           <div className="aspect-square overflow-hidden rounded-lg bg-secondary">
             <img
-              src={product.image}
-              alt={product.name}
+              src={product.images ? product.images[0] : ""}
+              alt={product.title}
               className="h-full w-full object-cover"
             />
           </div>
@@ -47,15 +65,17 @@ const ProductDetail = () => {
               <p className="text-sm text-muted-foreground uppercase tracking-wide mb-2">
                 {product.category}
               </p>
-              <h1 className="text-3xl md:text-4xl font-bold mb-4">{product.name}</h1>
-              
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">
+                {product.title}
+              </h1>
+
               <div className="flex items-center gap-2 mb-4">
                 <div className="flex">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
                       className={`h-5 w-5 ${
-                        i < Math.floor(product.rating)
+                        i < Math.floor(product.rating || 0)
                           ? "fill-accent text-accent"
                           : "text-muted-foreground"
                       }`}
@@ -63,7 +83,7 @@ const ProductDetail = () => {
                   ))}
                 </div>
                 <span className="text-sm text-muted-foreground">
-                  ({product.reviews} reviews)
+                  ({product.reviews || 0} reviews)
                 </span>
               </div>
 
@@ -80,8 +100,11 @@ const ProductDetail = () => {
             <div className="mb-6">
               <h2 className="font-semibold mb-2">Features</h2>
               <ul className="space-y-2">
-                {product.features.map((feature, index) => (
-                  <li key={index} className="flex items-start gap-2 text-muted-foreground">
+                {product.features?.map((feature, index) => (
+                  <li
+                    key={index}
+                    className="flex items-start gap-2 text-muted-foreground"
+                  >
                     <span className="text-accent mt-1">•</span>
                     <span>{feature}</span>
                   </li>
