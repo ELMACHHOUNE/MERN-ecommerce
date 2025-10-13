@@ -14,6 +14,8 @@ import Profile from "./pages/Profile";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import RequireAuth from "@/routes/RequireAuth"; // add
+import Admin from "./pages/Admin";
+import RequireAdmin from "@/routes/RequireAdmin";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +42,15 @@ const App = () => (
                     <RequireAuth>
                       <Profile />
                     </RequireAuth>
+                  }
+                />
+                {/* admin-only dashboard */}
+                <Route
+                  path="/admin"
+                  element={
+                    <RequireAdmin>
+                      <Admin />
+                    </RequireAdmin>
                   }
                 />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

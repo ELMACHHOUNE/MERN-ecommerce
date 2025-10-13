@@ -1,0 +1,125 @@
+import React, { useState } from "react";
+
+type Tab = "products" | "categories" | "users";
+
+const Admin: React.FC = () => {
+  const [tab, setTab] = useState<Tab>("products");
+
+  return (
+    <div className="flex min-h-[70vh]">
+      {/* Sidebar */}
+      <aside className="w-64 border-r bg-[#14161A]">
+        <div className="p-4 font-semibold text-lg">Admin</div>
+        <nav className="flex flex-col">
+          <button
+            className={`text-left px-4 py-2 hover:bg-gray-900 ${
+              tab === "products" ? "bg-gray-500 font-medium" : ""
+            }`}
+            onClick={() => setTab("products")}
+          >
+            Products management
+          </button>
+          <button
+            className={`text-left px-4 py-2 hover:bg-gray-900 ${
+              tab === "categories" ? "bg-gray-500 font-medium" : ""
+            }`}
+            onClick={() => setTab("categories")}
+          >
+            Categories management
+          </button>
+          <button
+            className={`text-left px-4 py-2 hover:bg-gray-900 ${
+              tab === "users" ? "bg-gray-500 font-medium" : ""
+            }`}
+            onClick={() => setTab("users")}
+          >
+            User management
+          </button>
+        </nav>
+      </aside>
+
+      {/* Content */}
+      <section className="flex-1 p-6">
+        {tab === "products" && <ProductsPanel />}
+        {tab === "categories" && <CategoriesPanel />}
+        {tab === "users" && <UsersPanel />}
+      </section>
+    </div>
+  );
+};
+
+const SectionHeader: React.FC<{ title: string; description?: string }> = ({
+  title,
+  description,
+}) => (
+  <header className="mb-4">
+    <h1 className="text-2xl font-semibold">{title}</h1>
+    {description ? (
+      <p className="text-sm text-gray-500 mt-1">{description}</p>
+    ) : null}
+  </header>
+);
+
+const ProductsPanel: React.FC = () => {
+  return (
+    <div>
+      <SectionHeader
+        title="Products"
+        description="Create, edit, and delete products."
+      />
+      {/* TODO: hook up to your data fetching/mutations */}
+      <div className="grid gap-3">
+        <div className="flex gap-2">
+          <button className="px-3 py-2 bg-black text-white rounded">
+            New product
+          </button>
+          <button className="px-3 py-2 border rounded">Bulk import</button>
+        </div>
+        <div className="border rounded p-4 text-sm text-gray-600">
+          Products table goes here...
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const CategoriesPanel: React.FC = () => {
+  return (
+    <div>
+      <SectionHeader
+        title="Categories"
+        description="Organize products into categories."
+      />
+      <div className="grid gap-3">
+        <div className="flex gap-2">
+          <input
+            className="border rounded px-3 py-2"
+            placeholder="New category name"
+          />
+          <button className="px-3 py-2 bg-black text-white rounded">Add</button>
+        </div>
+        <div className="border rounded p-4 text-sm text-gray-600">
+          Categories list goes here...
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const UsersPanel: React.FC = () => {
+  return (
+    <div>
+      <SectionHeader
+        title="Users"
+        description="Manage user accounts and roles."
+      />
+      <div className="grid gap-3">
+        <div className="border rounded p-4 text-sm text-gray-600">
+          Users table goes here...
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Admin;
