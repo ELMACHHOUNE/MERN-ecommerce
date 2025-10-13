@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/context/AuthContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +15,7 @@ import {
 
 export const Navbar = () => {
   const [cartCount] = useState(0);
-  const { user, isAdmin, signOut } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -25,15 +25,24 @@ export const Navbar = () => {
             <Link to="/" className="flex items-center">
               <h1 className="text-2xl font-bold text-primary">ShopHub</h1>
             </Link>
-            
+
             <div className="hidden md:flex items-center gap-6">
-              <Link to="/products" className="text-sm font-medium text-foreground hover:text-accent transition-colors">
+              <Link
+                to="/products"
+                className="text-sm font-medium text-foreground hover:text-accent transition-colors"
+              >
                 Products
               </Link>
-              <Link to="/categories" className="text-sm font-medium text-foreground hover:text-accent transition-colors">
+              <Link
+                to="/categories"
+                className="text-sm font-medium text-foreground hover:text-accent transition-colors"
+              >
                 Categories
               </Link>
-              <Link to="/about" className="text-sm font-medium text-foreground hover:text-accent transition-colors">
+              <Link
+                to="/about"
+                className="text-sm font-medium text-foreground hover:text-accent transition-colors"
+              >
                 About
               </Link>
             </div>
@@ -54,7 +63,7 @@ export const Navbar = () => {
             <Button variant="ghost" size="icon" className="hidden md:flex">
               <Search className="h-5 w-5" />
             </Button>
-            
+
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -64,7 +73,7 @@ export const Navbar = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>
-                    My Account {isAdmin && "(Admin)"}
+                    My Account {user?.role === "admin" && "(Admin)"}
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
@@ -73,13 +82,13 @@ export const Navbar = () => {
                   <DropdownMenuItem asChild>
                     <Link to="/orders">Orders</Link>
                   </DropdownMenuItem>
-                  {isAdmin && (
+                  {user?.role === "admin" && (
                     <DropdownMenuItem asChild>
                       <Link to="/admin">Admin Dashboard</Link>
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => signOut()}>
+                  <DropdownMenuItem onClick={logout}>
                     <LogOut className="mr-2 h-4 w-4" />
                     Logout
                   </DropdownMenuItem>
@@ -92,7 +101,7 @@ export const Navbar = () => {
                 </Button>
               </Link>
             )}
-            
+
             <Link to="/cart">
               <Button variant="ghost" size="icon" className="relative">
                 <ShoppingCart className="h-5 w-5" />
