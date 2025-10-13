@@ -13,6 +13,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import Profile from "./pages/Profile";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import RequireAuth from "@/routes/RequireAuth"; // add
 
 const queryClient = new QueryClient();
 
@@ -32,7 +33,15 @@ const App = () => (
                 <Route path="/products/:id" element={<ProductDetail />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/auth" element={<Auth />} />
-                <Route path="/profile" element={<Profile />} />
+                {/* protect profile */}
+                <Route
+                  path="/profile"
+                  element={
+                    <RequireAuth>
+                      <Profile />
+                    </RequireAuth>
+                  }
+                />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
