@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
 const productRoutes = require("./routes/products");
 const orderRoutes = require("./routes/orders");
+const meRoutes = require("./routes/me");
 
 const app = express();
 
@@ -43,6 +44,8 @@ app.get("/api/health", (_req, res) => res.json({ ok: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/me", meRoutes);
+app.use("/api/profile", meRoutes);
 
 // Not found
 app.use((req, res) => res.status(404).json({ error: "Not Found" }));

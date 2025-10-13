@@ -1,30 +1,40 @@
 const jwt = require("jsonwebtoken");
 
-const JWT_SECRET = process.env.JWT_SECRET;
+function getToken(req) {
+  const header = req.headers.authorization || "";
+  const [scheme, token] = header.split(" ");
+  if (scheme !== "Bearer") return null;
+  return token || null;
+}
 
 function authRequired(req, res, next) {
   try {
-    const header = req.headers.authorization || "";
-    const token = header.startsWith("Bearer ") ? header.slice(7) : null;
-    if (!token) return res.status(401).json({ error: "Unauthorized" });
-    if (!JWT_SECRET)
-      return res.status(500).json({ error: "Server misconfigured" });
-
-    const payload = jwt.verify(token, JWT_SECRET);
-    req.user = { id: payload.sub, role: payload.role || "user" };
+    const token = getToken(req);
+    if (!token) return res.status(401).json({ message: "Unauthorized" });
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    req.userId = payload?.id || payload?._id || payload?.sub;
+    req.userRole = payload?.role;
+    req.user = payload;
+    if (!req.userId) return res.status(401).json({ message: "Unauthorized" });
     next();
-  } catch (e) {
-    return res.status(401).json({ error: "Invalid token" });
+  } catch (_e) {
+    return res.status(401).json({ message: "Unauthorized" });
   }
 }
 
 function requireRole(role) {
+  const roles = Array.isArray(role) ? role : [role];
   return (req, res, next) => {
-    if (!req.user) return res.status(401).json({ error: "Unauthorized" });
-    if (req.user.role !== role)
-      return res.status(403).json({ error: "Forbidden" });
+    const userRole = req.userRole || req.user?.role;
+    if (!userRole) return res.status(403).json({ message: "Forbidden" });
+    if (!roles.includes(userRole))
+      return res.status(403).json({ message: "Forbidden" });
     next();
   };
 }
 
-module.exports = { authRequired, requireRole };
+// Default export (keeps `const auth = require("../middleware/auth")` working)
+module.exports = authRequired;
+// Named exports (keeps `{ authRequired, requireRole } = require("../middleware/auth")` working)
+module.exports.authRequired = authRequired;
+module.exports.requireRole = requireRole;
