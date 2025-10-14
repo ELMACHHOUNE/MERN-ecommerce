@@ -7,6 +7,7 @@ const authRoutes = require("./routes/auth");
 const productRoutes = require("./routes/products");
 const orderRoutes = require("./routes/orders");
 const meRoutes = require("./routes/me");
+const categoriesRoutes = require("./routes/categories");
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/me", meRoutes);
 app.use("/api/profile", meRoutes);
+app.use("/api/categories", categoriesRoutes);
 
 // Not found
 app.use((req, res) => res.status(404).json({ error: "Not Found" }));

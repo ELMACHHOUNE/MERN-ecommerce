@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import CategoriesTable, {
-  type Category,
-} from "@/components/admin/CategoriesTable";
+import CategoriesTable from "@/components/admin/CategoriesTable";
 
 type Tab = "products" | "categories" | "users";
 
@@ -87,14 +85,13 @@ const ProductsPanel: React.FC = () => {
 };
 
 const CategoriesPanel: React.FC = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
   return (
     <div>
       <SectionHeader
         title="Categories"
         description="Organize products into categories."
       />
-      <CategoriesTable categories={categories} setCategories={setCategories} />
+      <CategoriesTable />
     </div>
   );
 };
