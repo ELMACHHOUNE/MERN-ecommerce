@@ -8,6 +8,7 @@ const productRoutes = require("./routes/products");
 const orderRoutes = require("./routes/orders");
 const meRoutes = require("./routes/me");
 const categoriesRoutes = require("./routes/categories");
+const usersRoutes = require("./routes/users"); // add
 
 const app = express();
 
@@ -48,6 +49,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/me", meRoutes);
 app.use("/api/profile", meRoutes);
 app.use("/api/categories", categoriesRoutes);
+app.use("/api/users", usersRoutes); // add
 
 // Not found
 app.use((req, res) => res.status(404).json({ error: "Not Found" }));

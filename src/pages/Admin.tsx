@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import CategoriesTable from "@/components/admin/CategoriesTable";
+import ProductsTable from "@/components/admin/ProductsTable";
+import UsersTable from "@/components/admin/UsersTable";
 
 type Tab = "products" | "categories" | "users";
 
@@ -68,18 +70,7 @@ const ProductsPanel: React.FC = () => {
         title="Products"
         description="Create, edit, and delete products."
       />
-      {/* TODO: hook up to your data fetching/mutations */}
-      <div className="grid gap-3">
-        <div className="flex gap-2">
-          <button className="px-3 py-2 bg-black text-white rounded">
-            New product
-          </button>
-          <button className="px-3 py-2 border rounded">Bulk import</button>
-        </div>
-        <div className="border rounded p-4 text-sm text-gray-600">
-          Products table goes here...
-        </div>
-      </div>
+      <ProductsTable />
     </div>
   );
 };
@@ -103,11 +94,7 @@ const UsersPanel: React.FC = () => {
         title="Users"
         description="Manage user accounts and roles."
       />
-      <div className="grid gap-3">
-        <div className="border rounded p-4 text-sm text-gray-600">
-          Users table goes here...
-        </div>
-      </div>
+      <UsersTable />
     </div>
   );
 };
