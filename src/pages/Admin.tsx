@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import CategoriesTable, {
+  type Category,
+} from "@/components/admin/CategoriesTable";
 
 type Tab = "products" | "categories" | "users";
 
@@ -84,24 +87,14 @@ const ProductsPanel: React.FC = () => {
 };
 
 const CategoriesPanel: React.FC = () => {
+  const [categories, setCategories] = useState<Category[]>([]);
   return (
     <div>
       <SectionHeader
         title="Categories"
         description="Organize products into categories."
       />
-      <div className="grid gap-3">
-        <div className="flex gap-2">
-          <input
-            className="border rounded px-3 py-2"
-            placeholder="New category name"
-          />
-          <button className="px-3 py-2 bg-black text-white rounded">Add</button>
-        </div>
-        <div className="border rounded p-4 text-sm text-gray-600">
-          Categories list goes here...
-        </div>
-      </div>
+      <CategoriesTable categories={categories} setCategories={setCategories} />
     </div>
   );
 };
