@@ -3,8 +3,8 @@ export interface ProductDTO {
   title: string;
   description?: string;
   price: number;
-  images: string[];
-  stock: number;
+  images?: string[];
+  stock?: number;
   category?: string;
   createdAt: string;
   updatedAt: string;
@@ -46,21 +46,25 @@ function authHeaders(token?: string) {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-export async function fetchProducts(): Promise<ProductDTO[]> {
-  const res = await fetch(`${API_BASE}/api/products`);
-  if (!res.ok) throw new Error("Failed to load products");
-  const data = await res.json();
-  return data.map((p: any) => ({
+function mapProduct(p: any): ProductDTO {
+  return {
     id: p._id,
     title: p.title,
     description: p.description,
     price: p.price,
-    images: Array.isArray(p.images) ? p.images : [],
-    stock: typeof p.stock === "number" ? p.stock : 0,
+    images: p.images,
+    stock: p.stock,
     category: p.category,
     createdAt: p.createdAt,
     updatedAt: p.updatedAt,
-  }));
+  };
+}
+
+export async function fetchProducts(): Promise<ProductDTO[]> {
+  const res = await fetch(`${API_BASE}/api/products`);
+  if (!res.ok) throw new Error("Failed to load products");
+  const data = await res.json();
+  return data.map(mapProduct);
 }
 
 export async function createProduct(
@@ -68,9 +72,9 @@ export async function createProduct(
     title: string;
     price: number;
     description?: string;
-    images?: string[];
     stock?: number;
     category?: string;
+    images?: string[];
   },
   token?: string
 ): Promise<ProductDTO> {
@@ -81,17 +85,7 @@ export async function createProduct(
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data?.error || "Create failed");
-  return {
-    id: data._id,
-    title: data.title,
-    description: data.description,
-    price: data.price,
-    images: Array.isArray(data.images) ? data.images : [],
-    stock: typeof data.stock === "number" ? data.stock : 0,
-    category: data.category,
-    createdAt: data.createdAt,
-    updatedAt: data.updatedAt,
-  };
+  return mapProduct(data);
 }
 
 export async function updateProduct(
@@ -100,9 +94,9 @@ export async function updateProduct(
     title: string;
     price: number;
     description: string;
-    images: string[];
     stock: number;
     category: string;
+    images: string[];
   }>,
   token?: string
 ): Promise<ProductDTO> {
@@ -113,17 +107,7 @@ export async function updateProduct(
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data?.error || "Update failed");
-  return {
-    id: data._id,
-    title: data.title,
-    description: data.description,
-    price: data.price,
-    images: Array.isArray(data.images) ? data.images : [],
-    stock: typeof data.stock === "number" ? data.stock : 0,
-    category: data.category,
-    createdAt: data.createdAt,
-    updatedAt: data.updatedAt,
-  };
+  return mapProduct(data);
 }
 
 export async function deleteProduct(id: string, token?: string) {
