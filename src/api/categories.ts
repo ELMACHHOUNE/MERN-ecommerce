@@ -1,120 +1,92 @@
-export interface CategoryDTO {
+export type CategoryDTO = {
   id: string;
   name: string;
-  slug: string;
   description?: string;
+  slug: string;
+  imageUrl?: string;
   createdAt: string;
   updatedAt: string;
-}
+};
 
-function resolveApiBase(): string {
-  const env: any = (import.meta as any)?.env || {};
-  let base =
-    env.VITE_API_URL ||
-    env.VITE_API_BASE_URL ||
-    env.REACT_APP_API_URL ||
-    env.REACT_APP_API_BASE_URL ||
-    "";
-
-  if (!base && typeof window !== "undefined") {
-    base = window.location.origin;
-    // eslint-disable-next-line no-console
-    console.warn(
-      "[categories api] Falling back to window.location.origin:",
-      base
-    );
-  }
-
-  base = base.toString().trim().replace(/\/+$/, "");
-  if (base.endsWith("/api")) base = base.slice(0, -4);
-  return base;
-}
-
-export const API_BASE = resolveApiBase();
-
-if (!API_BASE) {
-  // eslint-disable-next-line no-console
-  console.warn(
-    "[categories api] API_BASE unresolved. Ensure VITE_API_URL or REACT_APP_API_URL set and dev server restarted."
-  );
-} else {
-  // eslint-disable-next-line no-console
-  console.info("[categories api] Using API_BASE =", API_BASE);
-}
+const API_BASE = import.meta.env.VITE_API_URL;
+const API_ORIGIN = API_BASE.replace(/\/api\/?$/, "");
 
 function authHeaders(token?: string) {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+function toClient(cat: any): CategoryDTO {
+  const id = cat._id || cat.id;
+  const rawImage = cat.imageUrl || "";
+  const imageUrl =
+    rawImage && !/^https?:\/\//i.test(rawImage)
+      ? `${API_ORIGIN}${rawImage}`
+      : rawImage || "";
+  return { id, name: cat.name, description: cat.description, slug: cat.slug, imageUrl, createdAt: cat.createdAt, updatedAt: cat.updatedAt };
+}
+
 export async function fetchCategories(): Promise<CategoryDTO[]> {
   const res = await fetch(`${API_BASE}/api/categories`);
-  if (!res.ok) throw new Error("Failed to load categories");
+  if (!res.ok) throw new Error("Failed to fetch categories");
   const data = await res.json();
-  return data.map((c: any) => ({
-    id: c._id,
-    name: c.name,
-    slug: c.slug,
-    description: c.description,
-    createdAt: c.createdAt,
-    updatedAt: c.updatedAt,
-  }));
+  return (Array.isArray(data) ? data : []).map(toClient);
 }
 
 export async function createCategory(
-  body: { name: string; description?: string },
+  payload: FormData | { name: string; description?: string; image?: File },
   token?: string
 ): Promise<CategoryDTO> {
+  const body =
+    payload instanceof FormData
+      ? payload
+      : (() => {
+          const fd = new FormData();
+          fd.append("name", payload.name);
+          if (payload.description) fd.append("description", payload.description);
+          if ((payload as any).image) fd.append("image", (payload as any).image);
+          return fd;
+        })();
+
   const res = await fetch(`${API_BASE}/api/categories`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", ...authHeaders(token) },
-    body: JSON.stringify(body),
+    headers: { ...authHeaders(token) },
+    body, // let browser set multipart boundaries
   });
+  if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || "Create failed");
   const data = await res.json();
-  if (!res.ok) throw new Error(data?.error || "Create failed");
-  return {
-    id: data._id,
-    name: data.name,
-    slug: data.slug,
-    description: data.description,
-    createdAt: data.createdAt,
-    updatedAt: data.updatedAt,
-  };
+  return toClient(data);
 }
 
 export async function updateCategory(
   id: string,
-  body: { name?: string; description?: string },
+  payload: FormData | { name?: string; description?: string; image?: File },
   token?: string
 ): Promise<CategoryDTO> {
+  const body =
+    payload instanceof FormData
+      ? payload
+      : (() => {
+          const fd = new FormData();
+          if (payload.name != null) fd.append("name", payload.name);
+          if (payload.description != null) fd.append("description", payload.description);
+          if ((payload as any).image) fd.append("image", (payload as any).image);
+          return fd;
+        })();
+
   const res = await fetch(`${API_BASE}/api/categories/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json", ...authHeaders(token) },
-    body: JSON.stringify(body),
+    headers: { ...authHeaders(token) },
+    body,
   });
+  if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || "Update failed");
   const data = await res.json();
-  if (!res.ok) throw new Error(data?.error || "Update failed");
-  return {
-    id: data._id,
-    name: data.name,
-    slug: data.slug,
-    description: data.description,
-    createdAt: data.createdAt,
-    updatedAt: data.updatedAt,
-  };
+  return toClient(data);
 }
 
-export async function deleteCategory(id: string, token?: string) {
+export async function deleteCategory(id: string, token?: string): Promise<void> {
   const res = await fetch(`${API_BASE}/api/categories/${id}`, {
     method: "DELETE",
-    headers: { ...authHeaders(token) },
+    headers: { "Content-Type": "application/json", ...authHeaders(token) },
   });
-  if (!res.ok) {
-    let msg = "Delete failed";
-    try {
-      const data = await res.json();
-      msg = data?.error || msg;
-    } catch {}
-    throw new Error(msg);
-  }
-  return true;
+  if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || "Delete failed");
 }

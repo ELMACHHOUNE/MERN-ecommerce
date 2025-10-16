@@ -22,6 +22,7 @@ const CategoriesTable: React.FC = () => {
   const { token } = (useAuth && useAuth()) || { token: undefined }; // adjust if token path different
   const [newName, setNewName] = useState("");
   const [newDesc, setNewDesc] = useState("");
+  const [newImage, setNewImage] = useState<File | null>(null);
 
   const { data: categories = [], isLoading } = useQuery({
     queryKey: ["categories"],
@@ -29,24 +30,30 @@ const CategoriesTable: React.FC = () => {
   });
 
   const createMut = useMutation({
-    mutationFn: (vars: { name: string; description?: string }) =>
-      createCategory(vars, token),
+    mutationFn: (form: FormData) => createCategory(form, token),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["categories"] });
       setNewName("");
       setNewDesc("");
+      setNewImage(null);
       toast?.success?.("Category created");
     },
     onError: (e: any) => toast?.error?.(e.message || "Create failed"),
   });
 
   const updateMut = useMutation({
-    mutationFn: (vars: { id: string; name?: string; description?: string }) =>
-      updateCategory(
-        vars.id,
-        { name: vars.name, description: vars.description },
-        token
-      ),
+    mutationFn: (vars: {
+      id: string;
+      name?: string;
+      description?: string;
+      imageFile?: File;
+    }) => {
+      const fd = new FormData();
+      if (vars.name != null) fd.append("name", vars.name);
+      if (vars.description != null) fd.append("description", vars.description);
+      if (vars.imageFile) fd.append("image", vars.imageFile);
+      return updateCategory(vars.id, fd, token);
+    },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["categories"] });
       toast?.success?.("Category updated");
@@ -65,6 +72,30 @@ const CategoriesTable: React.FC = () => {
 
   const columns = useMemo<MRT_ColumnDef<Category>[]>(
     () => [
+      {
+        accessorKey: "imageUrl",
+        header: "Image",
+        enableColumnFilter: false,
+        enableSorting: false,
+        Cell: ({ cell }) => {
+          const src = cell.getValue<string>();
+          return src ? (
+            <img
+              src={src}
+              alt="Category"
+              style={{
+                width: 48,
+                height: 48,
+                objectFit: "cover",
+                borderRadius: 6,
+              }}
+            />
+          ) : (
+            <span>—</span>
+          );
+        },
+        size: 70,
+      },
       {
         accessorKey: "name",
         header: "Name",
@@ -89,10 +120,11 @@ const CategoriesTable: React.FC = () => {
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newName.trim()) return;
-    createMut.mutate({
-      name: newName.trim(),
-      description: newDesc.trim() || undefined,
-    });
+    const fd = new FormData();
+    fd.append("name", newName.trim());
+    if (newDesc.trim()) fd.append("description", newDesc.trim());
+    if (newImage) fd.append("image", newImage);
+    createMut.mutate(fd);
   };
 
   const handleSave = async ({
@@ -129,7 +161,7 @@ const CategoriesTable: React.FC = () => {
     editDisplayMode: "row",
     onEditingRowSave: handleSave,
     renderRowActions: ({ row }) => (
-      <div style={{ display: "flex", gap: 8 }}>
+      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
         <button
           className="px-2 py-1 text-xs border rounded"
           onClick={() => table.setEditingRow(row)}
@@ -144,6 +176,30 @@ const CategoriesTable: React.FC = () => {
         >
           Delete
         </button>
+        <div>
+          <input
+            id={`cat-img-${row.original.id}`}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              updateMut.mutate({ id: row.original.id, imageFile: file });
+              e.currentTarget.value = "";
+            }}
+          />
+          <button
+            type="button"
+            className="px-2 py-1 text-xs border rounded"
+            onClick={() =>
+              document.getElementById(`cat-img-${row.original.id}`)?.click()
+            }
+            disabled={updateMut.isPending}
+          >
+            Change image
+          </button>
+        </div>
       </div>
     ),
     initialState: {
@@ -155,7 +211,10 @@ const CategoriesTable: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      <form onSubmit={handleCreate} className="flex flex-col gap-2 md:flex-row">
+      <form
+        onSubmit={handleCreate}
+        className="flex flex-col gap-2 md:flex-row md:items-center"
+      >
         <input
           placeholder="New category name"
           className="border rounded px-3 py-2 flex-1"
@@ -169,6 +228,13 @@ const CategoriesTable: React.FC = () => {
           value={newDesc}
           onChange={(e) => setNewDesc(e.target.value)}
           disabled={createMut.isPending}
+        />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setNewImage(e.target.files?.[0] || null)}
+          disabled={createMut.isPending}
+          className="text-sm"
         />
         <button
           type="submit"
