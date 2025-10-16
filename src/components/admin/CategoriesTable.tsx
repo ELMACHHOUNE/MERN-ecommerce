@@ -94,6 +94,35 @@ const CategoriesTable: React.FC = () => {
             <span>—</span>
           );
         },
+        // Use 'Edit' (v2 API) to customize the edit cell
+        Edit: ({ row }) => (
+          <div className="flex items-center gap-2">
+            <input
+              id={`edit-cat-img-${row.original.id}`}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                updateMut.mutate({ id: row.original.id, imageFile: file });
+                e.currentTarget.value = "";
+              }}
+            />
+            <button
+              type="button"
+              className="px-2 py-1 text-xs border rounded"
+              onClick={() =>
+                document
+                  .getElementById(`edit-cat-img-${row.original.id}`)
+                  ?.click()
+              }
+              disabled={updateMut.isPending}
+            >
+              Change image
+            </button>
+          </div>
+        ),
         size: 70,
       },
       {
@@ -114,7 +143,7 @@ const CategoriesTable: React.FC = () => {
         size: 180,
       },
     ],
-    []
+    [updateMut] // include updateMut so the handler isn't stale
   );
 
   const handleCreate = (e: React.FormEvent) => {
@@ -176,30 +205,6 @@ const CategoriesTable: React.FC = () => {
         >
           Delete
         </button>
-        <div>
-          <input
-            id={`cat-img-${row.original.id}`}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (!file) return;
-              updateMut.mutate({ id: row.original.id, imageFile: file });
-              e.currentTarget.value = "";
-            }}
-          />
-          <button
-            type="button"
-            className="px-2 py-1 text-xs border rounded"
-            onClick={() =>
-              document.getElementById(`cat-img-${row.original.id}`)?.click()
-            }
-            disabled={updateMut.isPending}
-          >
-            Change image
-          </button>
-        </div>
       </div>
     ),
     initialState: {
