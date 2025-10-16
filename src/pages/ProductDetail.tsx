@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart, Heart, Minus, Plus, Star } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { api } from "@/lib/api";
+import { api, toApiURL } from "@/lib/api";
 
 type Product = {
   _id: string;
@@ -14,6 +14,9 @@ type Product = {
   images?: string[];
   stock?: number;
   category?: string;
+  rating?: number;
+  reviews?: number;
+  features?: string[];
 };
 
 const ProductDetail = () => {
@@ -23,6 +26,7 @@ const ProductDetail = () => {
   const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(0);
 
   useEffect(() => {
     if (!id) return;
@@ -42,22 +46,57 @@ const ProductDetail = () => {
     };
   }, [id]);
 
+  useEffect(() => {
+    setSelectedImage(0);
+  }, [id]);
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
   if (!product) return <div>Product not found</div>;
 
+  const imageUrls = (product.images || []).map((u) => toApiURL(u));
+
   return (
     <div className="min-h-screen flex flex-col">
-
-
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-          <div className="aspect-square overflow-hidden rounded-lg bg-secondary">
-            <img
-              src={product.images ? product.images[0] : ""}
-              alt={product.title}
-              className="h-full w-full object-cover"
-            />
+          <div className="space-y-4">
+            <div className="aspect-square overflow-hidden rounded-lg bg-secondary">
+              {imageUrls.length > 0 ? (
+                <img
+                  src={imageUrls[selectedImage]}
+                  alt={`${product.title} - image ${selectedImage + 1}`}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <div className="h-full w-full flex items-center justify-center text-muted-foreground">
+                  No image available
+                </div>
+              )}
+            </div>
+            {imageUrls.length > 1 && (
+              <div className="flex gap-3 overflow-x-auto">
+                {imageUrls.map((src, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setSelectedImage(i)}
+                    className={`h-20 w-20 rounded-md overflow-hidden border flex-shrink-0 ${
+                      i === selectedImage
+                        ? "border-accent ring-2 ring-accent"
+                        : "border-transparent"
+                    }`}
+                    aria-label={`Show image ${i + 1}`}
+                  >
+                    <img
+                      src={src}
+                      alt={`Thumbnail ${i + 1}`}
+                      className="h-full w-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <div>
@@ -153,8 +192,6 @@ const ProductDetail = () => {
           </div>
         </div>
       </main>
-
- 
     </div>
   );
 };
