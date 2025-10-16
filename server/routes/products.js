@@ -34,6 +34,19 @@ router.get("/", async (_req, res) => {
   return res.json(products);
 });
 
+// List distinct categories from DB
+router.get("/categories", async (_req, res) => {
+  try {
+    const cats = await Product.distinct("category", {
+      category: { $nin: [null, "", undefined] },
+    });
+    return res.json(cats.sort());
+  } catch (e) {
+    console.error("Fetch categories error:", e);
+    return res.status(500).json({ error: "Failed to load categories" });
+  }
+});
+
 router.get("/:id", async (req, res) => {
   const prod = await Product.findById(req.params.id).lean();
   if (!prod) return res.status(404).json({ error: "Product not found" });

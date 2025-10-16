@@ -9,6 +9,7 @@ export interface ProductDTO {
   createdAt: string;
   updatedAt: string;
 }
+export type CategoryOption = { label: string; value: string };
 
 function resolveApiBase(): string {
   const env: any = (import.meta as any)?.env || {};
@@ -68,6 +69,55 @@ export async function fetchProducts(): Promise<ProductDTO[]> {
   if (!res.ok) throw new Error("Failed to load products");
   const data = await res.json();
   return data.map(mapProduct);
+}
+
+export async function fetchProductCategories(): Promise<CategoryOption[]> {
+  const tryEndpoints = [
+    `${API_BASE}/api/categories`,
+  ];
+
+  let data: any[] = [];
+  for (const url of tryEndpoints) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const json = await res.json();
+      const arr = Array.isArray(json) ? json : [];
+      // prefer the first non-empty response, else try next
+      if (arr.length > 0 || url.endsWith("/api/categories")) {
+        data = arr;
+        break;
+      }
+    } catch {
+      // try next endpoint
+    }
+  }
+
+  const seen = new Set<string>();
+  const out: CategoryOption[] = [];
+
+  for (const c of data) {
+    let label = "";
+    let value = "";
+    if (typeof c === "string") {
+      label = c;
+      value = c;
+    } else if (c && typeof c === "object") {
+      const rawValue = c.slug ?? c.id ?? c._id ?? c.name ?? c.title ?? "";
+      const rawLabel = c.name ?? c.title ?? c.label ?? c.slug ?? rawValue;
+      value = String(rawValue ?? "").trim();
+      label = String(rawLabel ?? value).trim();
+    } else {
+      continue;
+    }
+    if (!value) continue;
+    const key = value.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push({ label, value });
+  }
+
+  return out;
 }
 
 export async function createProduct(

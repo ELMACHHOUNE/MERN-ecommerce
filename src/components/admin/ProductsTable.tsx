@@ -10,6 +10,8 @@ import {
   updateProduct,
   deleteProduct,
   type ProductDTO,
+  fetchProductCategories,
+  type CategoryOption,
 } from "@/api/products";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
@@ -33,6 +35,11 @@ const ProductsTable: React.FC = () => {
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
+  });
+
+  const { data: categoryOptions = [], isLoading: catsLoading } = useQuery({
+    queryKey: ["productCategoryOptions"],
+    queryFn: fetchProductCategories,
   });
 
   const createMut = useMutation({
@@ -95,6 +102,8 @@ const ProductsTable: React.FC = () => {
         accessorKey: "category",
         header: "Category",
         enableColumnFilter: false,
+        editVariant: "select",
+        editSelectOptions: categoryOptions, // normalized {label,value}[]
         Cell: ({ cell }) => cell.getValue<string>() || "—",
       },
       {
@@ -141,7 +150,7 @@ const ProductsTable: React.FC = () => {
         size: 180,
       },
     ],
-    []
+    [categoryOptions]
   );
 
   const handleCreate = (e: React.FormEvent) => {
@@ -315,13 +324,32 @@ const ProductsTable: React.FC = () => {
           onChange={(e) => setStock(e.target.value)}
           disabled={createMut.isPending}
         />
-        <input
-          placeholder="Category"
+        <select
           className="border rounded px-3 py-2"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          disabled={createMut.isPending}
-        />
+          disabled={createMut.isPending || catsLoading}
+        >
+          <option value="">
+            {catsLoading ? "Loading..." : "Select category"}
+          </option>
+          {categoryOptions
+            .filter(
+              (opt): opt is CategoryOption =>
+                !!opt &&
+                typeof opt.value === "string" &&
+                opt.value.trim().length > 0
+            )
+            .map((opt) => {
+              const val = String(opt.value);
+              const lbl = String(opt.label ?? opt.value);
+              return (
+                <option key={val} value={val}>
+                  {lbl}
+                </option>
+              );
+            })}
+        </select>
         <input
           type="file"
           accept="image/*"
