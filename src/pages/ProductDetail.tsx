@@ -48,7 +48,7 @@ const ProductDetail = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
+
 
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
@@ -154,7 +154,7 @@ const ProductDetail = () => {
         </div>
       </main>
 
-      <Footer />
+ 
     </div>
   );
 };

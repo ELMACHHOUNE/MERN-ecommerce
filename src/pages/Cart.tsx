@@ -44,8 +44,6 @@ const Cart = () => {
   if (cartItems.length === 0) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Navbar />
-
         <main className="flex-1 container mx-auto px-4 py-12">
           <div className="text-center max-w-md mx-auto">
             <h1 className="text-3xl font-bold mb-4">Your Cart is Empty</h1>
@@ -59,16 +57,12 @@ const Cart = () => {
             </Link>
           </div>
         </main>
-
-        <Footer />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
-
       <main className="flex-1 container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
 
@@ -119,8 +113,6 @@ const Cart = () => {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 };
