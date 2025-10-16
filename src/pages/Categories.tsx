@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchCategories, type CategoryDTO } from "@/api/categories";
+import { Link } from "react-router-dom";
 
 export default function Categories() {
   const {
@@ -47,9 +48,12 @@ export default function Categories() {
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {categories.map((cat: CategoryDTO) => (
-                <div
-                  key={cat.id}
-                  className="border rounded-lg overflow-hidden bg-white hover:shadow transition"
+                <Link
+                  key={(cat as any).id ?? (cat as any)._id}
+                  to={`/products?category=${encodeURIComponent(
+                    String((cat as any).id ?? (cat as any)._id ?? "")
+                  )}&categoryName=${encodeURIComponent(cat.name)}`}
+                  className="border rounded-lg overflow-hidden bg-white hover:shadow transition block"
                 >
                   {cat.imageUrl ? (
                     <img
@@ -69,7 +73,7 @@ export default function Categories() {
                       {cat.description || "—"}
                     </p>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}

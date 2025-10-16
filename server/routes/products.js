@@ -4,6 +4,7 @@ const Product = require("../models/Product");
 const path = require("path");
 const fs = require("fs");
 const multer = require("multer");
+const mongoose = require("mongoose");
 
 const router = express.Router();
 
@@ -28,10 +29,53 @@ const upload = multer({ storage, fileFilter });
 // serve static images at /api/products/images/*
 router.use("/images", express.static(UPLOAD_DIR));
 
+function escapeRegex(s) {
+  return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 // Public: list and get one
-router.get("/", async (_req, res) => {
-  const products = await Product.find().sort({ createdAt: -1 }).lean();
-  return res.json(products);
+router.get("/", async (req, res) => {
+  try {
+    let baseFilter = {};
+
+    const { category, categoryName } = req.query || {};
+    if (category || categoryName) {
+      const or = [];
+
+      if (category) {
+        const catStr = String(category);
+        const isObjectId = mongoose.Types.ObjectId.isValid(catStr);
+        if (isObjectId) {
+          const catId = new mongoose.Types.ObjectId(catStr);
+          or.push({ category: catId });
+          or.push({ categoryId: catId });
+          or.push({ "category._id": catId });
+        }
+        or.push({ category: catStr });
+        or.push({ categoryId: catStr });
+        or.push({ "category.id": catStr });
+      }
+
+      if (categoryName) {
+        const rx = new RegExp(`^${escapeRegex(String(categoryName))}$`, "i");
+        or.push({ categoryName: rx });
+        or.push({ "category.name": rx });
+        or.push({ category: rx });
+      }
+
+      if (or.length) {
+        baseFilter = { $and: [baseFilter, { $or: or }] };
+      }
+    }
+
+    const products = await Product.find(baseFilter)
+      .sort({ createdAt: -1 })
+      .lean();
+    return res.json(products);
+  } catch (e) {
+    console.error("List products error:", e);
+    return res.status(500).json({ error: "Failed to load products" });
+  }
 });
 
 // List distinct categories from DB
