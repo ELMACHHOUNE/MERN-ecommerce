@@ -46,6 +46,9 @@ function authHeaders(token?: string) {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+const isFormData = (v: any): v is FormData =>
+  typeof FormData !== "undefined" && v instanceof FormData;
+
 function mapProduct(p: any): ProductDTO {
   return {
     id: p._id,
@@ -68,20 +71,23 @@ export async function fetchProducts(): Promise<ProductDTO[]> {
 }
 
 export async function createProduct(
-  body: {
-    title: string;
-    price: number;
-    description?: string;
-    stock?: number;
-    category?: string;
-    images?: string[];
-  },
+  body:
+    | {
+        title: string;
+        price: number;
+        description?: string;
+        stock?: number;
+        category?: string;
+        images?: string[];
+      }
+    | FormData,
   token?: string
 ): Promise<ProductDTO> {
+  const isFD = isFormData(body);
   const res = await fetch(`${API_BASE}/api/products`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", ...authHeaders(token) },
-    body: JSON.stringify(body),
+    headers: isFD ? { ...authHeaders(token) } : { "Content-Type": "application/json", ...authHeaders(token) },
+    body: isFD ? (body as FormData) : JSON.stringify(body),
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data?.error || "Create failed");
@@ -90,20 +96,23 @@ export async function createProduct(
 
 export async function updateProduct(
   id: string,
-  body: Partial<{
-    title: string;
-    price: number;
-    description: string;
-    stock: number;
-    category: string;
-    images: string[];
-  }>,
+  body:
+    | Partial<{
+        title: string;
+        price: number;
+        description: string;
+        stock: number;
+        category: string;
+        images: string[];
+      }>
+    | FormData,
   token?: string
 ): Promise<ProductDTO> {
+  const isFD = isFormData(body);
   const res = await fetch(`${API_BASE}/api/products/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json", ...authHeaders(token) },
-    body: JSON.stringify(body),
+    headers: isFD ? { ...authHeaders(token) } : { "Content-Type": "application/json", ...authHeaders(token) },
+    body: isFD ? (body as FormData) : JSON.stringify(body),
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data?.error || "Update failed");

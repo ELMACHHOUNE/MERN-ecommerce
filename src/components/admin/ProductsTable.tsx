@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useRef } from "react";
 import {
   MantineReactTable,
   useMantineReactTable,
@@ -26,7 +26,9 @@ const ProductsTable: React.FC = () => {
   const [description, setDescription] = useState("");
   const [stock, setStock] = useState<string>("");
   const [category, setCategory] = useState("");
-  const [images, setImages] = useState("");
+  const [imageFiles, setImageFiles] = useState<FileList | null>(null);
+  const replaceInputRef = useRef<HTMLInputElement | null>(null);
+  const [replaceId, setReplaceId] = useState<string | null>(null);
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["products"],
@@ -34,14 +36,7 @@ const ProductsTable: React.FC = () => {
   });
 
   const createMut = useMutation({
-    mutationFn: (vars: {
-      title: string;
-      price: number;
-      description?: string;
-      stock?: number;
-      category?: string;
-      images?: string[];
-    }) => createProduct(vars, token),
+    mutationFn: (formData: FormData) => createProduct(formData, token),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["products"] });
       setTitle("");
@@ -49,7 +44,7 @@ const ProductsTable: React.FC = () => {
       setDescription("");
       setStock("");
       setCategory("");
-      setImages("");
+      setImageFiles(null);
       toast?.success?.("Product created");
     },
     onError: (e: any) => toast?.error?.(e.message || "Create failed"),
@@ -58,14 +53,16 @@ const ProductsTable: React.FC = () => {
   const updateMut = useMutation({
     mutationFn: (vars: {
       id: string;
-      data: Partial<{
-        title: string;
-        price: number;
-        description: string;
-        stock: number;
-        category: string;
-      }>;
-    }) => updateProduct(vars.id, vars.data, token),
+      data:
+        | Partial<{
+            title: string;
+            price: number;
+            description: string;
+            stock: number;
+            category: string;
+          }>
+        | FormData;
+    }) => updateProduct(vars.id, vars.data as any, token),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["products"] });
       toast?.success?.("Product updated");
@@ -107,6 +104,36 @@ const ProductsTable: React.FC = () => {
         Cell: ({ cell }) => cell.getValue<string>() || "—",
       },
       {
+        accessorKey: "images",
+        header: "Images",
+        enableColumnFilter: false,
+        enableEditing: false,
+        Cell: ({ cell }) => {
+          const imgs = (cell.getValue<string[]>() || []) as string[];
+          const first = imgs[0];
+          return first ? (
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <img
+                src={first}
+                alt=""
+                style={{
+                  width: 40,
+                  height: 40,
+                  objectFit: "cover",
+                  borderRadius: 4,
+                }}
+              />
+              <span className="text-xs text-muted-foreground">
+                {imgs.length > 1 ? `+${imgs.length - 1}` : ""}
+              </span>
+            </div>
+          ) : (
+            "—"
+          );
+        },
+        size: 120,
+      },
+      {
         accessorKey: "createdAt",
         header: "Created",
         Cell: ({ cell }) => new Date(cell.getValue<string>()).toLocaleString(),
@@ -122,19 +149,27 @@ const ProductsTable: React.FC = () => {
     const priceNum = Number(price);
     const stockNum = stock.trim() ? Number(stock) : undefined;
     if (!title.trim() || !Number.isFinite(priceNum)) return;
-    const imgs =
-      images
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean) || [];
-    createMut.mutate({
-      title: title.trim(),
-      price: priceNum,
-      description: description.trim() || undefined,
-      stock: typeof stockNum === "number" && Number.isFinite(stockNum) ? stockNum : undefined,
-      category: category.trim() || undefined,
-      images: imgs,
-    });
+
+    const files = imageFiles ? Array.from(imageFiles) : [];
+    if (files.length < 1 || files.length > 5) {
+      toast?.error?.("Please select between 1 and 5 images");
+      return;
+    }
+    if (files.some((f) => !f.type.startsWith("image/"))) {
+      toast?.error?.("Only image files are allowed");
+      return;
+    }
+
+    const fd = new FormData();
+    fd.append("title", title.trim());
+    fd.append("price", String(priceNum));
+    if (description.trim()) fd.append("description", description.trim());
+    if (typeof stockNum === "number" && Number.isFinite(stockNum))
+      fd.append("stock", String(stockNum));
+    if (category.trim()) fd.append("category", category.trim());
+    files.forEach((f) => fd.append("images", f));
+
+    createMut.mutate(fd);
   };
 
   const handleSave = async ({
@@ -170,6 +205,42 @@ const ProductsTable: React.FC = () => {
     deleteMut.mutate(id);
   };
 
+  const openReplaceImages = (id: string) => {
+    setReplaceId(id);
+    replaceInputRef.current?.click();
+  };
+
+  const onReplaceImagesChange: React.ChangeEventHandler<HTMLInputElement> = (
+    e
+  ) => {
+    const files = e.target.files ? Array.from(e.target.files) : [];
+    if (!replaceId) return;
+    if (files.length < 1 || files.length > 5) {
+      toast?.error?.("Please select between 1 and 5 images");
+      e.currentTarget.value = "";
+      return;
+    }
+    if (files.some((f) => !f.type.startsWith("image/"))) {
+      toast?.error?.("Only image files are allowed");
+      e.currentTarget.value = "";
+      return;
+    }
+    const fd = new FormData();
+    files.forEach((f) => fd.append("images", f));
+    updateMut.mutate(
+      { id: replaceId, data: fd },
+      {
+        onSuccess: () => {
+          setReplaceId(null);
+          if (replaceInputRef.current) replaceInputRef.current.value = "";
+        },
+        onError: () => {
+          if (replaceInputRef.current) replaceInputRef.current.value = "";
+        },
+      }
+    );
+  };
+
   const table = useMantineReactTable({
     columns,
     data: products,
@@ -185,6 +256,13 @@ const ProductsTable: React.FC = () => {
           disabled={updateMut.isPending}
         >
           Edit
+        </button>
+        <button
+          className="px-2 py-1 text-xs border rounded"
+          onClick={() => openReplaceImages(row.original.id)}
+          disabled={updateMut.isPending}
+        >
+          Images
         </button>
         <button
           className="px-2 py-1 text-xs border rounded text-red-600"
@@ -204,6 +282,14 @@ const ProductsTable: React.FC = () => {
 
   return (
     <div className="space-y-4">
+      <input
+        ref={replaceInputRef}
+        type="file"
+        accept="image/*"
+        multiple
+        className="hidden"
+        onChange={onReplaceImagesChange}
+      />
       <form onSubmit={handleCreate} className="grid gap-2 md:grid-cols-6">
         <input
           placeholder="Title"
@@ -237,10 +323,11 @@ const ProductsTable: React.FC = () => {
           disabled={createMut.isPending}
         />
         <input
-          placeholder="Images (comma-separated URLs)"
+          type="file"
+          accept="image/*"
+          multiple
           className="border rounded px-3 py-2 md:col-span-3"
-          value={images}
-          onChange={(e) => setImages(e.target.value)}
+          onChange={(e) => setImageFiles(e.target.files)}
           disabled={createMut.isPending}
         />
         <input
@@ -254,7 +341,13 @@ const ProductsTable: React.FC = () => {
           <button
             type="submit"
             className="px-4 py-2 bg-black text-white rounded disabled:opacity-40"
-            disabled={!title.trim() || !price.trim() || createMut.isPending}
+            disabled={
+              !title.trim() ||
+              !price.trim() ||
+              !imageFiles ||
+              imageFiles.length < 1 ||
+              createMut.isPending
+            }
           >
             {createMut.isPending ? "Saving..." : "Add product"}
           </button>
