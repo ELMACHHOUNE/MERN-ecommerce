@@ -18,6 +18,7 @@ import Admin from "./pages/Admin";
 import RequireAdmin from "@/routes/RequireAdmin";
 import { MantineProvider } from "@mantine/core";
 import { mantineTheme } from "./theme/mantineTheme";
+import Categories from "./pages/Categories";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ const App = () => (
                   <Route path="/products/:id" element={<ProductDetail />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/auth" element={<Auth />} />
+                  <Route path="/categories" element={<Categories />} />
                   {/* protect profile */}
                   <Route
                     path="/profile"
