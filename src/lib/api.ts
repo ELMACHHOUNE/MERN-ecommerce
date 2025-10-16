@@ -22,6 +22,18 @@ export function getStoredUser<T = any>(): T | null {
   try { return raw ? JSON.parse(raw) as T : null; } catch { return null; }
 }
 
+const API_URL = (() => {
+  try { return new URL(BASE_URL, window.location.origin); } catch { return new URL('/', window.location.origin); }
+})();
+const API_ORIGIN = API_URL.origin;
+
+export function toApiURL(p?: string): string {
+  if (!p) return '';
+  if (/^https?:\/\//i.test(p)) return p;
+  const path = p.startsWith('/') ? p : `/${p}`;
+  return `${API_ORIGIN}${path}`;
+}
+
 async function request(path: string, options: RequestInit = {}) {
   const token = getToken();
   const headers: Record<string, string> = {

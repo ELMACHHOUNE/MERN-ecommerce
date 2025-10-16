@@ -16,6 +16,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
+import { toApiURL } from "@/lib/api";
 
 export interface Product extends ProductDTO {}
 
@@ -120,10 +121,11 @@ const ProductsTable: React.FC = () => {
         Cell: ({ cell }) => {
           const imgs = (cell.getValue<string[]>() || []) as string[];
           const first = imgs[0];
+          const src = first ? toApiURL(first) : "";
           return first ? (
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <img
-                src={first}
+                src={src}
                 alt=""
                 style={{
                   width: 40,

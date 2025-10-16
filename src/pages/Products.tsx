@@ -2,7 +2,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal } from "lucide-react";
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { api, toApiURL } from "@/lib/api";
 
 type Product = {
   _id: string;
@@ -64,7 +64,14 @@ const Products = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((product) => (
-            <ProductCard key={product._id} {...product} />
+            <ProductCard
+              key={product._id}
+              id={product._id}
+              name={product.title}
+              price={product.price}
+              image={toApiURL(product.images?.[0])}
+              category={product.category || ""}
+            />
           ))}
         </div>
       </div>
