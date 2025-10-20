@@ -11,6 +11,7 @@ type User = {
   id: string;
   email: string;
   name?: string;
+  role?: string;
 };
 
 type AuthContextValue = {
@@ -77,9 +78,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Login failed");
 
+    // Ensure user object has id field (some APIs return _id instead)
+    const userData = {
+      ...data.user,
+      id: data.user.id || data.user._id,
+    };
+
     localStorage.setItem("authToken", data.token);
-    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data.user));
-    setUser(data.user);
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
+    setUser(userData);
     setToken(data.token);
   };
 

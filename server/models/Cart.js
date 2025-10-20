@@ -14,7 +14,7 @@ const CartItemSchema = new mongoose.Schema(
 const CartSchema = new mongoose.Schema(
   {
     items: { type: [CartItemSchema], default: [] },
-    userId: { type: String, default: null }, // optional linkage if you add auth binding later
+    userId: { type: String, default: null, index: true },
   },
   { timestamps: true }
 );

@@ -5,6 +5,7 @@ import {
   useMemo,
   useState,
   ReactNode,
+  useCallback,
 } from "react";
 import { API_BASE } from "@/api/products";
 import { useAuth } from "./AuthContext";
@@ -113,29 +114,86 @@ async function fetchCartServer(id: string): Promise<CartItem[] | null> {
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>(() => loadCart());
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+  const [isInitialized, setIsInitialized] = useState(false);
 
+  // Load user's cart when they log in
   useEffect(() => {
-    saveCart(items);
-  }, [items]);
-
-  useEffect(() => {
-    const id = getCartId();
-    if (!id) return;
-    if (items.length > 0) return;
-    (async () => {
-      const serverItems = await fetchCartServer(id);
-      if (serverItems && serverItems.length > 0) {
-        setItems(serverItems);
+    const loadUserCart = async () => {
+      if (!user?.id) {
+        // User logged out - clear cart
+        if (isInitialized) {
+          setItems([]);
+          saveCart([]);
+          localStorage.removeItem(CART_ID_KEY);
+        }
+        setIsInitialized(true);
+        return;
       }
-    })();
-  }, []);
 
+      // User logged in - fetch their cart
+      try {
+        const res = await fetch(`${API_BASE}/api/cart/user/${user.id}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.items && data.items.length > 0) {
+            const userItems = data.items.map((it: any) => ({
+              id: String(it.id),
+              name: String(it.name),
+              price: Number(it.price),
+              image: String(it.image || ""),
+              qty: Number(it.qty || 1),
+            }));
+            setItems(userItems);
+            saveCart(userItems);
+            if (data.cartId) setCartId(data.cartId);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to load user cart:", e);
+      }
+
+      setIsInitialized(true);
+    };
+
+    loadUserCart();
+  }, [user?.id]);
+
+  // Save to localStorage whenever items change
   useEffect(() => {
-    if (items.length > 0 && !getCartId()) {
-      syncCartServer(items);
+    if (isInitialized) {
+      saveCart(items);
     }
-  }, [items]);
+  }, [items, isInitialized]);
+
+  const syncToServer = useCallback(
+    async (itemsToSync: CartItem[]) => {
+      if (!user?.id) return; // Don't sync if not logged in
+
+      try {
+        const res = await fetch(`${API_BASE}/api/cart/sync`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user.id,
+            items: itemsToSync.map((it) => ({
+              id: it.id,
+              name: it.name,
+              price: it.price,
+              image: it.image,
+              qty: it.qty,
+            })),
+          }),
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data?.cartId) setCartId(data.cartId);
+      } catch (e) {
+        console.error("Failed to sync cart:", e);
+      }
+    },
+    [user?.id]
+  );
 
   const addItem: CartContextValue["addItem"] = (item, qty = 1) => {
     if (!isAuthenticated) {
@@ -151,7 +209,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       } else {
         next = [...prev, { ...item, qty }];
       }
-      setTimeout(() => syncCartServer(next), 0);
+      setTimeout(() => syncToServer(next), 0);
       return next;
     });
   };
@@ -161,7 +219,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       let next: CartItem[];
       if (qty <= 0) next = prev.filter((p) => p.id !== id);
       else next = prev.map((p) => (p.id === id ? { ...p, qty } : p));
-      setTimeout(() => syncCartServer(next), 0);
+      setTimeout(() => syncToServer(next), 0);
       return next;
     });
   };
@@ -169,17 +227,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const removeItem: CartContextValue["removeItem"] = (id) => {
     setItems((prev) => {
       const next = prev.filter((p) => p.id !== id);
-      setTimeout(() => syncCartServer(next), 0);
+      setTimeout(() => syncToServer(next), 0);
       return next;
     });
   };
 
   const clear = () => {
-    setItems((prev) => {
-      const next: CartItem[] = [];
-      setTimeout(() => syncCartServer(next), 0);
-      return next;
-    });
+    setItems([]);
+    setTimeout(() => syncToServer([]), 0);
   };
 
   const count = useMemo(
