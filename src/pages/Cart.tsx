@@ -1,118 +1,85 @@
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Minus, Plus, Trash2 } from "lucide-react";
-import { Link } from "react-router-dom";
-import { api } from "@/lib/api";
-import { useAuth } from "@/context/AuthContext";
-import { useState } from "react";
-
-type CartItem = {
-  productId: string;
-  quantity: number /* ...existing fields... */;
-};
 
 const Cart = () => {
-  const cartItems = [];
-  const { user } = useAuth();
-  const [placing, setPlacing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const { items, subtotal, updateQty, removeItem, clear, checkoutViaWhatsApp } =
+    useCart();
 
-  const placeOrder = async () => {
-    setError(null);
-    setSuccess(null);
-    if (!user) {
-      setError("Please login first");
-      return;
-    }
-    try {
-      setPlacing(true);
-      // Build items list expected by backend: [{ productId, quantity }]
-      const items = /* map your cart state to */ [] as CartItem[]; // ...existing code to build items...
-      const order = await api.post("/orders", { items });
-      setSuccess(`Order placed: ${order._id || order.id}`);
-      // ...existing code to clear cart...
-    } catch (e: any) {
-      setError(e.message || "Failed to place order");
-    } finally {
-      setPlacing(false);
-    }
-  };
-
-  if (cartItems.length === 0) {
+  if (items.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col">
-        <main className="flex-1 container mx-auto px-4 py-12">
-          <div className="text-center max-w-md mx-auto">
-            <h1 className="text-3xl font-bold mb-4">Your Cart is Empty</h1>
-            <p className="text-muted-foreground mb-8">
-              Looks like you haven't added anything to your cart yet.
-            </p>
-            <Link to="/products">
-              <Button variant="accent" size="lg">
-                Continue Shopping
-              </Button>
-            </Link>
-          </div>
-        </main>
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-2xl font-semibold mb-4">Your Cart</h1>
+        <p className="text-muted-foreground">Your cart is empty.</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
-
-        <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            {/* Cart items will be mapped here */}
-          </div>
-
-          <div>
-            <Card className="p-6 sticky top-20">
-              <h2 className="text-xl font-bold mb-4">Order Summary</h2>
-
-              <div className="space-y-3 mb-4">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Subtotal</span>
-                  <span className="font-medium">$0.00</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Shipping</span>
-                  <span className="font-medium">Free</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Tax</span>
-                  <span className="font-medium">$0.00</span>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-2xl font-semibold mb-6">Your Cart</h1>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-4">
+          {items.map((it) => (
+            <div
+              key={it.id}
+              className="flex items-center gap-4 border rounded p-3"
+            >
+              {it.image && (
+                <img
+                  src={it.image}
+                  alt={it.name}
+                  className="h-16 w-16 object-cover rounded"
+                />
+              )}
+              <div className="flex-1">
+                <div className="font-medium">{it.name}</div>
+                <div className="text-sm text-muted-foreground">
+                  {it.price.toFixed(2)}
                 </div>
               </div>
-
-              <div className="border-t pt-4 mb-6">
-                <div className="flex justify-between text-lg font-bold">
-                  <span>Total</span>
-                  <span className="text-primary">$0.00</span>
-                </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => updateQty(it.id, it.qty - 1)}
+                >
+                  -
+                </Button>
+                <span className="w-8 text-center">{it.qty}</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => updateQty(it.id, it.qty + 1)}
+                >
+                  +
+                </Button>
               </div>
-
-              {error && <p className="text-red-500 mb-4">{error}</p>}
-              {success && <p className="text-green-500 mb-4">{success}</p>}
-
-              <Button
-                variant="accent"
-                size="lg"
-                className="w-full"
-                onClick={placeOrder}
-                disabled={placing}
-              >
-                {placing ? "Placing Order..." : "Proceed to Checkout"}
+              <Button variant="ghost" onClick={() => removeItem(it.id)}>
+                Remove
               </Button>
-            </Card>
-          </div>
+            </div>
+          ))}
+          <Button variant="ghost" onClick={clear}>
+            Clear cart
+          </Button>
         </div>
-      </main>
+
+        <div className="border rounded p-4 h-fit">
+          <div className="flex items-center justify-between mb-4">
+            <span className="font-medium">Subtotal</span>
+            <span className="font-semibold">{subtotal.toFixed(2)}</span>
+          </div>
+          <Button className="w-full" onClick={checkoutViaWhatsApp}>
+            Pay via WhatsApp
+          </Button>
+          <p className="text-xs text-muted-foreground mt-2">
+            You will be redirected to WhatsApp to complete the order and
+            payment.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

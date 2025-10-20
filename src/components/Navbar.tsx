@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useCart } from "@/context/CartContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,8 +15,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export const Navbar = () => {
-  const [cartCount] = useState(0);
   const { user, logout } = useAuth();
+  const { count: cartCount } = useCart();
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

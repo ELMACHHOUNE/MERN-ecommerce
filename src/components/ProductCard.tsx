@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useCart } from "@/context/CartContext";
 
 interface ProductCardProps {
   id: string;
@@ -20,6 +21,7 @@ export const ProductCard = ({
   category,
 }: ProductCardProps) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const { addItem } = useCart();
 
   return (
     <Card className="group overflow-hidden border-border hover:shadow-lg transition-all duration-300">
@@ -69,7 +71,19 @@ export const ProductCard = ({
 
         <div className="flex items-center justify-between gap-2">
           <p className="text-lg font-bold text-primary">${price.toFixed(2)}</p>
-          <Button size="sm" variant="accent" className="gap-1">
+          <Button
+            size="sm"
+            variant="accent"
+            className="gap-1"
+            onClick={() =>
+              addItem({
+                id,
+                name,
+                price,
+                image,
+              })
+            }
+          >
             <ShoppingCart className="h-3.5 w-3.5" />
             Add
           </Button>

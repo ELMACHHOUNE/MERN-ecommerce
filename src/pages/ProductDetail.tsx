@@ -5,6 +5,7 @@ import { ShoppingCart, Heart, Minus, Plus, Star } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { api, toApiURL } from "@/lib/api";
+import { useCart } from "@/context/CartContext";
 
 type Product = {
   _id: string;
@@ -27,6 +28,7 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [selectedImage, setSelectedImage] = useState(0);
+  const { addItem } = useCart();
 
   useEffect(() => {
     if (!id) return;
@@ -173,7 +175,22 @@ const ProductDetail = () => {
             </div>
 
             <div className="flex gap-3">
-              <Button variant="accent" size="lg" className="flex-1 gap-2">
+              <Button
+                variant="accent"
+                size="lg"
+                className="flex-1 gap-2"
+                onClick={() =>
+                  addItem(
+                    {
+                      id: product._id,
+                      name: product.title,
+                      price: product.price,
+                      image: imageUrls[selectedImage],
+                    },
+                    quantity
+                  )
+                }
+              >
                 <ShoppingCart className="h-5 w-5" />
                 Add to Cart
               </Button>
