@@ -25,30 +25,48 @@ router.post("/sync", async (req, res) => {
     const { cartId, userId } = req.body || {};
     const items = sanitizeItems((req.body || {}).items);
 
+    console.log("Cart sync request:", {
+      cartId,
+      userId,
+      itemCount: items.length,
+    });
+
     let cart;
 
     // If userId provided, find or create cart by userId
-    if (userId) {
-      cart = await Cart.findOne({ userId });
-      if (!cart) {
-        cart = await Cart.create({ items, userId });
-      } else {
-        cart.items = items;
-        await cart.save();
-      }
+    if (userId && String(userId).trim()) {
+      const userIdStr = String(userId).trim();
+
+      // Use findOneAndUpdate with upsert to avoid race conditions
+      cart = await Cart.findOneAndUpdate(
+        { userId: userIdStr },
+        { items, userId: userIdStr },
+        { new: true, upsert: true, runValidators: false }
+      );
+
+      console.log("Cart synced for user:", userIdStr);
     }
     // Otherwise use cartId
-    else if (cartId) {
-      cart = await Cart.findById(cartId);
+    else if (cartId && String(cartId).trim()) {
+      const cartIdStr = String(cartId).trim();
+      console.log("Syncing with cartId:", cartIdStr);
+
+      cart = await Cart.findByIdAndUpdate(
+        cartIdStr,
+        { items },
+        { new: true, runValidators: false }
+      );
+
       if (!cart) {
+        console.log("Cart not found, creating new anonymous cart");
         cart = await Cart.create({ items, userId: null });
       } else {
-        cart.items = items;
-        await cart.save();
+        console.log("Cart updated successfully");
       }
     }
     // Create new anonymous cart
     else {
+      console.log("Creating new anonymous cart");
       cart = await Cart.create({ items, userId: null });
     }
 
@@ -63,8 +81,11 @@ router.post("/sync", async (req, res) => {
       })),
     });
   } catch (e) {
-    console.error("Cart sync error:", e);
-    return res.status(500).json({ error: "Failed to sync cart" });
+    console.error("Cart sync error details:", e.message);
+    console.error("Stack:", e.stack);
+    return res
+      .status(500)
+      .json({ error: "Failed to sync cart", details: e.message });
   }
 });
 

@@ -6,6 +6,7 @@ import {
   useState,
   ReactNode,
   useCallback,
+  useRef,
 } from "react";
 import { API_BASE } from "@/api/products";
 import { useAuth } from "./AuthContext";
@@ -71,51 +72,12 @@ function setCartId(id: string) {
   } catch {}
 }
 
-async function syncCartServer(items: CartItem[]) {
-  try {
-    const cartId = getCartId();
-    const res = await fetch(`${API_BASE}/api/cart/sync`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        cartId,
-        items: items.map((it) => ({
-          id: it.id,
-          name: it.name,
-          price: it.price,
-          image: it.image,
-          qty: it.qty,
-        })),
-      }),
-    });
-    if (!res.ok) return;
-    const data = await res.json();
-    if (data?.cartId && data.cartId !== cartId) setCartId(data.cartId);
-  } catch {}
-}
-
-async function fetchCartServer(id: string): Promise<CartItem[] | null> {
-  try {
-    const res = await fetch(`${API_BASE}/api/cart/${id}`);
-    if (!res.ok) return null;
-    const data = await res.json();
-    const items = Array.isArray(data?.items) ? data.items : [];
-    return items.map((it: any) => ({
-      id: String(it.id),
-      name: String(it.name),
-      price: Number(it.price),
-      image: String(it.image || ""),
-      qty: Number(it.qty || 1),
-    }));
-  } catch {
-    return null;
-  }
-}
-
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>(() => loadCart());
   const { isAuthenticated, user } = useAuth();
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Load user's cart when they log in
   useEffect(() => {
@@ -157,7 +119,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     };
 
     loadUserCart();
-  }, [user?.id]);
+  }, [user?.id, isInitialized]);
 
   // Save to localStorage whenever items change
   useEffect(() => {
@@ -168,9 +130,24 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const syncToServer = useCallback(
     async (itemsToSync: CartItem[]) => {
-      if (!user?.id) return; // Don't sync if not logged in
+      if (!user?.id) {
+        console.log("Skipping cart sync - no user logged in");
+        return;
+      }
+
+      if (isSyncing) {
+        console.log("Sync already in progress, skipping");
+        return;
+      }
+
+      setIsSyncing(true);
 
       try {
+        console.log("Syncing cart to server:", {
+          userId: user.id,
+          itemCount: itemsToSync.length,
+        });
+
         const res = await fetch(`${API_BASE}/api/cart/sync`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -185,14 +162,36 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             })),
           }),
         });
-        if (!res.ok) return;
+
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          console.error("Cart sync failed:", res.status, errorData);
+          return;
+        }
+
         const data = await res.json();
+        console.log("Cart sync successful:", data);
         if (data?.cartId) setCartId(data.cartId);
       } catch (e) {
         console.error("Failed to sync cart:", e);
+      } finally {
+        setIsSyncing(false);
       }
     },
-    [user?.id]
+    [user?.id, isSyncing]
+  );
+
+  const debouncedSync = useCallback(
+    (itemsToSync: CartItem[]) => {
+      if (syncTimeoutRef.current) {
+        clearTimeout(syncTimeoutRef.current);
+      }
+
+      syncTimeoutRef.current = setTimeout(() => {
+        syncToServer(itemsToSync);
+      }, 500);
+    },
+    [syncToServer]
   );
 
   const addItem: CartContextValue["addItem"] = (item, qty = 1) => {
@@ -209,7 +208,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       } else {
         next = [...prev, { ...item, qty }];
       }
-      setTimeout(() => syncToServer(next), 0);
+      debouncedSync(next);
       return next;
     });
   };
@@ -219,7 +218,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       let next: CartItem[];
       if (qty <= 0) next = prev.filter((p) => p.id !== id);
       else next = prev.map((p) => (p.id === id ? { ...p, qty } : p));
-      setTimeout(() => syncToServer(next), 0);
+      debouncedSync(next);
       return next;
     });
   };
@@ -227,20 +226,21 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const removeItem: CartContextValue["removeItem"] = (id) => {
     setItems((prev) => {
       const next = prev.filter((p) => p.id !== id);
-      setTimeout(() => syncToServer(next), 0);
+      debouncedSync(next);
       return next;
     });
   };
 
   const clear = () => {
     setItems([]);
-    setTimeout(() => syncToServer([]), 0);
+    debouncedSync([]);
   };
 
   const count = useMemo(
     () => items.reduce((sum, it) => sum + it.qty, 0),
     [items]
   );
+
   const subtotal = useMemo(
     () => items.reduce((sum, it) => sum + it.price * it.qty, 0),
     [items]
