@@ -256,6 +256,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     const msg = encodeURIComponent(lines.join("\n"));
     const url = `https://wa.me/${phone}?text=${msg}`;
     window.open(url, "_blank");
+
+    clear();
   };
 
   const value: CartContextValue = {
