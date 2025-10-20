@@ -21,7 +21,7 @@ const roleSet = new Set(["user", "admin"]);
 
 const UsersTable: React.FC = () => {
   const qc = useQueryClient();
-  const { token } = (useAuth && useAuth()) || { token: undefined };
+  const { token } = useAuth();
 
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");

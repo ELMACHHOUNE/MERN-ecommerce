@@ -7,6 +7,7 @@ import {
   ReactNode,
 } from "react";
 import { API_BASE } from "@/api/products";
+import { useAuth } from "./AuthContext";
 
 type CartItem = {
   id: string;
@@ -112,6 +113,7 @@ async function fetchCartServer(id: string): Promise<CartItem[] | null> {
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>(() => loadCart());
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     saveCart(items);
@@ -136,6 +138,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [items]);
 
   const addItem: CartContextValue["addItem"] = (item, qty = 1) => {
+    if (!isAuthenticated) {
+      throw new Error("REQUIRE_AUTH");
+    }
+
     setItems((prev) => {
       const idx = prev.findIndex((p) => p.id === item.id);
       let next: CartItem[];

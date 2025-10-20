@@ -10,6 +10,7 @@ import Cart from "./pages/Cart";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import { AuthProvider } from "@/context/AuthContext";
+import { CartProvider } from "@/context/CartContext";
 import Profile from "./pages/Profile";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
@@ -23,52 +24,51 @@ import Categories from "./pages/Categories";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <MantineProvider theme={mantineTheme} defaultColorScheme="dark">
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <div className="min-h-screen flex flex-col">
-              <Navbar />
-              <main className="flex-1">
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/products" element={<Products />} />
-                  <Route path="/products/:id" element={<ProductDetail />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/auth" element={<Auth />} />
-                  <Route path="/categories" element={<Categories />} />
-                  {/* protect profile */}
-                  <Route
-                    path="/profile"
-                    element={
-                      <RequireAuth>
-                        <Profile />
-                      </RequireAuth>
-                    }
-                  />
-                  {/* admin-only dashboard */}
-                  <Route
-                    path="/admin"
-                    element={
-                      <RequireAdmin>
-                        <Admin />
-                      </RequireAdmin>
-                    }
-                  />
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </main>
-              <Footer />
-            </div>
-          </BrowserRouter>
-        </TooltipProvider>
-      </MantineProvider>
-    </AuthProvider>
-  </QueryClientProvider>
+  <MantineProvider theme={mantineTheme} defaultColorScheme="dark">
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <BrowserRouter>
+          <AuthProvider>
+            <CartProvider>
+              <div className="min-h-screen flex flex-col">
+                <Navbar />
+                <main className="flex-1">
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/products" element={<Products />} />
+                    <Route path="/products/:id" element={<ProductDetail />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/auth" element={<Auth />} />
+                    <Route path="/categories" element={<Categories />} />
+                    <Route
+                      path="/profile"
+                      element={
+                        <RequireAuth>
+                          <Profile />
+                        </RequireAuth>
+                      }
+                    />
+                    <Route
+                      path="/admin"
+                      element={
+                        <RequireAdmin>
+                          <Admin />
+                        </RequireAdmin>
+                      }
+                    />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </main>
+                <Footer />
+              </div>
+            </CartProvider>
+          </AuthProvider>
+        </BrowserRouter>
+        <Toaster />
+        <Sonner />
+      </TooltipProvider>
+    </QueryClientProvider>
+  </MantineProvider>
 );
 
 export default App;

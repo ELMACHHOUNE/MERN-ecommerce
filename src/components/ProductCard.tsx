@@ -1,9 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Heart } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
   id: string;
@@ -22,6 +23,28 @@ export const ProductCard = ({
 }: ProductCardProps) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const { addItem } = useCart();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      addItem({ id, name, price, image });
+      toast({
+        title: "Added to cart",
+        description: `${name} has been added to your cart.`,
+      });
+    } catch (error: any) {
+      if (error.message === "REQUIRE_AUTH") {
+        toast({
+          title: "Login required",
+          description: "Please login to add items to cart.",
+          variant: "destructive",
+        });
+        navigate("/auth", { state: { from: `/products/${id}` } });
+      }
+    }
+  };
 
   return (
     <Card className="group overflow-hidden border-border hover:shadow-lg transition-all duration-300">
@@ -75,14 +98,7 @@ export const ProductCard = ({
             size="sm"
             variant="accent"
             className="gap-1"
-            onClick={() =>
-              addItem({
-                id,
-                name,
-                price,
-                image,
-              })
-            }
+            onClick={handleAddToCart}
           >
             <ShoppingCart className="h-3.5 w-3.5" />
             Add

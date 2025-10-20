@@ -1,11 +1,10 @@
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Heart, Minus, Plus, Star } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { api, toApiURL } from "@/lib/api";
 import { useCart } from "@/context/CartContext";
+import { useToast } from "@/hooks/use-toast";
 
 type Product = {
   _id: string;
@@ -22,6 +21,8 @@ type Product = {
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -57,6 +58,39 @@ const ProductDetail = () => {
   if (!product) return <div>Product not found</div>;
 
   const imageUrls = (product.images || []).map((u) => toApiURL(u));
+
+  const handleAddToCart = () => {
+    try {
+      addItem(
+        {
+          id: product._id,
+          name: product.title,
+          price: product.price,
+          image: imageUrls[selectedImage],
+        },
+        quantity
+      );
+      toast({
+        title: "Added to cart",
+        description: `${product.title} has been added to your cart.`,
+      });
+    } catch (error: any) {
+      if (error.message === "REQUIRE_AUTH") {
+        toast({
+          title: "Login required",
+          description: "Please login to add items to cart.",
+          variant: "destructive",
+        });
+        navigate("/auth", { state: { from: `/product/${id}` } });
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to add item to cart.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -179,17 +213,7 @@ const ProductDetail = () => {
                 variant="accent"
                 size="lg"
                 className="flex-1 gap-2"
-                onClick={() =>
-                  addItem(
-                    {
-                      id: product._id,
-                      name: product.title,
-                      price: product.price,
-                      image: imageUrls[selectedImage],
-                    },
-                    quantity
-                  )
-                }
+                onClick={handleAddToCart}
               >
                 <ShoppingCart className="h-5 w-5" />
                 Add to Cart

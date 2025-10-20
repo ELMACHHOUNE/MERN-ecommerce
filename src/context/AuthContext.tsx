@@ -1,89 +1,111 @@
-import React, {
+import {
   createContext,
   useContext,
-  useMemo,
-  useState,
   useEffect,
+  useState,
+  ReactNode,
 } from "react";
-import { api, setAuth, clearAuth, getStoredUser } from "@/lib/api";
+import { API_BASE } from "@/api/products";
 
 type User = {
   id: string;
   email: string;
-  role: "user" | "admin";
-  fullName?: string;
+  name?: string;
 };
-type AuthCtx = {
+
+type AuthContextValue = {
   user: User | null;
+  isAuthenticated: boolean;
+  loading: boolean;
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (
-    email: string,
-    password: string,
-    fullName?: string
-  ) => Promise<void>;
   logout: () => void;
 };
 
-const AuthContext = createContext<AuthCtx | undefined>(undefined);
+const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+const USER_STORAGE_KEY = "bb_user";
 
-export const AuthProvider: React.FC<React.PropsWithChildren> = ({
-  children,
-}) => {
-  const [user, setUser] = useState<User | null>(getStoredUser<User>());
-  const [token, setToken] = useState<string | null>(
-    localStorage.getItem("auth_token")
-  );
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    // Keep state in sync if localStorage changes (optional)
-    const handler = () => {
-      setUser(getStoredUser<User>());
-      setToken(localStorage.getItem("auth_token"));
-    };
-    window.addEventListener("storage", handler);
-    return () => window.removeEventListener("storage", handler);
+    const storedToken = localStorage.getItem("authToken");
+    const storedUser = localStorage.getItem(USER_STORAGE_KEY);
+
+    if (storedToken && storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        setToken(storedToken);
+
+        // Optional: Try to verify with backend if endpoint exists
+        fetch(`${API_BASE}/api/auth/me`, {
+          headers: { Authorization: `Bearer ${storedToken}` },
+        })
+          .then((res) => {
+            if (res.ok) return res.json();
+            throw new Error("Invalid token");
+          })
+          .then((data) => {
+            if (data.user) {
+              setUser(data.user);
+              localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data.user));
+            }
+          })
+          .catch(() => {
+            // If verification fails, keep the stored user but log warning
+            console.warn("Could not verify token with backend");
+          });
+      } catch (error) {
+        localStorage.removeItem("authToken");
+        localStorage.removeItem(USER_STORAGE_KEY);
+        setToken(null);
+      }
+    }
+
+    setLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
-    const res = await api.post<{ token: string; user: User }>("/auth/login", {
-      email,
-      password,
+    const res = await fetch(`${API_BASE}/api/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
     });
-    setAuth(res.token, res.user);
-    setUser(res.user);
-    setToken(res.token);
-  };
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Login failed");
 
-  const register = async (
-    email: string,
-    password: string,
-    fullName?: string
-  ) => {
-    const res = await api.post<{ token: string; user: User }>(
-      "/auth/register",
-      { email, password, fullName }
-    );
-    setAuth(res.token, res.user);
-    setUser(res.user);
-    setToken(res.token);
+    localStorage.setItem("authToken", data.token);
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data.user));
+    setUser(data.user);
+    setToken(data.token);
   };
 
   const logout = () => {
-    clearAuth();
+    localStorage.removeItem("authToken");
+    localStorage.removeItem(USER_STORAGE_KEY);
     setUser(null);
     setToken(null);
   };
 
-  const value = useMemo(
-    () => ({ user, token, login, register, logout }),
-    [user, token]
-  );
+  const value: AuthContextValue = {
+    user,
+    isAuthenticated: !!user,
+    loading,
+    token,
+    login,
+    logout,
+  };
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-export function useAuth() {
+export const useAuth = () => {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
+  if (ctx === undefined) {
+    throw new Error("useAuth must be used within AuthProvider");
+  }
   return ctx;
-}
+};
