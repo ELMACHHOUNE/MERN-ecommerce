@@ -10,8 +10,9 @@ interface ProductCardProps {
   id: string;
   name: string;
   price: number;
-  image?: string;
+  image: string;
   category?: string;
+  rating?: number;
 }
 
 export const ProductCard = ({
@@ -20,11 +21,15 @@ export const ProductCard = ({
   price,
   image,
   category,
+  rating = 4.5,
 }: ProductCardProps) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [imgError, setImgError] = useState(false);
   const { addItem } = useCart();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const fallbackImage =
+    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=500&fit=crop";
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -50,17 +55,12 @@ export const ProductCard = ({
     <Card className="group overflow-hidden border-border hover:shadow-lg transition-all duration-300">
       <Link to={`/products/${id}`}>
         <div className="aspect-square overflow-hidden bg-secondary">
-          {image ? (
-            <img
-              src={image}
-              alt={name}
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-          ) : (
-            <div className="h-full w-full flex items-center justify-center text-xs text-muted-foreground">
-              No image
-            </div>
-          )}
+          <img
+            src={imgError ? fallbackImage : image}
+            alt={name}
+            onError={() => setImgError(true)}
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
         </div>
       </Link>
 

@@ -4,45 +4,20 @@ import { ArrowRight, Truck, Shield, HeadphonesIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroBanner from "@/assets/hero-banner.jpg";
 import { useEffect, useState } from "react";
-import { api } from "@/lib/api";
-import productShoes from "@/assets/product-shoes.jpg";
-import productTshirt from "@/assets/product-tshirt.jpg";
-import productBackpack from "@/assets/product-backpack.jpg";
-import productWatch from "@/assets/product-watch.jpg";
+import { api, toApiURL } from "@/lib/api";
 
-const featuredProducts = [
-  {
-    id: 1,
-    name: "Athletic Running Shoes",
-    price: 89.99,
-    image: productShoes,
-    category: "Footwear",
-  },
-  {
-    id: 2,
-    name: "Premium Cotton T-Shirt",
-    price: 29.99,
-    image: productTshirt,
-    category: "Clothing",
-  },
-  {
-    id: 3,
-    name: "Modern Backpack",
-    price: 59.99,
-    image: productBackpack,
-    category: "Accessories",
-  },
-  {
-    id: 4,
-    name: "Luxury Sport Watch",
-    price: 199.99,
-    image: productWatch,
-    category: "Watches",
-  },
-];
+type Product = {
+  _id: string;
+  title: string;
+  description?: string;
+  price: number;
+  images?: string[];
+  stock?: number;
+  category?: string;
+};
 
 const Index = () => {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,7 +25,7 @@ const Index = () => {
     let mounted = true;
     (async () => {
       try {
-        const data = await api.get<any[]>("/products");
+        const data = await api.get<Product[]>("/products");
         if (mounted) setProducts(data);
       } catch (e: any) {
         if (mounted) setError(e.message || "Failed to load");
@@ -160,20 +135,47 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {products.map((product) => (
-              <ProductCard key={product._id || product.id} {...product} />
-            ))}
-          </div>
+          {loading && (
+            <div className="text-center py-12">Loading products...</div>
+          )}
 
-          <div className="text-center">
-            <Link to="/products">
-              <Button variant="outline" size="lg" className="gap-2">
-                View All Products
-                <ArrowRight className="h-5 w-5" />
-              </Button>
-            </Link>
-          </div>
+          {error && (
+            <div className="text-center py-12 text-destructive">
+              Error: {error}
+            </div>
+          )}
+
+          {!loading && !error && products.length === 0 && (
+            <div className="text-center py-12 text-muted-foreground">
+              No products available
+            </div>
+          )}
+
+          {!loading && !error && products.length > 0 && (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                {products.slice(0, 8).map((product) => (
+                  <ProductCard
+                    key={product._id}
+                    id={product._id}
+                    name={product.title}
+                    price={product.price}
+                    image={toApiURL(product.images?.[0])}
+                    category={product.category || ""}
+                  />
+                ))}
+              </div>
+
+              <div className="text-center">
+                <Link to="/products">
+                  <Button variant="outline" size="lg" className="gap-2">
+                    View All Products
+                    <ArrowRight className="h-5 w-5" />
+                  </Button>
+                </Link>
+              </div>
+            </>
+          )}
         </div>
       </section>
 
