@@ -8,6 +8,7 @@ import { PriceSortMenu } from "@/components/ui/price-sort";
 type Product = {
   _id: string;
   title: string;
+  name?: string; // allow products that use `name` instead of `title`
   description?: string;
   price: number;
   images?: string[];
@@ -25,6 +26,7 @@ const Products = () => {
   const searchTerm = (
     searchParams.get("q") ||
     searchParams.get("search") ||
+    searchParams.get("name") || // accept `name` as a search key
     ""
   ).trim();
   const sort =
@@ -40,6 +42,7 @@ const Products = () => {
         const serverParams = new URLSearchParams(searchParams);
         serverParams.delete("q");
         serverParams.delete("search");
+        serverParams.delete("name"); // strip client-only name param
         serverParams.delete("categoryName");
         serverParams.delete("sort"); // ignore client-only sort on server
         const qs = serverParams.toString();
@@ -60,7 +63,11 @@ const Products = () => {
   const filteredProducts = useMemo(() => {
     if (!searchTerm) return products;
     const q = searchTerm.toLowerCase();
-    return products.filter((p) => p.title?.toLowerCase().includes(q));
+    return products.filter((p) => {
+      const t = p.title?.toLowerCase();
+      const n = p.name?.toLowerCase();
+      return (t && t.includes(q)) || (n && n.includes(q));
+    });
   }, [products, searchTerm]);
 
   const sortedProducts = useMemo(() => {
@@ -130,6 +137,7 @@ const Products = () => {
                   next.delete("categoryName");
                   next.delete("q");
                   next.delete("search");
+                  next.delete("name"); // clear `name` too
                   next.delete("sort"); // clear sort as well
                   return next;
                 })
@@ -153,7 +161,7 @@ const Products = () => {
                 <ProductCard
                   key={product._id}
                   id={product._id}
-                  name={product.title}
+                  name={product.title || product.name || ""} // support both fields
                   price={product.price}
                   image={toApiURL(product.images?.[0])}
                   category={product.category || ""}

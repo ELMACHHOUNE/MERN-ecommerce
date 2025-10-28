@@ -9,7 +9,9 @@ export function ProductSearchBox() {
   const navigate = useNavigate();
   const location = useLocation();
   const [params] = useSearchParams();
-  const [value, setValue] = useState(() => params.get("q") || "");
+  const [value, setValue] = useState(
+    () => params.get("q") || params.get("search") || params.get("name") || ""
+  );
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<ProductDTO[]>([]);
@@ -18,7 +20,9 @@ export function ProductSearchBox() {
 
   // keep input synced with URL
   useEffect(() => {
-    setValue(params.get("q") || "");
+    setValue(
+      params.get("q") || params.get("search") || params.get("name") || ""
+    );
   }, [params]);
 
   // fetch suggestions (debounced)
@@ -37,7 +41,11 @@ export function ProductSearchBox() {
         const res = await searchProductsSuggestions(q, 5);
         if (!alive) return;
         setSuggestions(res);
-        setOpen(true);
+        setOpen(res.length > 0);
+      } catch {
+        if (!alive) return;
+        setSuggestions([]);
+        setOpen(false);
       } finally {
         if (alive) setLoading(false);
       }
@@ -56,8 +64,13 @@ export function ProductSearchBox() {
 
   const buildNextUrl = (q: string) => {
     const next = new URLSearchParams(params);
-    if (q) next.set("q", q);
-    else next.delete("q");
+    if (q) {
+      next.set("q", q);
+      next.set("name", q); // write `name` for compatibility with server/client expectations
+    } else {
+      next.delete("q");
+      next.delete("name");
+    }
     return `/products${next.toString() ? `?${next.toString()}` : ""}`;
   };
 
@@ -84,8 +97,8 @@ export function ProductSearchBox() {
       window.clearTimeout(blurTimer.current);
       blurTimer.current = null;
     }
-    // Navigate to products page filtered by the selected product title
-    navigate(buildNextUrl(p.title));
+    const titleOrName = (p as any).title || (p as any).name || "";
+    navigate(buildNextUrl(titleOrName));
     setOpen(false);
   };
 
@@ -123,35 +136,39 @@ export function ProductSearchBox() {
             )}
             {!loading && suggestions.length > 0 && (
               <ul className="max-h-80 overflow-auto py-1">
-                {suggestions.map((p) => (
-                  <li key={p.id}>
-                    <button
-                      type="button"
-                      onMouseDown={(ev) => ev.preventDefault()}
-                      onClick={() => onSelectSuggestion(p)}
-                      className="w-full flex items-center gap-3 px-3 py-2 hover:bg-accent hover:text-accent-foreground text-left"
-                    >
-                      <img
-                        src={toApiURL(p.images?.[0]) || ""}
-                        alt={p.title}
-                        className="h-9 w-9 rounded object-cover bg-muted flex-shrink-0"
-                        onError={(e) => {
-                          (
-                            e.currentTarget as HTMLImageElement
-                          ).style.visibility = "hidden";
-                        }}
-                      />
-                      <div className="min-w-0">
-                        <div className="truncate text-sm font-medium">
-                          {p.title}
+                {suggestions.map((p) => {
+                  const titleOrName = (p as any).title || (p as any).name || "";
+                  return (
+                    <li key={p.id}>
+                      <button
+                        type="button"
+                        onMouseDown={(ev) => ev.preventDefault()}
+                        onClick={() => onSelectSuggestion(p)}
+                        className="w-full flex items-center gap-3 px-3 py-2 hover:bg-accent hover:text-accent-foreground text-left"
+                      >
+                        <img
+                          src={toApiURL((p as any).images?.[0]) || ""}
+                          alt={titleOrName}
+                          className="h-9 w-9 rounded object-cover bg-muted flex-shrink-0"
+                          onError={(e) => {
+                            (
+                              e.currentTarget as HTMLImageElement
+                            ).style.visibility = "hidden";
+                          }}
+                        />
+                        <div className="min-w-0">
+                          <div className="truncate text-sm font-medium">
+                            {titleOrName}
+                          </div>
+                          <div className="text-xs text-muted-foreground truncate">
+                            $
+                            {(p as any).price?.toFixed?.(2) ?? (p as any).price}
+                          </div>
                         </div>
-                        <div className="text-xs text-muted-foreground truncate">
-                          ${p.price?.toFixed?.(2) ?? p.price}
-                        </div>
-                      </div>
-                    </button>
-                  </li>
-                ))}
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>

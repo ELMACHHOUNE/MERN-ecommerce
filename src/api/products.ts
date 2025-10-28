@@ -8,6 +8,7 @@ export interface ProductDTO {
   category?: string;
   createdAt: string;
   updatedAt: string;
+  name?: string; // allow backend results that use `name`
 }
 export type CategoryOption = { label: string; value: string };
 
@@ -61,6 +62,7 @@ function mapProduct(p: any): ProductDTO {
     category: p.category,
     createdAt: p.createdAt,
     updatedAt: p.updatedAt,
+    name: p.name,
   };
 }
 
@@ -121,49 +123,59 @@ export async function fetchProductCategories(): Promise<CategoryOption[]> {
 }
 
 // NEW: top-N suggestions by title with server-first, client-fallback
-export async function searchProductsSuggestions(
-  query: string,
-  limit = 5
-): Promise<ProductDTO[]> {
-  const q = String(query || "").trim();
-  if (!q) return [];
+import { api } from "@/lib/api";
 
-  const urls = [
-    `${API_BASE}/api/products?limit=${limit}&q=${encodeURIComponent(q)}`,
-    `${API_BASE}/api/products?limit=${limit}&search=${encodeURIComponent(q)}`,
-  ];
+export async function searchProductsSuggestions(q: string, limit = 5): Promise<ProductDTO[]> {
+  const query = (q || "").trim();
+  if (!query) return [];
 
-  for (const url of urls) {
+  const params = new URLSearchParams({
+    q: query,
+    search: query,
+    name: query,
+    limit: String(limit),
+    _ts: String(Date.now()), // cache-busting
+  });
+
+  const tryGet = async (url: string) => {
     try {
-      const res = await fetch(url);
-      if (!res.ok) continue;
-      const json = await res.json();
-      const arr =
-        Array.isArray(json)
-          ? json
-          : Array.isArray(json?.data)
-          ? json.data
-          : Array.isArray(json?.items)
-          ? json.items
-          : Array.isArray(json?.results)
-          ? json.results
-          : [];
-      if (arr.length) return arr.slice(0, limit).map(mapProduct);
+      const data = await api.get<any[]>(url);
+      return Array.isArray(data) ? data : [];
     } catch {
-      // try next url
+      return [];
     }
-  }
+  };
 
-  // Fallback: fetch all and filter by title
-  try {
-    const all = await fetchProducts();
-    const ql = q.toLowerCase();
-    return all
-      .filter((p) => p.title?.toLowerCase().includes(ql))
-      .slice(0, limit);
-  } catch {
-    return [];
-  }
+  const normalize = (p: any): ProductDTO => ({
+    id: p.id ?? p._id ?? p.slug ?? String(p.name ?? p.title ?? Math.random()),
+    title: p.title ?? p.name ?? "",
+    description: p.description,
+    price: typeof p.price === "number" ? p.price : Number(p.price ?? 0),
+    images: p.images,
+    stock: p.stock,
+    category: p.category,
+    createdAt: p.createdAt ?? "",
+    updatedAt: p.updatedAt ?? "",
+    name: p.name,
+  });
+
+  const lc = query.toLowerCase();
+  const matches = (t: string) => t.toLowerCase().includes(lc);
+  const score = (t: string) => {
+    const lt = t.toLowerCase();
+    if (lt.startsWith(lc)) return 0;
+    const idx = lt.indexOf(lc);
+    return idx >= 0 ? idx + 1 : Number.POSITIVE_INFINITY;
+  };
+
+  // Single endpoint to avoid hitting /products/:id
+  const raw = await tryGet(`/products?${params.toString()}`);
+  if (!raw.length) return [];
+
+  const norm = raw.map(normalize);
+  const filtered = norm.filter(p => matches(p.title || p.name || ""));
+  filtered.sort((a, b) => score(a.title || a.name || "") - score(b.title || b.name || ""));
+  return filtered.slice(0, limit);
 }
 
 export async function createProduct(
