@@ -22,6 +22,11 @@ const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryFilter = searchParams.get("category");
   const categoryNameFilter = searchParams.get("categoryName");
+  const searchTerm = (
+    searchParams.get("q") ||
+    searchParams.get("search") ||
+    ""
+  ).trim();
 
   useEffect(() => {
     let mounted = true;
@@ -29,7 +34,12 @@ const Products = () => {
     setError(null);
     (async () => {
       try {
-        const qs = searchParams.toString();
+        // strip client-only params before hitting the API
+        const serverParams = new URLSearchParams(searchParams);
+        serverParams.delete("q");
+        serverParams.delete("search");
+        serverParams.delete("categoryName");
+        const qs = serverParams.toString();
         const url = qs ? `/products?${qs}` : "/products";
         const data = await api.get<Product[]>(url);
         if (mounted) setProducts(data);
@@ -45,9 +55,10 @@ const Products = () => {
   }, [searchParams]);
 
   const filteredProducts = useMemo(() => {
-    // Server-side returns already filtered list; keep client-side as passthrough.
-    return products;
-  }, [products]);
+    if (!searchTerm) return products;
+    const q = searchTerm.toLowerCase();
+    return products.filter((p) => p.title?.toLowerCase().includes(q));
+  }, [products, searchTerm]);
 
   return (
     <>
@@ -75,12 +86,17 @@ const Products = () => {
           </Button>
         </div>
 
-        {(categoryFilter || categoryNameFilter) && (
-          <div className="mb-4 text-sm flex items-center gap-2">
-            <span className="text-gray-600">
-              Filtered by{" "}
-              {categoryNameFilter ? `"${categoryNameFilter}"` : "category"}
-            </span>
+        {(categoryFilter || categoryNameFilter || searchTerm) && (
+          <div className="mb-4 text-sm flex items-center gap-3 flex-wrap">
+            {(categoryFilter || categoryNameFilter) && (
+              <span className="text-gray-600">
+                Filtered by{" "}
+                {categoryNameFilter ? `"${categoryNameFilter}"` : "category"}
+              </span>
+            )}
+            {searchTerm && (
+              <span className="text-gray-600">Search for "{searchTerm}"</span>
+            )}
             <button
               className="px-2 py-1 rounded border text-gray-700 hover:bg-gray-50"
               onClick={() =>
@@ -88,6 +104,8 @@ const Products = () => {
                   const next = new URLSearchParams(prev);
                   next.delete("category");
                   next.delete("categoryName");
+                  next.delete("q");
+                  next.delete("search");
                   return next;
                 })
               }

@@ -120,6 +120,52 @@ export async function fetchProductCategories(): Promise<CategoryOption[]> {
   return out;
 }
 
+// NEW: top-N suggestions by title with server-first, client-fallback
+export async function searchProductsSuggestions(
+  query: string,
+  limit = 5
+): Promise<ProductDTO[]> {
+  const q = String(query || "").trim();
+  if (!q) return [];
+
+  const urls = [
+    `${API_BASE}/api/products?limit=${limit}&q=${encodeURIComponent(q)}`,
+    `${API_BASE}/api/products?limit=${limit}&search=${encodeURIComponent(q)}`,
+  ];
+
+  for (const url of urls) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const json = await res.json();
+      const arr =
+        Array.isArray(json)
+          ? json
+          : Array.isArray(json?.data)
+          ? json.data
+          : Array.isArray(json?.items)
+          ? json.items
+          : Array.isArray(json?.results)
+          ? json.results
+          : [];
+      if (arr.length) return arr.slice(0, limit).map(mapProduct);
+    } catch {
+      // try next url
+    }
+  }
+
+  // Fallback: fetch all and filter by title
+  try {
+    const all = await fetchProducts();
+    const ql = q.toLowerCase();
+    return all
+      .filter((p) => p.title?.toLowerCase().includes(ql))
+      .slice(0, limit);
+  } catch {
+    return [];
+  }
+}
+
 export async function createProduct(
   body:
     | {
