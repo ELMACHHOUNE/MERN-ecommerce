@@ -20,6 +20,11 @@ type AuthContextValue = {
   loading: boolean;
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
+  register: (
+    email: string,
+    password: string,
+    fullName: string
+  ) => Promise<void>;
   logout: () => void;
 };
 
@@ -90,6 +95,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(data.token);
   };
 
+  const register = async (
+    email: string,
+    password: string,
+    fullName: string
+  ) => {
+    const res = await fetch(`${API_BASE}/api/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, fullName }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Registration failed");
+
+    // Ensure user object has id field (some APIs return _id instead)
+    const userData = {
+      ...data.user,
+      id: data.user.id || data.user._id,
+    };
+
+    localStorage.setItem("authToken", data.token);
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
+    setUser(userData);
+    setToken(data.token);
+  };
+
   const logout = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem(USER_STORAGE_KEY);
@@ -103,6 +133,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     loading,
     token,
     login,
+    register,
     logout,
   };
 
