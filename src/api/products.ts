@@ -70,7 +70,7 @@ export async function fetchProducts(): Promise<ProductDTO[]> {
   const res = await fetch(`${API_BASE}/api/products`);
   if (!res.ok) throw new Error("Failed to load products");
   const data = await res.json();
-  return data.map(mapProduct);
+  return Array.isArray(data) ? data.map(mapProduct) : [];
 }
 
 export async function fetchProductCategories(): Promise<CategoryOption[]> {

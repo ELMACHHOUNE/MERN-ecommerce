@@ -38,17 +38,17 @@ const Products = () => {
     setError(null);
     (async () => {
       try {
-        // strip client-only params before hitting the API
-        const serverParams = new URLSearchParams(searchParams);
-        serverParams.delete("q");
-        serverParams.delete("search");
-        serverParams.delete("name"); // strip client-only name param
-        serverParams.delete("categoryName");
-        serverParams.delete("sort"); // ignore client-only sort on server
-        const qs = serverParams.toString();
-        const url = qs ? `/products?${qs}` : "/products";
-        const data = await api.get<Product[]>(url);
-        if (mounted) setProducts(data);
+        const params = new URLSearchParams();
+        if (categoryFilter) params.set("category", categoryFilter);
+        if (categoryNameFilter) params.set("categoryName", categoryNameFilter);
+        const qs = params.toString();
+        const url = qs ? `/api/products?${qs}` : "/api/products";
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL || "http://localhost:5000"}${url}`
+        );
+        if (!res.ok) throw new Error("Failed to load products");
+        const data = await res.json();
+        if (mounted) setProducts(Array.isArray(data) ? data : []);
       } catch (e: any) {
         if (mounted) setError(e.message || "Failed to load products");
       } finally {
@@ -58,7 +58,7 @@ const Products = () => {
     return () => {
       mounted = false;
     };
-  }, [searchParams]);
+  }, [categoryFilter, categoryNameFilter]);
 
   const filteredProducts = useMemo(() => {
     if (!searchTerm) return products;

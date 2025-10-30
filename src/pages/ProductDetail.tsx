@@ -36,7 +36,13 @@ const ProductDetail = () => {
     let mounted = true;
     (async () => {
       try {
-        const data = await api.get<Product>(`/products/${id}`);
+        const res = await fetch(
+          `${
+            import.meta.env.VITE_API_URL || "http://localhost:5000"
+          }/api/products/${id}`
+        );
+        if (!res.ok) throw new Error("Failed to load product");
+        const data = await res.json();
         if (mounted) setProduct(data);
       } catch (e: any) {
         if (mounted) setError(e.message || "Failed to load product");

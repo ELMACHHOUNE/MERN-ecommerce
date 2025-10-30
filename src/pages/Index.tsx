@@ -25,8 +25,14 @@ const Index = () => {
     let mounted = true;
     (async () => {
       try {
-        const data = await api.get<Product[]>("/products");
-        if (mounted) setProducts(data);
+        const res = await fetch(
+          `${
+            import.meta.env.VITE_API_URL || "http://localhost:5000"
+          }/api/products`
+        );
+        if (!res.ok) throw new Error("Failed to load products");
+        const data = await res.json();
+        if (mounted) setProducts(Array.isArray(data) ? data : []);
       } catch (e: any) {
         if (mounted) setError(e.message || "Failed to load");
       } finally {
