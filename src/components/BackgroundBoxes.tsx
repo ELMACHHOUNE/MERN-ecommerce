@@ -13,7 +13,7 @@ export function BackgroundBoxes({
     <div className={`min-h-screen w-full bg-background relative ${className}`}>
       {/* Top Fade Grid Background */}
       <div
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-0 dark:opacity-50"
         style={{
           backgroundImage: `
             linear-gradient(to right, #c7e7f0 1px, transparent 1px),

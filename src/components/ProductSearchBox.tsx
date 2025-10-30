@@ -109,7 +109,7 @@ export function ProductSearchBox() {
         <Input
           type="search"
           placeholder="Search products..."
-          className="pl-9 bg-secondary border-0"
+          className="pl-9 bg-muted/50 dark:bg-muted border-0"
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onFocus={onFocus}
@@ -123,7 +123,7 @@ export function ProductSearchBox() {
         </button>
 
         {open && (
-          <div className="absolute left-0 right-0 mt-2 z-50 rounded-md border bg-popover text-popover-foreground shadow-md">
+          <div className="absolute left-0 right-0 mt-2 z-50 rounded-md border border-border bg-card text-card-foreground shadow-md">
             {loading && (
               <div className="px-3 py-2 text-sm text-muted-foreground">
                 Searching...

@@ -52,9 +52,9 @@ export const ProductCard = ({
   };
 
   return (
-    <Card className="group overflow-hidden border-border hover:shadow-lg transition-all duration-300">
+    <Card className="group overflow-hidden border-border bg-card hover:shadow-lg transition-all duration-300">
       <Link to={`/products/${id}`}>
-        <div className="aspect-square overflow-hidden bg-secondary">
+        <div className="aspect-square overflow-hidden bg-muted">
           <img
             src={imgError ? fallbackImage : image}
             alt={name}
