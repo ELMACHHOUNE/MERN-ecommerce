@@ -31,7 +31,7 @@ export const Navbar = () => {
   return (
     <>
       {/* Desktop Navbar */}
-      <div className="hidden md:block fixed top-4 inset-x-0 max-w-5xl mx-auto z-50">
+      <div className="hidden md:block fixed top-2 inset-x-0 max-w-5xl mx-auto z-50">
         <Menu setActive={setActive}>
           <div className="flex items-center gap-4">
             <Link
