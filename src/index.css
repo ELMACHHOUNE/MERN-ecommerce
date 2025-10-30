@@ -1,10 +1,6 @@
 @import '@mantine/core/styles.layer.css';
 @import 'mantine-react-table/styles.css';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
 /* If you use typography, uncomment the next line */
@@ -12,44 +8,44 @@
 
 /* Tailwind v4 tokens */
 @theme {
-  /* Colors */
-  --color-background: hsl(0 0% 100%);
-  --color-foreground: hsl(220 13% 13%);
+  /* Colors - Custom Palette */
+  --color-background: #f4fbfd;
+  --color-foreground: #06161b;
 
-  --color-card: hsl(0 0% 100%);
-  --color-card-foreground: hsl(220 13% 13%);
+  --color-card: #ffffff;
+  --color-card-foreground: #06161b;
 
-  --color-popover: hsl(0 0% 100%);
-  --color-popover-foreground: hsl(220 13% 13%);
+  --color-popover: #ffffff;
+  --color-popover-foreground: #06161b;
 
-  --color-primary: hsl(220 70% 12%);
-  --color-primary-foreground: hsl(0 0% 100%);
+  --color-primary: #33acd5;
+  --color-primary-foreground: #ffffff;
 
-  --color-secondary: hsl(220 13% 95%);
-  --color-secondary-foreground: hsl(220 70% 12%);
+  --color-secondary: #8c91e7;
+  --color-secondary-foreground: #ffffff;
 
-  --color-muted: hsl(220 13% 95%);
-  --color-muted-foreground: hsl(220 9% 46%);
+  --color-muted: #e0f2f7;
+  --color-muted-foreground: #5a7a85;
 
-  --color-accent: hsl(16 100% 50%);
-  --color-accent-foreground: hsl(0 0% 100%);
+  --color-accent: #7a69e0;
+  --color-accent-foreground: #ffffff;
 
   --color-destructive: hsl(0 84% 60%);
-  --color-destructive-foreground: hsl(0 0% 100%);
+  --color-destructive-foreground: #ffffff;
 
-  --color-border: hsl(220 13% 91%);
-  --color-input: hsl(220 13% 91%);
-  --color-ring: hsl(220 70% 12%);
+  --color-border: #c7e7f0;
+  --color-input: #c7e7f0;
+  --color-ring: #33acd5;
 
   /* Sidebar (if used) */
-  --color-sidebar: hsl(220 13% 95%);
-  --color-sidebar-foreground: hsl(220 13% 13%);
-  --color-sidebar-primary: hsl(220 70% 12%);
-  --color-sidebar-primary-foreground: hsl(0 0% 100%);
-  --color-sidebar-accent: hsl(220 13% 90%);
-  --color-sidebar-accent-foreground: hsl(220 13% 13%);
-  --color-sidebar-border: hsl(220 13% 91%);
-  --color-sidebar-ring: hsl(220 70% 12%);
+  --color-sidebar: #e0f2f7;
+  --color-sidebar-foreground: #06161b;
+  --color-sidebar-primary: #33acd5;
+  --color-sidebar-primary-foreground: #ffffff;
+  --color-sidebar-accent: #8c91e7;
+  --color-sidebar-accent-foreground: #ffffff;
+  --color-sidebar-border: #c7e7f0;
+  --color-sidebar-ring: #33acd5;
 
   /* Radius tokens used by rounded-{sm,md,lg} */
   --radius-sm: calc(0.5rem - 4px);
@@ -59,42 +55,42 @@
 
 /* Dark theme overrides */
 @theme .dark {
-  --color-background: hsl(220 13% 9%);
-  --color-foreground: hsl(0 0% 98%);
+  --color-background: #06161b;
+  --color-foreground: #f4fbfd;
 
-  --color-card: hsl(220 13% 12%);
-  --color-card-foreground: hsl(0 0% 98%);
+  --color-card: #0d2329;
+  --color-card-foreground: #f4fbfd;
 
-  --color-popover: hsl(220 13% 12%);
-  --color-popover-foreground: hsl(0 0% 98%);
+  --color-popover: #0d2329;
+  --color-popover-foreground: #f4fbfd;
 
-  --color-primary: hsl(0 0% 98%);
-  --color-primary-foreground: hsl(220 70% 12%);
+  --color-primary: #2a8fae;
+  --color-primary-foreground: #ffffff;
 
-  --color-secondary: hsl(220 13% 16%);
-  --color-secondary-foreground: hsl(0 0% 98%);
+  --color-secondary: #6b70c7;
+  --color-secondary-foreground: #ffffff;
 
-  --color-muted: hsl(220 13% 16%);
-  --color-muted-foreground: hsl(220 9% 65%);
+  --color-muted: #1a3640;
+  --color-muted-foreground: #a8d5e3;
 
-  --color-accent: hsl(16 100% 50%);
-  --color-accent-foreground: hsl(0 0% 100%);
+  --color-accent: #5e4fc4;
+  --color-accent-foreground: #ffffff;
 
   --color-destructive: hsl(0 62% 50%);
-  --color-destructive-foreground: hsl(0 0% 100%);
+  --color-destructive-foreground: #ffffff;
 
-  --color-border: hsl(220 13% 20%);
-  --color-input: hsl(220 13% 20%);
-  --color-ring: hsl(0 0% 98%);
+  --color-border: #1a3640;
+  --color-input: #1a3640;
+  --color-ring: #2a8fae;
 
-  --color-sidebar: hsl(220 13% 12%);
-  --color-sidebar-foreground: hsl(0 0% 98%);
-  --color-sidebar-primary: hsl(0 0% 98%);
-  --color-sidebar-primary-foreground: hsl(220 70% 12%);
-  --color-sidebar-accent: hsl(220 13% 18%);
-  --color-sidebar-accent-foreground: hsl(0 0% 98%);
-  --color-sidebar-border: hsl(220 13% 20%);
-  --color-sidebar-ring: hsl(0 0% 98%);
+  --color-sidebar: #0d2329;
+  --color-sidebar-foreground: #f4fbfd;
+  --color-sidebar-primary: #2a8fae;
+  --color-sidebar-primary-foreground: #ffffff;
+  --color-sidebar-accent: #6b70c7;
+  --color-sidebar-accent-foreground: #ffffff;
+  --color-sidebar-border: #1a3640;
+  --color-sidebar-ring: #2a8fae;
 }
 
 /* Base resets still fine with v4, now tokens exist so utilities are valid */

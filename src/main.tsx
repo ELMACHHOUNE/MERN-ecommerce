@@ -4,9 +4,12 @@ import App from "./App";
 import "./index.css";
 import "@mantine/core/styles.css";
 import "mantine-react-table/styles.css";
+import { BackgroundBoxes } from "./components/BackgroundBoxes";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
+    <BackgroundBoxes>
+      <App />
+    </BackgroundBoxes>
   </StrictMode>
 );

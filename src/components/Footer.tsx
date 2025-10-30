@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 
 export const Footer = () => {
   return (
-    <footer className="border-t bg-secondary/50 mt-20">
+    <footer className="border-t  mt-20">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div>
@@ -29,20 +29,76 @@ export const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Shop</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/products" className="hover:text-accent transition-colors">All Products</Link></li>
-              <li><Link to="/categories" className="hover:text-accent transition-colors">Categories</Link></li>
-              <li><Link to="/deals" className="hover:text-accent transition-colors">Deals</Link></li>
-              <li><Link to="/new-arrivals" className="hover:text-accent transition-colors">New Arrivals</Link></li>
+              <li>
+                <Link
+                  to="/products"
+                  className="hover:text-accent transition-colors"
+                >
+                  All Products
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/categories"
+                  className="hover:text-accent transition-colors"
+                >
+                  Categories
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/deals"
+                  className="hover:text-accent transition-colors"
+                >
+                  Deals
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/new-arrivals"
+                  className="hover:text-accent transition-colors"
+                >
+                  New Arrivals
+                </Link>
+              </li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-semibold mb-4">Support</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/help" className="hover:text-accent transition-colors">Help Center</Link></li>
-              <li><Link to="/shipping" className="hover:text-accent transition-colors">Shipping Info</Link></li>
-              <li><Link to="/returns" className="hover:text-accent transition-colors">Returns</Link></li>
-              <li><Link to="/contact" className="hover:text-accent transition-colors">Contact Us</Link></li>
+              <li>
+                <Link
+                  to="/help"
+                  className="hover:text-accent transition-colors"
+                >
+                  Help Center
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/shipping"
+                  className="hover:text-accent transition-colors"
+                >
+                  Shipping Info
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/returns"
+                  className="hover:text-accent transition-colors"
+                >
+                  Returns
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/contact"
+                  className="hover:text-accent transition-colors"
+                >
+                  Contact Us
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -52,11 +108,7 @@ export const Footer = () => {
               Subscribe to get special offers and updates.
             </p>
             <div className="flex gap-2">
-              <Input
-                type="email"
-                placeholder="Your email"
-                className="bg-background"
-              />
+              <Input type="email" placeholder="Your email" className="" />
               <Button variant="accent" size="icon">
                 <Mail className="h-4 w-4" />
               </Button>

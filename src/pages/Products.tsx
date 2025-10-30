@@ -79,7 +79,7 @@ const Products = () => {
 
   return (
     <>
-      <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-12">
+      <div className=" text-primary-foreground py-12">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Our Products</h1>
           <p className="text-lg opacity-90">
@@ -129,7 +129,7 @@ const Products = () => {
               </span>
             )}
             <button
-              className="px-2 py-1 rounded border text-gray-700 hover:bg-gray-50"
+              className="px-2 py-1 rounded border text-gray-700 "
               onClick={() =>
                 setSearchParams((prev) => {
                   const next = new URLSearchParams(prev);
