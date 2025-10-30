@@ -21,6 +21,7 @@ import { MantineProvider } from "@mantine/core";
 import { mantineTheme } from "./theme/mantineTheme";
 import Categories from "./pages/Categories";
 import { useEffect, useState } from "react";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 const queryClient = new QueryClient();
 
@@ -52,37 +53,33 @@ const App = () => {
           <BrowserRouter>
             <AuthProvider>
               <CartProvider>
-                <div className="min-h-screen flex flex-col">
-                  <Navbar />
-                  <main className="flex-1">
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/products" element={<Products />} />
-                      <Route path="/products/:id" element={<ProductDetail />} />
-                      <Route path="/cart" element={<Cart />} />
-                      <Route path="/auth" element={<Auth />} />
-                      <Route path="/categories" element={<Categories />} />
-                      <Route
-                        path="/profile"
-                        element={
-                          <RequireAuth>
-                            <Profile />
-                          </RequireAuth>
-                        }
-                      />
-                      <Route
-                        path="/admin"
-                        element={
-                          <RequireAdmin>
-                            <Admin />
-                          </RequireAdmin>
-                        }
-                      />
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </main>
-                  <Footer />
-                </div>
+                <AppLayout>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/products" element={<Products />} />
+                    <Route path="/products/:id" element={<ProductDetail />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/auth" element={<Auth />} />
+                    <Route path="/categories" element={<Categories />} />
+                    <Route
+                      path="/profile"
+                      element={
+                        <RequireAuth>
+                          <Profile />
+                        </RequireAuth>
+                      }
+                    />
+                    <Route
+                      path="/admin"
+                      element={
+                        <RequireAdmin>
+                          <Admin />
+                        </RequireAdmin>
+                      }
+                    />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </AppLayout>
               </CartProvider>
             </AuthProvider>
           </BrowserRouter>
