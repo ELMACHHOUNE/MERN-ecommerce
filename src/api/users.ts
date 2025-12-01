@@ -12,7 +12,6 @@ function resolveApiBase(): string {
   let base =
     env.VITE_API_URL ||
     env.VITE_API_BASE_URL ||
-    env.REACT_APP_API_URL ||
     env.REACT_APP_API_BASE_URL ||
     "";
 
@@ -32,7 +31,7 @@ export const API_BASE = resolveApiBase();
 if (!API_BASE) {
   // eslint-disable-next-line no-console
   console.warn(
-    "[users api] API_BASE unresolved. Ensure VITE_API_URL or REACT_APP_API_URL set and dev server restarted."
+    "[users api] API_BASE unresolved. Ensure VITE_API_URL set and dev server restarted."
   );
 } else {
   // eslint-disable-next-line no-console
