@@ -64,7 +64,7 @@ const Index = () => {
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-2xl text-primary-foreground">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4 md:mb-6 leading-tight">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 md:mb-6 leading-tight font-display">
               Discover Premium Quality Products
             </h1>
             <p className="text-base md:text-xl mb-6 md:mb-8 opacity-90">
@@ -193,7 +193,7 @@ const Index = () => {
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 font-display">
             Ready to Start Shopping?
           </h2>
           <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
