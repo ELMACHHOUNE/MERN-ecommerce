@@ -24,10 +24,10 @@ export default function Categories() {
               key={i}
               className="border rounded-lg overflow-hidden animate-pulse"
             >
-              <div className="h-40 bg-gray-200" />
+              <div className="h-40 bg-muted/40" />
               <div className="p-3 space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-2/3" />
-                <div className="h-3 bg-gray-200 rounded w-full" />
+                <div className="h-4 bg-muted/40 rounded w-2/3" />
+                <div className="h-3 bg-muted/40 rounded w-full" />
               </div>
             </div>
           ))}
@@ -44,7 +44,7 @@ export default function Categories() {
       {!isLoading && !isError && (
         <>
           {categories.length === 0 ? (
-            <div className="text-gray-500">No categories found.</div>
+            <div className="text-muted-foreground">No categories found.</div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {categories.map((cat: CategoryDTO) => (
@@ -53,7 +53,7 @@ export default function Categories() {
                   to={`/products?category=${encodeURIComponent(
                     String((cat as any).id ?? (cat as any)._id ?? "")
                   )}&categoryName=${encodeURIComponent(cat.name)}`}
-                  className="border rounded-lg overflow-hidden bg-white hover:shadow transition block"
+                  className="border rounded-lg overflow-hidden bg-card hover:shadow transition block"
                 >
                   {cat.imageUrl ? (
                     <img
@@ -63,13 +63,13 @@ export default function Categories() {
                       loading="lazy"
                     />
                   ) : (
-                    <div className="w-full h-40 bg-gray-100 flex items-center justify-center text-gray-400 text-sm">
+                    <div className="w-full h-40 bg-muted/20 flex items-center justify-center text-muted-foreground text-sm">
                       No image
                     </div>
                   )}
                   <div className="p-3">
                     <h2 className="font-medium">{cat.name}</h2>
-                    <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                       {cat.description || "—"}
                     </p>
                   </div>

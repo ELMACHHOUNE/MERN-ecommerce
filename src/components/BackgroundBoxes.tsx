@@ -15,11 +15,13 @@ export function BackgroundBoxes({
       <div
         className="absolute inset-0 z-0 dark:opacity-50"
         style={{
+          /* Use theme tokens for grid + subtle brand glow */
           backgroundImage: `
-            linear-gradient(to right, #c7e7f0 1px, transparent 1px),
-            linear-gradient(to bottom, #c7e7f0 1px, transparent 1px)
+            linear-gradient(to right, color-mix(in srgb, var(--color-accent) 10%, transparent) 1px, transparent 1px),
+            linear-gradient(to bottom, color-mix(in srgb, var(--color-accent) 10%, transparent) 1px, transparent 1px),
+            radial-gradient(ellipse 60% 40% at 50% 0%, color-mix(in srgb, var(--color-primary) 12%, transparent), transparent 70%)
           `,
-          backgroundSize: "20px 30px",
+          backgroundSize: "22px 28px, 22px 28px, auto",
           WebkitMaskImage:
             "radial-gradient(ellipse 70% 60% at 50% 0%, #000 60%, transparent 100%)",
           maskImage:

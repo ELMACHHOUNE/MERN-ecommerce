@@ -100,7 +100,9 @@ const Profile = () => {
     <div className="container mx-auto max-w-xl p-4">
       <h1 className="text-2xl font-semibold mb-2">My Profile</h1>
       {isFetching && (
-        <div className="text-xs text-gray-500 mb-2">Refreshing profile…</div>
+        <div className="text-xs text-muted-foreground mb-2">
+          Refreshing profile…
+        </div>
       )}
       {error && (
         <div className="text-xs text-red-600 mb-2">
@@ -162,7 +164,7 @@ const Profile = () => {
         <button
           type="submit"
           disabled={!token || mutation.isPending}
-          className="bg-black text-white px-4 py-2 rounded disabled:opacity-50"
+          className="bg-primary text-primary-foreground px-4 py-2 rounded disabled:opacity-50"
         >
           {mutation.isPending ? "Saving..." : "Save changes"}
         </button>

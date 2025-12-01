@@ -8,25 +8,34 @@
 
 /* Tailwind v4 tokens */
 @theme {
-  /* Modern Minimal Palette */
-  --color-background: #f8fafc;
-  --color-foreground: #18181b;
+  /* Brand palette mapping */
+  /* Provided colors:
+     - Dark Olive: #212107
+     - Pale Blue:  #9DB6D4
+     - Teal:       #008A97
+     - Beige:      #D6BEB0
+     - Gray:       #9C9C9C
+  */
 
-  --color-card: #fff;
-  --color-card-foreground: #18181b;
+  /* Light theme */
+  --color-background: #D6BEB0;         /* Beige base */
+  --color-foreground: #212107;         /* Dark text */
 
-  --color-primary: #2563eb;
-  --color-primary-foreground: #fff;
+  --color-card: #ffffff;               /* Neutral card for readability */
+  --color-card-foreground: #212107;
 
-  --color-accent: #818cf8;
-  --color-accent-foreground: #fff;
+  --color-primary: #008A97;            /* Teal brand */
+  --color-primary-foreground: #ffffff; /* On teal */
 
-  --color-muted: #e5e7eb;
-  --color-muted-foreground: #6b7280;
+  --color-accent: #9DB6D4;             /* Pale blue accent */
+  --color-accent-foreground: #212107;
 
-  --color-border: #e5e7eb;
-  --color-input: #e5e7eb;
-  --color-ring: #2563eb;
+  --color-muted: #9C9C9C;              /* Neutral gray for subtle UI */
+  --color-muted-foreground: #212107;   /* Readable on muted areas */
+
+  --color-border: #9C9C9C;
+  --color-input: #9C9C9C;
+  --color-ring: #008A97;
 
   --radius-sm: 0.25rem;
   --radius-md: 0.375rem;
@@ -35,24 +44,24 @@
 
 /* Dark theme overrides */
 @theme .dark {
-  --color-background: #18181b;
-  --color-foreground: #f8fafc;
+  --color-background: #212107;         /* Deep olive */
+  --color-foreground: #D6BEB0;         /* Light beige text */
 
-  --color-card: #23272f;
-  --color-card-foreground: #f8fafc;
+  --color-card: #212107;               /* Keep cohesive surfaces */
+  --color-card-foreground: #D6BEB0;
 
-  --color-primary: #60a5fa;
-  --color-primary-foreground: #18181b;
+  --color-primary: #008A97;
+  --color-primary-foreground: #D6BEB0;
 
-  --color-accent: #6366f1;
-  --color-accent-foreground: #f8fafc;
+  --color-accent: #9DB6D4;
+  --color-accent-foreground: #212107;
 
-  --color-muted: #27272a;
-  --color-muted-foreground: #a1a1aa;
+  --color-muted: #9C9C9C;
+  --color-muted-foreground: #D6BEB0;
 
-  --color-border: #27272a;
-  --color-input: #27272a;
-  --color-ring: #60a5fa;
+  --color-border: #9C9C9C;
+  --color-input: #9C9C9C;
+  --color-ring: #008A97;
 
   --radius-sm: 0.25rem;
   --radius-md: 0.375rem;

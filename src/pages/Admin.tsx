@@ -11,28 +11,28 @@ const Admin: React.FC = () => {
   return (
     <div className="flex min-h-[70vh]">
       {/* Sidebar */}
-      <aside className="w-64 border-r bg-[#14161A]">
+      <aside className="w-64 border-r bg-card">
         <div className="p-4 font-semibold text-lg">Admin</div>
         <nav className="flex flex-col">
           <button
-            className={`text-left px-4 py-2 hover:bg-gray-900 ${
-              tab === "products" ? "bg-gray-500 font-medium" : ""
+            className={`text-left px-4 py-2 hover:bg-muted ${
+              tab === "products" ? "bg-accent/20 font-medium" : ""
             }`}
             onClick={() => setTab("products")}
           >
             Products management
           </button>
           <button
-            className={`text-left px-4 py-2 hover:bg-gray-900 ${
-              tab === "categories" ? "bg-gray-500 font-medium" : ""
+            className={`text-left px-4 py-2 hover:bg-muted ${
+              tab === "categories" ? "bg-accent/20 font-medium" : ""
             }`}
             onClick={() => setTab("categories")}
           >
             Categories management
           </button>
           <button
-            className={`text-left px-4 py-2 hover:bg-gray-900 ${
-              tab === "users" ? "bg-gray-500 font-medium" : ""
+            className={`text-left px-4 py-2 hover:bg-muted ${
+              tab === "users" ? "bg-accent/20 font-medium" : ""
             }`}
             onClick={() => setTab("users")}
           >
@@ -58,7 +58,7 @@ const SectionHeader: React.FC<{ title: string; description?: string }> = ({
   <header className="mb-4">
     <h1 className="text-2xl font-semibold">{title}</h1>
     {description ? (
-      <p className="text-sm text-gray-500 mt-1">{description}</p>
+      <p className="text-sm text-muted-foreground mt-1">{description}</p>
     ) : null}
   </header>
 );

@@ -2,7 +2,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Truck, Shield, HeadphonesIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import heroBanner from "@/assets/hero-banner.jpg";
+import heroBanner from "/cover.jpg";
 import { useEffect, useState } from "react";
 import { api, toApiURL } from "@/lib/api";
 
@@ -20,6 +20,7 @@ const Index = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [coverSrc, setCoverSrc] = useState<string>("/cover.jpg"); // use public image if present
 
   useEffect(() => {
     let mounted = true;
@@ -47,26 +48,30 @@ const Index = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative h-[600px] flex items-center">
+      <section className="relative mt-16 md:mt-10 min-h-[60vh] md:min-h-[70vh] flex items-center">
         <div className="absolute inset-0">
           <img
-            src={heroBanner}
-            alt="Hero banner"
-            className="h-full w-full object-cover"
+            src={coverSrc}
+            onError={() => setCoverSrc(heroBanner)}
+            alt="Summer travel pineapple cover"
+            className="h-full w-full object-cover object-center"
+            loading="eager"
+            fetchPriority="high"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary/70" />
+          {/* Subtle brand tint for text contrast */}
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/70 to-primary/40" />
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-2xl text-primary-foreground">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 md:mb-6 leading-tight">
               Discover Premium Quality Products
             </h1>
-            <p className="text-xl mb-8 opacity-90">
+            <p className="text-base md:text-xl mb-6 md:mb-8 opacity-90">
               Shop the latest trends with unbeatable prices and exceptional
               quality. Your satisfaction is our priority.
             </p>
-            <div className="flex gap-4">
+            <div className="flex gap-3 md:gap-4 flex-wrap">
               <Link to="/products">
                 <Button variant="accent" size="lg" className="gap-2">
                   Shop Now

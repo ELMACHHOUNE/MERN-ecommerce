@@ -45,13 +45,13 @@ export function PriceSortMenu({
         {label}
       </Button>
       {open && (
-        <div className="absolute right-0 mt-2 w-56 bg-white border rounded-md shadow-md z-10">
-          <div className="px-3 py-2 text-sm text-gray-600 border-b">
+        <div className="absolute right-0 mt-2 w-56 bg-card border rounded-md shadow-md z-10">
+          <div className="px-3 py-2 text-sm text-muted-foreground border-b">
             Sort by price
           </div>
           <button
-            className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 ${
-              sort === "price-asc" ? "bg-gray-100" : ""
+            className={`w-full text-left px-3 py-2 text-sm hover:bg-muted/20 ${
+              sort === "price-asc" ? "bg-muted/30" : ""
             }`}
             onClick={() => {
               onChange("price-asc");
@@ -61,8 +61,8 @@ export function PriceSortMenu({
             Low to High
           </button>
           <button
-            className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 ${
-              sort === "price-desc" ? "bg-gray-100" : ""
+            className={`w-full text-left px-3 py-2 text-sm hover:bg-muted/20 ${
+              sort === "price-desc" ? "bg-muted/30" : ""
             }`}
             onClick={() => {
               onChange("price-desc");

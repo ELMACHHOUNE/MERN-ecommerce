@@ -112,16 +112,18 @@ const Products = () => {
         {(categoryFilter || categoryNameFilter || searchTerm || sort) && (
           <div className="mb-4 text-sm flex items-center gap-3 flex-wrap">
             {(categoryFilter || categoryNameFilter) && (
-              <span className="text-gray-600">
+              <span className="text-muted-foreground">
                 Filtered by{" "}
                 {categoryNameFilter ? `"${categoryNameFilter}"` : "category"}
               </span>
             )}
             {searchTerm && (
-              <span className="text-gray-600">Search for "{searchTerm}"</span>
+              <span className="text-muted-foreground">
+                Search for "{searchTerm}"
+              </span>
             )}
             {sort && (
-              <span className="text-gray-600">
+              <span className="text-muted-foreground">
                 Sorted by{" "}
                 {sort === "price-asc"
                   ? "price (Low to High)"
@@ -129,7 +131,7 @@ const Products = () => {
               </span>
             )}
             <button
-              className="px-2 py-1 rounded border text-gray-700 "
+              className="px-2 py-1 rounded border text-foreground hover:bg-muted/20"
               onClick={() =>
                 setSearchParams((prev) => {
                   const next = new URLSearchParams(prev);
@@ -148,13 +150,13 @@ const Products = () => {
           </div>
         )}
 
-        {loading && <div className="text-gray-500">Loading...</div>}
+        {loading && <div className="text-muted-foreground">Loading...</div>}
         {error && <div className="text-red-600">{error}</div>}
 
         {!loading &&
           !error &&
           (sortedProducts.length === 0 ? (
-            <div className="text-gray-500">No products found.</div>
+            <div className="text-muted-foreground">No products found.</div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {sortedProducts.map((product) => (
