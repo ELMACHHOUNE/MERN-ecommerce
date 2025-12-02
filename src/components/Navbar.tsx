@@ -34,6 +34,21 @@ export const Navbar = () => {
       <div className="hidden md:block fixed top-2 inset-x-0 max-w-5xl mx-auto z-50">
         <Menu setActive={setActive}>
           <div className="flex items-center gap-4">
+            {/* Brand logo */}
+            <Link
+              to="/"
+              onClick={() => setActive(null)}
+              className="flex items-center gap-2"
+            >
+              <img
+                src="/flour.webp"
+                alt="logo"
+                className="h-8 w-8 rounded-full object-contain"
+                loading="lazy"
+                decoding="async"
+                fetchPriority="low"
+              />
+            </Link>
             <Link
               to="/"
               onClick={() => setActive(null)}
@@ -134,11 +149,14 @@ export const Navbar = () => {
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur border-b">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            <Link
-              to="/"
-              className="text-2xl font-bold text-primary font-display tracking-wide"
-            >
-              ShopHub
+            <Link to="/" className="flex items-center">
+              <img
+                src="/flour.webp"
+                alt="logo"
+                className="h-8 w-8 rounded-full object-contain"
+                loading="lazy"
+                decoding="async"
+              />
             </Link>
 
             <div className="flex items-center gap-2">

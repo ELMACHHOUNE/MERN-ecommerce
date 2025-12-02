@@ -2,7 +2,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Truck, Shield, HeadphonesIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import heroBanner from "/cover.jpg";
+import heroBanner from "/cover.webp";
 import { useEffect, useState } from "react";
 import { api, toApiURL } from "@/lib/api";
 
@@ -20,7 +20,7 @@ const Index = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [coverSrc, setCoverSrc] = useState<string>("/cover.jpg"); // use public image if present
+  const [coverSrc, setCoverSrc] = useState<string>("/cover.webp");
 
   useEffect(() => {
     let mounted = true;
@@ -44,12 +44,12 @@ const Index = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative mt-16 md:mt-10 min-h-[60vh] md:min-h-[70vh] flex items-center">
+      <section className="relative  min-h-[60vh] md:min-h-[70vh] flex items-center">
         <div className="absolute inset-0">
           <img
             src={coverSrc}
             onError={() => setCoverSrc(heroBanner)}
-            alt="Summer travel pineapple cover"
+            alt="flour cover"
             className="h-full w-full object-cover object-center"
             loading="lazy"
             decoding="async"

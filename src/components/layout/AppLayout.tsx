@@ -8,11 +8,9 @@ interface AppLayoutProps {
 
 export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   return (
-    <div className="min-h-screen py-20 flex flex-col  text-foreground">
+    <div className="min-h-screen py-20 flex flex-col bg-background text-foreground">
       <Navbar />
-      <main className="flex-1 w-full bg-muted-foreground/40 max-w-full m-4 mx-auto  py-4">
-        {children}
-      </main>
+      <main className="flex-1 w-full max-w-full mx-auto">{children}</main>
       <Footer />
     </div>
   );
