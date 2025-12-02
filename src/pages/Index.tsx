@@ -62,25 +62,26 @@ const Index = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-2xl text-primary drop-shadow-md">
             <h1 className="text-4xl md:text-6xl font-bold mb-4 md:mb-6 leading-tight font-display">
-              Discover Premium Quality Products
+              Keni Sweet Flowers
             </h1>
             <p className="text-base md:text-xl mb-6 md:mb-8 opacity-90">
-              Shop the latest trends with unbeatable prices and exceptional
-              quality. Your satisfaction is our priority.
+              Cupcakes Floraux à Kénitra — commande 72h à l'avance. DM pour
+              commander, ou appelez le{" "}
+              <span className="font-semibold">0659444784</span>.
             </p>
             <div className="flex gap-3 md:gap-4 flex-wrap">
               <Link to="/products">
                 <Button variant="accent" size="lg" className="gap-2">
-                  Shop Now
+                  Voir les Cupcakes
                   <ArrowRight className="h-5 w-5" />
                 </Button>
               </Link>
               <Button
                 variant="outline"
                 size="lg"
-                className="bg-primary-foreground/10 border-primary-foreground text-muted-foreground hover:bg-primary-foreground/50"
+                className="bg-primary-foreground/10 border-primary-foreground text-primary hover:bg-primary-foreground/30"
               >
-                Learn More
+                Informations & Commandes
               </Button>
             </div>
           </div>
@@ -135,11 +136,11 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Featured Products
+              Nos Créations Florales
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Discover our handpicked selection of premium products, carefully
-              curated for quality and style
+              Découvrez nos compositions gourmandes et florales, réalisées sur
+              commande pour vos moments spéciaux.
             </p>
           </div>
 
@@ -177,7 +178,7 @@ const Index = () => {
               <div className="text-center">
                 <Link to="/products">
                   <Button variant="outline" size="lg" className="gap-2">
-                    View All Products
+                    Voir toutes les créations
                     <ArrowRight className="h-5 w-5" />
                   </Button>
                 </Link>
@@ -191,15 +192,15 @@ const Index = () => {
       <section className="py-20 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 font-display">
-            Ready to Start Shopping?
+            Prêt(e) à commander ?
           </h2>
           <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-            Join thousands of satisfied customers and experience the best online
-            shopping
+            Commande 72h à l'avance. Contactez-nous en DM ou au
+            <span className="font-semibold"> 0659444784</span>.
           </p>
           <Link to="/auth">
             <Button variant="accent" size="lg" className="gap-2">
-              Create Account
+              Créer un compte
               <ArrowRight className="h-5 w-5" />
             </Button>
           </Link>
