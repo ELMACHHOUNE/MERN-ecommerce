@@ -15,6 +15,8 @@ import {
 import { ProductSearchBox } from "@/components/ProductSearchBox";
 import { Menu, MenuItem } from "@/components/ui/navbar-menu";
 // Theme toggler removed for fixed color scheme
+import i18n from "i18next";
+import { Globe } from "lucide-react";
 
 export const Navbar = () => {
   const { user, logout } = useAuth();
@@ -90,6 +92,31 @@ export const Navbar = () => {
 
             {/* Theme toggler removed */}
 
+            {/* Language Toggle */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" title="Language">
+                  <Globe className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="bg-card/95 backdrop-blur border shadow-md"
+              >
+                <DropdownMenuLabel>Language</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => i18n.changeLanguage("fr")}>
+                  Français
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => i18n.changeLanguage("en")}>
+                  English
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => i18n.changeLanguage("ar")}>
+                  العربية
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -160,7 +187,30 @@ export const Navbar = () => {
             </Link>
 
             <div className="flex items-center gap-2">
-              {/* Theme toggler removed */}
+              {/* Language Toggle (mobile) */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" title="Language">
+                    <Globe className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="bg-card/95 backdrop-blur border shadow-md"
+                >
+                  <DropdownMenuLabel>Language</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => i18n.changeLanguage("fr")}>
+                    Français
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => i18n.changeLanguage("en")}>
+                    English
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => i18n.changeLanguage("ar")}>
+                    العربية
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
 
               {user ? (
                 <DropdownMenu>

@@ -2,6 +2,7 @@ import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
+import { setupI18n } from "./i18n";
 import "@mantine/core/styles.css";
 import "mantine-react-table/styles.css";
 import { BackgroundBoxes } from "./components/BackgroundBoxes";
@@ -21,10 +22,15 @@ const initTheme = () => {
 // Initialize theme before render
 initTheme();
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <BackgroundBoxes>
-      <App />
-    </BackgroundBoxes>
-  </StrictMode>
-);
+async function bootstrap() {
+  await setupI18n("fr");
+  createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+      <BackgroundBoxes>
+        <App />
+      </BackgroundBoxes>
+    </StrictMode>
+  );
+}
+
+bootstrap();
