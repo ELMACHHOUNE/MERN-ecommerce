@@ -59,7 +59,7 @@ const Index = () => {
             fetchPriority="high"
           />
           {/* Subtle brand tint for text contrast */}
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/70 to-primary/40" />
+          <div className="absolute inset-0 " />
         </div>
 
         <div className="container mx-auto px-4 relative z-10">

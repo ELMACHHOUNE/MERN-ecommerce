@@ -9,17 +9,18 @@ export const mantineTheme = createTheme({
     fontWeight: "700",
   },
   colors: {
+    // Use Blush Pop as brand scale
     brand: [
-      "#eaf9fb", // 0
-      "#d4f3f7", // 1
-      "#aae7ee", // 2
-      "#7fdce6", // 3
-      "#55d0dd", // 4
-      "#2ac4d5", // 5 (base mid)
-      "#229daa", // 6
-      "#197680", // 7
-      "#114e55", // 8
-      "#08272b", // 9 (deep)
+      "#fee6f3", // 0
+      "#fdcee7", // 1
+      "#fc9ccf", // 2
+      "#fa6bb7", // 3
+      "#f9399f", // 4
+      "#f70887", // 5
+      "#c6066c", // 6
+      "#940551", // 7
+      "#630336", // 8
+      "#31021b", // 9
     ],
   },
   defaultRadius: "md",
