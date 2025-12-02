@@ -17,6 +17,7 @@ import { Menu, MenuItem } from "@/components/ui/navbar-menu";
 // Theme toggler removed for fixed color scheme
 import i18n from "i18next";
 import { Globe } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export const Navbar = () => {
   const { user, logout } = useAuth();
@@ -24,6 +25,7 @@ export const Navbar = () => {
   const navigate = useNavigate();
   const [active, setActive] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { t } = useTranslation();
 
   const handleLogout = () => {
     logout();
@@ -56,14 +58,22 @@ export const Navbar = () => {
               onClick={() => setActive(null)}
               className="text-foreground"
             >
-              <MenuItem setActive={setActive} active={active} item="Home" />
+              <MenuItem
+                setActive={setActive}
+                active={active}
+                item={t("navbar.home")}
+              />
             </Link>
             <Link
               to="/products"
               onClick={() => setActive(null)}
               className="text-foreground"
             >
-              <MenuItem setActive={setActive} active={active} item="Products" />
+              <MenuItem
+                setActive={setActive}
+                active={active}
+                item={t("navbar.products")}
+              />
             </Link>
             <Link
               to="/categories"
@@ -73,7 +83,7 @@ export const Navbar = () => {
               <MenuItem
                 setActive={setActive}
                 active={active}
-                item="Categories"
+                item={t("navbar.categories")}
               />
             </Link>
             <Link
@@ -81,7 +91,11 @@ export const Navbar = () => {
               onClick={() => setActive(null)}
               className="text-foreground"
             >
-              <MenuItem setActive={setActive} active={active} item="About" />
+              <MenuItem
+                setActive={setActive}
+                active={active}
+                item={t("navbar.about")}
+              />
             </Link>
           </div>
 
@@ -129,24 +143,34 @@ export const Navbar = () => {
                   className="bg-card/95 backdrop-blur border shadow-md"
                 >
                   <DropdownMenuLabel>
-                    My Account {user?.role === "admin" && "(Admin)"}
+                    {t("navbar.account", { defaultValue: "Mon Compte" })}{" "}
+                    {user?.role === "admin" &&
+                      t("navbar.admin", { defaultValue: "(Admin)" })}
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link to="/profile">Profile</Link>
+                    <Link to="/profile">
+                      {t("navbar.profile", { defaultValue: "Profil" })}
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/orders">Orders</Link>
+                    <Link to="/orders">
+                      {t("navbar.orders", { defaultValue: "Commandes" })}
+                    </Link>
                   </DropdownMenuItem>
                   {user?.role === "admin" && (
                     <DropdownMenuItem asChild>
-                      <Link to="/admin">Admin Dashboard</Link>
+                      <Link to="/admin">
+                        {t("navbar.adminDashboard", {
+                          defaultValue: "Tableau de bord Admin",
+                        })}
+                      </Link>
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    Logout
+                    {t("navbar.logout", { defaultValue: "Se déconnecter" })}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -285,28 +309,28 @@ export const Navbar = () => {
                 className="block px-4 py-2 hover:bg-accent/10 rounded-md transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Home
+                {t("navbar.home")}
               </Link>
               <Link
                 to="/products"
                 className="block px-4 py-2 hover:bg-accent/10 rounded-md transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Products
+                {t("navbar.products")}
               </Link>
               <Link
                 to="/categories"
                 className="block px-4 py-2 hover:bg-accent/10 rounded-md transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Categories
+                {t("navbar.categories")}
               </Link>
               <Link
                 to="/about"
                 className="block px-4 py-2 hover:bg-accent/10 rounded-md transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                About
+                {t("navbar.about")}
               </Link>
             </div>
           )}
