@@ -123,33 +123,14 @@ h1, h2, h3, .heading-display { font-family: var(--font-display); }
   --color-input: var(--color-almond-silk-200);
   --color-ring: var(--color-blush-pop-500);
 
-  --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-}
+    /* Secondary & Destructive */
+    --color-secondary: var(--color-almond-silk-100);
+    --color-secondary-foreground: var(--color-ink-900);
+    --color-destructive: var(--color-blush-pop-700);
+    --color-destructive-foreground: var(--color-vanilla-custard-50);
 
-@theme .dark {
-  /* Dark theme semantic tokens */
-  --font-display: 'BucklaneScript', cursive;
-  --font-body: 'BucklaneScript', cursive;
-  --color-background: var(--color-ink-900);
-  --color-foreground: var(--color-vanilla-custard-100);
-
-  --color-card: var(--color-ink-800);
-  --color-card-foreground: var(--color-vanilla-custard-100);
-
-  --color-primary: var(--color-blush-pop-400);
-  --color-primary-foreground: var(--color-ink-950);
-
-  --color-accent: var(--color-plum-400);
-  --color-accent-foreground: var(--color-ink-950);
-
-  --color-muted: var(--color-vintage-berry-700);
-  --color-muted-foreground: var(--color-vanilla-custard-200);
-
-  --color-border: var(--color-ink-700);
-  --color-input: var(--color-ink-700);
-  --color-ring: var(--color-blush-pop-500);
+    /* Background image opacity token (fixed scheme) */
+    --bg-image-opacity: 0.15;
 
   --radius-sm: 0.25rem;
   --radius-md: 0.375rem;

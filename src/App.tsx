@@ -20,34 +20,14 @@ import RequireAdmin from "@/routes/RequireAdmin";
 import { MantineProvider } from "@mantine/core";
 import { mantineTheme } from "./theme/mantineTheme";
 import Categories from "./pages/Categories";
-import { useEffect, useState } from "react";
+// removed dark/light sync imports
 import { AppLayout } from "@/components/layout/AppLayout";
 
 const queryClient = new QueryClient();
 
 const App = () => {
-  const [colorScheme, setColorScheme] = useState<"light" | "dark">("light");
-
-  useEffect(() => {
-    // Sync Mantine theme with Tailwind dark mode
-    const updateColorScheme = () => {
-      const isDark = document.documentElement.classList.contains("dark");
-      setColorScheme(isDark ? "dark" : "light");
-    };
-
-    updateColorScheme();
-
-    const observer = new MutationObserver(updateColorScheme);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <MantineProvider theme={mantineTheme} forceColorScheme={colorScheme}>
+    <MantineProvider theme={mantineTheme}>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <BrowserRouter>

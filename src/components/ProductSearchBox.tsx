@@ -109,7 +109,7 @@ export function ProductSearchBox() {
         <Input
           type="search"
           placeholder="Search products..."
-          className="pl-9 bg-muted/50 dark:bg-muted border-0"
+          className="pl-9 bg-muted/50 border-0"
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onFocus={onFocus}

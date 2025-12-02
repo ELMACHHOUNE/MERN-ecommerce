@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ProductSearchBox } from "@/components/ProductSearchBox";
 import { Menu, MenuItem } from "@/components/ui/navbar-menu";
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+// Theme toggler removed for fixed color scheme
 
 export const Navbar = () => {
   const { user, logout } = useAuth();
@@ -37,21 +37,21 @@ export const Navbar = () => {
             <Link
               to="/"
               onClick={() => setActive(null)}
-              className="text-foreground dark:text-foreground"
+              className="text-foreground"
             >
               <MenuItem setActive={setActive} active={active} item="Home" />
             </Link>
             <Link
               to="/products"
               onClick={() => setActive(null)}
-              className="text-foreground dark:text-foreground"
+              className="text-foreground"
             >
               <MenuItem setActive={setActive} active={active} item="Products" />
             </Link>
             <Link
               to="/categories"
               onClick={() => setActive(null)}
-              className="text-foreground dark:text-foreground"
+              className="text-foreground"
             >
               <MenuItem
                 setActive={setActive}
@@ -62,7 +62,7 @@ export const Navbar = () => {
             <Link
               to="/about"
               onClick={() => setActive(null)}
-              className="text-foreground dark:text-foreground"
+              className="text-foreground"
             >
               <MenuItem setActive={setActive} active={active} item="About" />
             </Link>
@@ -73,7 +73,7 @@ export const Navbar = () => {
               <ProductSearchBox />
             </div>
 
-            <AnimatedThemeToggler />
+            {/* Theme toggler removed */}
 
             {user ? (
               <DropdownMenu>
@@ -82,7 +82,10 @@ export const Navbar = () => {
                     <User className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent
+                  align="end"
+                  className="bg-card/95 backdrop-blur border shadow-md"
+                >
                   <DropdownMenuLabel>
                     My Account {user?.role === "admin" && "(Admin)"}
                   </DropdownMenuLabel>
@@ -139,7 +142,7 @@ export const Navbar = () => {
             </Link>
 
             <div className="flex items-center gap-2">
-              <AnimatedThemeToggler />
+              {/* Theme toggler removed */}
 
               {user ? (
                 <DropdownMenu>
@@ -148,7 +151,10 @@ export const Navbar = () => {
                       <User className="h-5 w-5" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
+                  <DropdownMenuContent
+                    align="end"
+                    className="bg-card/95 backdrop-blur border shadow-md"
+                  >
                     <DropdownMenuLabel>
                       My Account {user?.role === "admin" && "(Admin)"}
                     </DropdownMenuLabel>
