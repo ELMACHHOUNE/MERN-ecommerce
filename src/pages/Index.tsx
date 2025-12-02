@@ -26,11 +26,7 @@ const Index = () => {
     let mounted = true;
     (async () => {
       try {
-        const res = await fetch(
-          `${
-            import.meta.env.VITE_API_URL || "http://localhost:5000"
-          }/api/products`
-        );
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/products`);
         if (!res.ok) throw new Error("Failed to load products");
         const data = await res.json();
         if (mounted) setProducts(Array.isArray(data) ? data : []);
@@ -55,15 +51,16 @@ const Index = () => {
             onError={() => setCoverSrc(heroBanner)}
             alt="Summer travel pineapple cover"
             className="h-full w-full object-cover object-center"
-            loading="eager"
-            fetchPriority="high"
+            loading="lazy"
+            decoding="async"
+            sizes="100vw"
           />
           {/* Subtle brand tint for text contrast */}
-          <div className="absolute inset-0 " />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-background/40 to-transparent" />
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-2xl text-primary-foreground">
+          <div className="max-w-2xl text-primary drop-shadow-md">
             <h1 className="text-4xl md:text-6xl font-bold mb-4 md:mb-6 leading-tight font-display">
               Discover Premium Quality Products
             </h1>
@@ -81,7 +78,7 @@ const Index = () => {
               <Button
                 variant="outline"
                 size="lg"
-                className="bg-primary-foreground/10 border-primary-foreground text-primary-foreground hover:bg-primary-foreground/20"
+                className="bg-primary-foreground/10 border-primary-foreground text-muted-foreground hover:bg-primary-foreground/50"
               >
                 Learn More
               </Button>
