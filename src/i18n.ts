@@ -2,7 +2,8 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
 async function loadLocale(path: string) {
-  const res = await fetch(path);
+  // Add timestamp to prevent caching of translation files
+  const res = await fetch(`${path}?t=${Date.now()}`);
   return res.json();
 }
 

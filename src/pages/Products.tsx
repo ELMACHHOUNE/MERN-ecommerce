@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { api, toApiURL } from "@/lib/api";
 import { useSearchParams } from "react-router-dom";
 import { PriceSortMenu } from "@/components/ui/price-sort";
+import { useTranslation } from "react-i18next";
 
 type Product = {
   _id: string;
@@ -17,6 +18,7 @@ type Product = {
 };
 
 const Products = () => {
+  const { t, ready } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,14 +45,12 @@ const Products = () => {
         if (categoryNameFilter) params.set("categoryName", categoryNameFilter);
         const qs = params.toString();
         const url = qs ? `/api/products?${qs}` : "/api/products";
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL || "http://localhost:5000"}${url}`
-        );
+        const res = await fetch(`${import.meta.env.VITE_API_URL}${url}`);
         if (!res.ok) throw new Error("Failed to load products");
         const data = await res.json();
         if (mounted) setProducts(Array.isArray(data) ? data : []);
-      } catch (e: any) {
-        if (mounted) setError(e.message || "Failed to load products");
+      } catch (e: Error | unknown) {
+        if (mounted) setError(e instanceof Error ? e.message : "Failed to load products");
       } finally {
         if (mounted) setLoading(false);
       }
@@ -77,14 +77,26 @@ const Products = () => {
     return arr;
   }, [filteredProducts, sort]);
 
+  if (!ready)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading translations...
+      </div>
+    );
+
   return (
     <>
-      <div className=" text-primary-foreground py-12">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Our Products</h1>
-          <p className="text-lg opacity-90">
-            Discover our collection of premium quality items
+      {/* Hero Header */}
+      <div className="relative bg-primary/5 py-20 mb-12 overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/cover.webp')] bg-cover bg-center opacity-10" />
+        <div className="container mx-auto px-4 relative z-10 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 font-display text-primary drop-shadow-sm">
+            {t("products.title")}
+          </h1>
+          <p className="text-xl md:text-2xl text-muted-foreground font-light max-w-2xl mx-auto">
+            {t("products.subtitle")}
           </p>
+          <div className="h-1 w-24 bg-primary mx-auto rounded-full mt-8" />
         </div>
       </div>
 
