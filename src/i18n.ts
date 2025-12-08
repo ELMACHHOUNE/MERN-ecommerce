@@ -8,6 +8,9 @@ async function loadLocale(path: string) {
 }
 
 export async function setupI18n(defaultLang: string = "fr") {
+  const savedLang = localStorage.getItem("language");
+  const initialLang = savedLang || defaultLang;
+
   const resources: Record<string, { translation: any }> = {
     fr: { translation: await loadLocale("/locales/frensh.json") },
     en: { translation: await loadLocale("/locales/english.json") },
@@ -18,10 +21,14 @@ export async function setupI18n(defaultLang: string = "fr") {
     .use(initReactI18next)
     .init({
       resources,
-      lng: defaultLang,
+      lng: initialLang,
       fallbackLng: defaultLang,
       interpolation: { escapeValue: false },
     });
+
+  i18n.on("languageChanged", (lng) => {
+    localStorage.setItem("language", lng);
+  });
 
   return i18n;
 }
