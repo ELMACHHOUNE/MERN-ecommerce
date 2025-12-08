@@ -2,122 +2,119 @@ import { Link } from "react-router-dom";
 import { Facebook, Twitter, Instagram, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useTranslation } from "react-i18next";
 
 export const Footer = () => {
+  const { t } = useTranslation();
+
   return (
-    <footer className="border-t bg-card/50 backdrop-blur-sm mt-20">
+    <footer className="border-t border-primary/10 bg-white/50 backdrop-blur-sm mt-auto">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-          <div>
-            <h3 className="text-xl font-bold text-primary mb-4">ShopHub</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Your one-stop destination for quality products at great prices.
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-center md:text-left">
+          <div className="flex flex-col items-center md:items-start">
+            <h3 className="text-2xl font-bold text-primary font-display mb-4">
+              {t("brand")}
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4 max-w-xs mx-auto md:mx-0">
+              {t("hero.subtitle")}
             </p>
-            <div className="flex gap-2">
-              <Button variant="ghost" size="icon" className="h-8 w-8">
+            <div className="flex gap-2 justify-center md:justify-start w-full">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 hover:text-primary hover:bg-primary/10"
+              >
                 <Facebook className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 hover:text-primary hover:bg-primary/10"
+              >
                 <Twitter className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 hover:text-primary hover:bg-primary/10"
+              >
                 <Instagram className="h-4 w-4" />
               </Button>
             </div>
           </div>
 
-          <div>
-            <h4 className="font-semibold mb-4">Shop</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+          <div className="flex flex-col items-center md:items-start">
+            <h4 className="font-semibold mb-4 text-foreground">
+              {t("navbar.products")}
+            </h4>
+            <ul className="space-y-2 text-sm text-muted-foreground w-full">
               <li>
                 <Link
                   to="/products"
-                  className="hover:text-accent transition-colors"
+                  className="hover:text-primary transition-colors block py-1"
                 >
-                  All Products
+                  {t("button.viewAll")}
                 </Link>
               </li>
               <li>
                 <Link
                   to="/categories"
-                  className="hover:text-accent transition-colors"
+                  className="hover:text-primary transition-colors block py-1"
                 >
-                  Categories
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/deals"
-                  className="hover:text-accent transition-colors"
-                >
-                  Deals
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/new-arrivals"
-                  className="hover:text-accent transition-colors"
-                >
-                  New Arrivals
+                  {t("navbar.categories")}
                 </Link>
               </li>
             </ul>
           </div>
 
-          <div>
-            <h4 className="font-semibold mb-4">Support</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+          <div className="flex flex-col items-center md:items-start">
+            <h4 className="font-semibold mb-4 text-foreground">
+              {t("cta.info")}
+            </h4>
+            <ul className="space-y-2 text-sm text-muted-foreground w-full">
               <li>
                 <Link
-                  to="/help"
-                  className="hover:text-accent transition-colors"
+                  to="/about"
+                  className="hover:text-primary transition-colors block py-1"
                 >
-                  Help Center
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/shipping"
-                  className="hover:text-accent transition-colors"
-                >
-                  Shipping Info
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/returns"
-                  className="hover:text-accent transition-colors"
-                >
-                  Returns
+                  {t("navbar.about")}
                 </Link>
               </li>
               <li>
                 <Link
                   to="/contact"
-                  className="hover:text-accent transition-colors"
+                  className="hover:text-primary transition-colors block py-1"
                 >
-                  Contact Us
+                  {t("about.contact.title")}
                 </Link>
               </li>
             </ul>
           </div>
 
-          <div>
-            <h4 className="font-semibold mb-4">Newsletter</h4>
-            <p className="text-sm text-muted-foreground mb-4">
-              Subscribe to get special offers and updates.
+          <div className="flex flex-col items-center md:items-start">
+            <h4 className="font-semibold mb-4 text-foreground">Newsletter</h4>
+            <p className="text-sm text-muted-foreground mb-4 max-w-xs mx-auto md:mx-0">
+              Subscribe to get special offers, free giveaways, and
+              once-in-a-lifetime deals.
             </p>
-            <div className="flex gap-2">
-              <Input type="email" placeholder="Your email" className="" />
-              <Button variant="accent" size="icon">
+            <div className="flex gap-2 justify-center md:justify-start w-full max-w-xs mx-auto md:mx-0">
+              <Input
+                placeholder="Enter your email"
+                className="bg-white/50 border-primary/20 focus-visible:ring-primary"
+              />
+              <Button
+                size="icon"
+                className="bg-primary hover:bg-primary/90 shrink-0"
+              >
                 <Mail className="h-4 w-4" />
               </Button>
             </div>
           </div>
         </div>
-
-        <div className="pt-8 border-t text-center text-sm text-muted-foreground">
-          <p>&copy; 2025 ShopHub. All rights reserved.</p>
+        <div className="border-t border-primary/10 pt-8 text-center text-sm text-muted-foreground">
+          <p>
+            &copy; {new Date().getFullYear()} {t("brand")}. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

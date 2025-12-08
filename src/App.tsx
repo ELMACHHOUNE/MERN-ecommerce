@@ -12,8 +12,6 @@ import NotFound from "./pages/NotFound";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 import Profile from "./pages/Profile";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
 import RequireAuth from "@/routes/RequireAuth";
 import Admin from "./pages/Admin";
 import RequireAdmin from "@/routes/RequireAdmin";
@@ -22,6 +20,7 @@ import { mantineTheme } from "./theme/mantineTheme";
 import Categories from "./pages/Categories";
 // removed dark/light sync imports
 import { AppLayout } from "@/components/layout/AppLayout";
+import About from "./pages/About";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +40,7 @@ const App = () => {
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/categories" element={<Categories />} />
+                    <Route path="/about" element={<About />} />
                     <Route
                       path="/profile"
                       element={

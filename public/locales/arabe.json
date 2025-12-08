@@ -19,5 +19,18 @@
   "features.securePayment": "دفع آمن",
   "features.securePayment.desc": "معاملات آمنة بنسبة 100%",
   "features.support": "دعم على مدار الساعة",
-  "features.support.desc": "دائمًا هنا للمساعدة"
+  "features.support.desc": "دائمًا هنا للمساعدة",
+  "about.title": "قصتنا",
+  "about.subtitle": "فن الكب كيك الزهري",
+  "about.story.title": "شغف مزهر",
+  "about.story.desc": "ولدت Keni Sweet Flowers من شغف بالخبز وفن الزهور. نصنع كب كيك فريد يشبه باقات الزهور الحقيقية، يجمع بين المذاق الرائع والجمالية الراقية. كل إبداع مصنوع يدوياً بحب في القنيطرة.",
+  "about.values.title": "قيمنا",
+  "about.values.quality": "جودة ممتازة",
+  "about.values.quality.desc": "مكونات طازجة وعالية الجودة",
+  "about.values.art": "فن الطهي",
+  "about.values.art.desc": "كل كب كيك هو عمل فني",
+  "about.values.passion": "صنع بشغف",
+  "about.values.passion.desc": "حب التفاصيل في كل بتلة",
+  "about.contact.title": "اتصل بنا",
+  "about.contact.desc": "لمناسباتكم الخاصة أو لمتعة الإهداء، اطلبوا قبل 72 ساعة."
 }

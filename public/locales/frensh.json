@@ -19,5 +19,18 @@
   "features.securePayment": "Paiement sécurisé",
   "features.securePayment.desc": "Transactions 100% sécurisées",
   "features.support": "Support 24/7",
-  "features.support.desc": "Toujours là pour vous"
+  "features.support.desc": "Toujours là pour vous",
+  "about.title": "Notre Histoire",
+  "about.subtitle": "L'art des cupcakes floraux",
+  "about.story.title": "Une Passion Fleurissante",
+  "about.story.desc": "Keni Sweet Flowers est né d'une passion pour la pâtisserie et l'art floral. Nous créons des cupcakes uniques qui ressemblent à de véritables bouquets de fleurs, alliant le goût exquis à une esthétique raffinée. Chaque création est faite main avec amour à Kénitra.",
+  "about.values.title": "Nos Valeurs",
+  "about.values.quality": "Qualité Premium",
+  "about.values.quality.desc": "Ingrédients frais et de qualité supérieure",
+  "about.values.art": "Art Culinaire",
+  "about.values.art.desc": "Chaque cupcake est une œuvre d'art",
+  "about.values.passion": "Fait avec Passion",
+  "about.values.passion.desc": "L'amour du détail dans chaque pétale",
+  "about.contact.title": "Contactez-nous",
+  "about.contact.desc": "Pour vos événements spéciaux ou pour le plaisir d'offrir, commandez 72h à l'avance."
 }
