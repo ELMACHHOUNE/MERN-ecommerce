@@ -143,34 +143,25 @@ export const Navbar = () => {
                   className="bg-card/95 backdrop-blur border shadow-md"
                 >
                   <DropdownMenuLabel>
-                    {t("navbar.account", { defaultValue: "Mon Compte" })}{" "}
-                    {user?.role === "admin" &&
-                      t("navbar.admin", { defaultValue: "(Admin)" })}
+                    {t("navbar.account")}{" "}
+                    {user?.role === "admin" && t("navbar.admin")}
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link to="/profile">
-                      {t("navbar.profile", { defaultValue: "Profil" })}
-                    </Link>
+                    <Link to="/profile">{t("navbar.profile")}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/orders">
-                      {t("navbar.orders", { defaultValue: "Commandes" })}
-                    </Link>
+                    <Link to="/orders">{t("navbar.orders")}</Link>
                   </DropdownMenuItem>
                   {user?.role === "admin" && (
                     <DropdownMenuItem asChild>
-                      <Link to="/admin">
-                        {t("navbar.adminDashboard", {
-                          defaultValue: "Tableau de bord Admin",
-                        })}
-                      </Link>
+                      <Link to="/admin">{t("navbar.adminDashboard")}</Link>
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    {t("navbar.logout", { defaultValue: "Se déconnecter" })}
+                    {t("navbar.logout")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -248,24 +239,25 @@ export const Navbar = () => {
                     className="bg-card/95 backdrop-blur border shadow-md"
                   >
                     <DropdownMenuLabel>
-                      My Account {user?.role === "admin" && "(Admin)"}
+                      {t("navbar.account")}{" "}
+                      {user?.role === "admin" && t("navbar.admin")}
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link to="/profile">Profile</Link>
+                      <Link to="/profile">{t("navbar.profile")}</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/orders">Orders</Link>
+                      <Link to="/orders">{t("navbar.orders")}</Link>
                     </DropdownMenuItem>
                     {user?.role === "admin" && (
                       <DropdownMenuItem asChild>
-                        <Link to="/admin">Admin Dashboard</Link>
+                        <Link to="/admin">{t("navbar.adminDashboard")}</Link>
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout}>
                       <LogOut className="mr-2 h-4 w-4" />
-                      Logout
+                      {t("navbar.logout")}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
