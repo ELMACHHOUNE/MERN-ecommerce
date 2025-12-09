@@ -10,7 +10,9 @@ const router = express.Router();
 
 // Ensure upload dir exists
 const uploadDir = path.join(__dirname, "..", "uploads", "categories");
-fs.mkdirSync(uploadDir, { recursive: true });
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 // Multer storage
 const storage = multer.diskStorage({
@@ -74,6 +76,17 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+function slugify(str) {
+  return str
+    .toString()
+    .trim()
+    .toLowerCase()
+    .replace(/['"]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .substring(0, 60);
+}
+
 // Admin create
 router.post(
   "/",
@@ -85,10 +98,16 @@ router.post(
       const { name, description } = req.body || {};
       if (!name) return res.status(400).json({ error: "Name is required" });
 
+      const slug = slugify(name) || `cat-${Date.now()}`;
       const imageUrl = req.file
         ? `/uploads/categories/${req.file.filename}`
         : "";
-      const created = await Category.create({ name, description, imageUrl });
+      const created = await Category.create({
+        name,
+        slug,
+        description,
+        imageUrl,
+      });
       return res.status(201).json(created);
     } catch (e) {
       if (e.code === 11000)
@@ -96,7 +115,9 @@ router.post(
           .status(409)
           .json({ error: "Category name or slug already exists" });
       console.error("Create category error:", e);
-      return res.status(500).json({ error: "Failed to create category" });
+      return res
+        .status(500)
+        .json({ error: e.message || "Failed to create category" });
     }
   }
 );
@@ -118,12 +139,17 @@ router.put(
       const cat = await Category.findById(id);
       if (!cat) return res.status(404).json({ error: "Category not found" });
 
-      if (name != null) cat.name = name;
+      if (name != null) {
+        cat.name = name;
+        cat.slug = slugify(name) || `cat-${Date.now()}`;
+      }
       if (description != null) cat.description = description;
 
       if (req.file) {
         // Replace image
-        deleteFileIfExists(cat.imageUrl);
+        if (cat.imageUrl) {
+          deleteFileIfExists(cat.imageUrl);
+        }
         cat.imageUrl = `/uploads/categories/${req.file.filename}`;
       }
 
@@ -135,7 +161,9 @@ router.put(
           .status(409)
           .json({ error: "Category name or slug already exists" });
       console.error("Update category error:", e);
-      return res.status(500).json({ error: "Failed to update category" });
+      return res
+        .status(500)
+        .json({ error: e.message || "Failed to update category" });
     }
   }
 );

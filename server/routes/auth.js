@@ -8,7 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
 
 function sign(user) {
-  return jwt.sign({ role: user.role }, JWT_SECRET, {
+  return jwt.sign({ role: user.role, id: user.id }, JWT_SECRET, {
     subject: user.id,
     expiresIn: JWT_EXPIRES_IN,
   });
@@ -33,17 +33,15 @@ router.post("/register", async (req, res) => {
     });
 
     const token = sign(user);
-    return res
-      .status(201)
-      .json({
-        token,
-        user: {
-          id: user.id,
-          email: user.email,
-          role: user.role,
-          fullName: user.fullName,
-        },
-      });
+    return res.status(201).json({
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        fullName: user.fullName,
+      },
+    });
   } catch (e) {
     console.error("Register error:", e);
     return res.status(500).json({ error: "Registration failed" });

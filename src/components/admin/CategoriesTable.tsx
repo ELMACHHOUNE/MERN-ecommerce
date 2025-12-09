@@ -19,7 +19,7 @@ export interface Category extends CategoryDTO {}
 
 const CategoriesTable: React.FC = () => {
   const qc = useQueryClient();
-  const { token } = (useAuth && useAuth()) || { token: undefined }; // adjust if token path different
+  const { token } = useAuth();
   const [newName, setNewName] = useState("");
   const [newDesc, setNewDesc] = useState("");
   const [newImage, setNewImage] = useState<File | null>(null);
