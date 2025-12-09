@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import heroBanner from "/cover.webp";
 import { useEffect, useState } from "react";
 import { api, toApiURL } from "@/lib/api";
+import { useTranslation } from "react-i18next";
 
 type Product = {
   _id: string;
@@ -17,6 +18,7 @@ type Product = {
 };
 
 const Index = () => {
+  const { t } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,8 +32,9 @@ const Index = () => {
         if (!res.ok) throw new Error("Failed to load products");
         const data = await res.json();
         if (mounted) setProducts(Array.isArray(data) ? data : []);
-      } catch (e: any) {
-        if (mounted) setError(e.message || "Failed to load");
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : String(e);
+        if (mounted) setError(msg || "Failed to load");
       } finally {
         if (mounted) setLoading(false);
       }
@@ -56,23 +59,21 @@ const Index = () => {
             sizes="100vw"
           />
           {/* Subtle brand tint for text contrast */}
-          <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-background/40 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-background/60 via-background/40 to-transparent" />
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-2xl text-primary drop-shadow-md animate-in fade-in slide-in-from-bottom-2 duration-500">
             <h1 className="text-4xl md:text-6xl font-bold mb-4 md:mb-6 leading-tight font-display">
-              Keni Sweet Flowers
+              {t("hero.title")}
             </h1>
             <p className="text-base md:text-xl mb-6 md:mb-8 opacity-90">
-              Cupcakes Floraux à Kénitra — commande 72h à l'avance. DM pour
-              commander, ou appelez le{" "}
-              <span className="font-semibold">0659444784</span>.
+              {t("hero.subtitle")}
             </p>
             <div className="flex gap-3 md:gap-4 flex-wrap">
               <Link to="/products">
                 <Button variant="accent" size="lg" className="gap-2">
-                  Voir les Cupcakes
+                  {t("cta.shop")}
                   <ArrowRight className="h-5 w-5" />
                 </Button>
               </Link>
@@ -81,7 +82,7 @@ const Index = () => {
                 size="lg"
                 className="bg-primary-foreground/10 border-primary-foreground text-primary hover:bg-primary-foreground/30"
               >
-                Informations & Commandes
+                {t("cta.info")}
               </Button>
             </div>
           </div>
@@ -99,7 +100,7 @@ const Index = () => {
               <div>
                 <h3 className="font-semibold mb-2">Free Shipping</h3>
                 <p className="text-sm text-muted-foreground">
-                  On orders over $50
+                  {t("features.freeShipping.desc")}
                 </p>
               </div>
             </div>
@@ -109,9 +110,11 @@ const Index = () => {
                 <Shield className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="font-semibold mb-2">Secure Payment</h3>
+                <h3 className="font-semibold mb-2">
+                  {t("features.securePayment")}
+                </h3>
                 <p className="text-sm text-muted-foreground">
-                  100% secure transactions
+                  {t("features.securePayment.desc")}
                 </p>
               </div>
             </div>
@@ -121,9 +124,9 @@ const Index = () => {
                 <HeadphonesIcon className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="font-semibold mb-2">24/7 Support</h3>
+                <h3 className="font-semibold mb-2">{t("features.support")}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Always here to help
+                  {t("features.support.desc")}
                 </p>
               </div>
             </div>
@@ -136,11 +139,10 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 animate-in fade-in slide-in-from-bottom-2 duration-500">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Nos Créations Florales
+              {t("section.featured")}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Découvrez nos compositions gourmandes et florales, réalisées sur
-              commande pour vos moments spéciaux.
+              {t("section.featured.desc")}
             </p>
           </div>
 
@@ -162,28 +164,31 @@ const Index = () => {
 
           {!loading && !error && products.length > 0 && (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                {products.slice(0, 8).map((product) => (
-                  <div
-                    key={product._id}
-                    className="animate-in fade-in slide-in-from-bottom-1 duration-300"
-                  >
-                    <ProductCard
+              {/* Floral panel wrapper for featured grid */}
+              <div className="rounded-2xl bg-card/95 border border-border ring-1 ring-border/60 shadow-lg shadow-primary/10 p-4 sm:p-6 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {products.slice(0, 4).map((product) => (
+                    <div
                       key={product._id}
-                      id={product._id}
-                      name={product.title}
-                      price={product.price}
-                      image={toApiURL(product.images?.[0])}
-                      category={product.category || ""}
-                    />
-                  </div>
-                ))}
+                      className="animate-in fade-in slide-in-from-bottom-1 duration-300"
+                    >
+                      <ProductCard
+                        key={product._id}
+                        id={product._id}
+                        name={product.title}
+                        price={product.price}
+                        image={toApiURL(product.images?.[0])}
+                        category={product.category || ""}
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="text-center animate-in fade-in slide-in-from-bottom-1 duration-300">
                 <Link to="/products">
-                  <Button variant="outline" size="lg" className="gap-2">
-                    Voir toutes les créations
+                  <Button variant="accent" size="lg" className="gap-2">
+                    {t("button.viewAll")}
                     <ArrowRight className="h-5 w-5" />
                   </Button>
                 </Link>
@@ -194,14 +199,13 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
+      <section className="py-20 bg-linear-to-r from-primary to-primary/80 text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 font-display animate-in fade-in slide-in-from-bottom-2 duration-500">
-            Prêt(e) à commander ?
+            {t("ctaSection.title")}
           </h2>
           <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-500 delay-100">
-            Commande 72h à l'avance. Contactez-nous en DM ou au
-            <span className="font-semibold"> 0659444784</span>.
+            {t("ctaSection.desc")}
           </p>
           <Link to="/auth">
             <Button
@@ -209,7 +213,7 @@ const Index = () => {
               size="lg"
               className="gap-2 animate-in fade-in slide-in-from-bottom-1 duration-300"
             >
-              Créer un compte
+              {t("ctaSection.createAccount")}
               <ArrowRight className="h-5 w-5" />
             </Button>
           </Link>
