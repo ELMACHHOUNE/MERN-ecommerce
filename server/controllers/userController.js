@@ -4,7 +4,7 @@ const User = require("../models/User");
 const sanitize = (u) => {
   if (!u) return null;
   const { _id, email, fullName, role, createdAt, updatedAt } = u.toObject();
-  return { _id, email, fullName, role, createdAt, updatedAt };
+  return { id: _id, email, fullName, role, createdAt, updatedAt };
 };
 
 exports.getMe = async (req, res) => {

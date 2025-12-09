@@ -7,13 +7,13 @@
 /* @plugin "@tailwindcss/typography"; */
 
 /* Custom Font: BucklaneScript */
-@font-face {
+/* @font-face {
   font-family: 'BucklaneScript';
   src: url('/fonts/BucklaneScript.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
-}
+} */
 
 /* Utility class and heading helper */
 .font-display { font-family: var(--font-display); }

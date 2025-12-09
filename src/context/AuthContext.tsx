@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setToken(storedToken);
 
         // Optional: Try to verify with backend if endpoint exists
-        fetch(`${API_BASE}/api/auth/me`, {
+        fetch(`${API_BASE}/api/me`, {
           headers: { Authorization: `Bearer ${storedToken}` },
         })
           .then((res) => {
@@ -55,9 +55,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             throw new Error("Invalid token");
           })
           .then((data) => {
-            if (data.user) {
-              setUser(data.user);
-              localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data.user));
+            if (data) {
+              setUser(data);
+              localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data));
             }
           })
           .catch(() => {
