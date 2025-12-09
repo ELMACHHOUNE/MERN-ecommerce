@@ -66,5 +66,18 @@
   "footer.newsletter.placeholder": "Entrez votre email",
   "footer.copyright": "© {{year}} {{brand}}. Tous droits réservés.",
   "products.title": "Nos Collections",
-  "products.subtitle": "Découvrez nos cupcakes floraux uniques, faits main avec amour."
+  "products.subtitle": "Découvrez nos cupcakes floraux uniques, faits main avec amour.",
+  "products.label": "produits",
+  "products.filteredBy": "Filtré par",
+  "products.category": "catégorie",
+  "products.searchFor": "Recherche pour",
+  "products.sortedBy": "Trié par",
+  "products.sort.lowToHigh": "prix (croissant)",
+  "products.sort.highToLow": "prix (décroissant)",
+  "products.clear": "Effacer",
+  "products.loading": "Chargement...",
+  "products.empty": "Aucun produit trouvé.",
+  "products.pagination.prev": "Précédent",
+  "products.pagination.next": "Suivant",
+  "products.pagination.pageOf": "Page {{current}} sur {{total}}"
 }

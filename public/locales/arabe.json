@@ -66,5 +66,18 @@
   "footer.newsletter.placeholder": "أدخل بريدك الإلكتروني",
   "footer.copyright": "© {{year}} {{brand}}. جميع الحقوق محفوظة.",
   "products.title": "مجموعاتنا",
-  "products.subtitle": "اكتشف كب كيك الزهور الفريد لدينا، المصنوع يدوياً بحب."
+  "products.subtitle": "اكتشف كب كيك الزهور الفريد لدينا، المصنوع يدوياً بحب.",
+  "products.label": "المنتجات",
+  "products.filteredBy": "تم التصفية حسب",
+  "products.category": "الفئة",
+  "products.searchFor": "بحث عن",
+  "products.sortedBy": "تم الترتيب حسب",
+  "products.sort.lowToHigh": "السعر (من الأقل إلى الأعلى)",
+  "products.sort.highToLow": "السعر (من الأعلى إلى الأقل)",
+  "products.clear": "مسح",
+  "products.loading": "جارٍ التحميل...",
+  "products.empty": "لا توجد منتجات.",
+  "products.pagination.prev": "السابق",
+  "products.pagination.next": "التالي",
+  "products.pagination.pageOf": "الصفحة {{current}} من {{total}}"
 }

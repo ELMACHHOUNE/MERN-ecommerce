@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { SlidersHorizontal } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 type SortValue = "price-asc" | "price-desc" | null;
 
@@ -10,13 +11,11 @@ type PriceSortMenuProps = {
   label?: string;
 };
 
-export function PriceSortMenu({
-  sort,
-  onChange,
-  label = "Filters",
-}: PriceSortMenuProps) {
+export function PriceSortMenu({ sort, onChange, label }: PriceSortMenuProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
+  const computedLabel = label ?? t("products.sortedBy");
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
@@ -42,12 +41,12 @@ export function PriceSortMenu({
         onClick={() => setOpen((v) => !v)}
       >
         <SlidersHorizontal className="h-4 w-4" />
-        {label}
+        {computedLabel}
       </Button>
       {open && (
         <div className="absolute right-0 mt-2 w-56 bg-card border rounded-md shadow-md z-10">
           <div className="px-3 py-2 text-sm text-muted-foreground border-b">
-            Sort by price
+            {t("products.sortedBy")}
           </div>
           <button
             className={`w-full text-left px-3 py-2 text-sm hover:bg-muted/20 ${
@@ -58,7 +57,7 @@ export function PriceSortMenu({
               setOpen(false);
             }}
           >
-            Low to High
+            {t("products.sort.lowToHigh")}
           </button>
           <button
             className={`w-full text-left px-3 py-2 text-sm hover:bg-muted/20 ${
@@ -69,7 +68,7 @@ export function PriceSortMenu({
               setOpen(false);
             }}
           >
-            High to Low
+            {t("products.sort.highToLow")}
           </button>
         </div>
       )}

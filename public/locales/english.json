@@ -66,5 +66,18 @@
   "footer.newsletter.placeholder": "Enter your email",
   "footer.copyright": "© {{year}} {{brand}}. All rights reserved.",
   "products.title": "Our Collections",
-  "products.subtitle": "Discover our unique floral cupcakes, handmade with love."
+  "products.subtitle": "Discover our unique floral cupcakes, handmade with love.",
+  "products.label": "products",
+  "products.filteredBy": "Filtered by",
+  "products.category": "category",
+  "products.searchFor": "Search for",
+  "products.sortedBy": "Sorted by",
+  "products.sort.lowToHigh": "price (Low to High)",
+  "products.sort.highToLow": "price (High to Low)",
+  "products.clear": "Clear",
+  "products.loading": "Loading...",
+  "products.empty": "No products found.",
+  "products.pagination.prev": "Previous",
+  "products.pagination.next": "Next",
+  "products.pagination.pageOf": "Page {{current}} of {{total}}"
 }

@@ -4,6 +4,13 @@ import { useEffect, useState, useMemo } from "react";
 import { api, toApiURL } from "@/lib/api";
 import { useSearchParams } from "react-router-dom";
 import { PriceSortMenu } from "@/components/ui/price-sort";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+} from "@/components/ui/pagination";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 type Product = {
@@ -33,6 +40,9 @@ const Products = () => {
   ).trim();
   const sort =
     (searchParams.get("sort") as "price-asc" | "price-desc" | null) || null;
+  const perPage = 16;
+  const pageParam = parseInt(searchParams.get("page") || "1", 10);
+  const page = isNaN(pageParam) || pageParam < 1 ? 1 : pageParam;
 
   useEffect(() => {
     let mounted = true;
@@ -50,7 +60,8 @@ const Products = () => {
         const data = await res.json();
         if (mounted) setProducts(Array.isArray(data) ? data : []);
       } catch (e: Error | unknown) {
-        if (mounted) setError(e instanceof Error ? e.message : "Failed to load products");
+        if (mounted)
+          setError(e instanceof Error ? e.message : "Failed to load products");
       } finally {
         if (mounted) setLoading(false);
       }
@@ -77,6 +88,18 @@ const Products = () => {
     return arr;
   }, [filteredProducts, sort]);
 
+  const totalPages = Math.max(1, Math.ceil(sortedProducts.length / perPage));
+  const currentPage = Math.min(page, totalPages);
+  const start = (currentPage - 1) * perPage;
+  const pageProducts = sortedProducts.slice(start, start + perPage);
+
+  const goToPage = (p: number) =>
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.set("page", String(Math.min(Math.max(1, p), totalPages)));
+      return next;
+    });
+
   if (!ready)
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -102,13 +125,14 @@ const Products = () => {
 
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
-          <p className="text-muted-foreground">
-            Showing{" "}
-            <span className="font-semibold text-foreground">
+          <div className="flex items-center gap-3">
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
               {sortedProducts.length}
-            </span>{" "}
-            products
-          </p>
+            </span>
+            <span className="text-sm md:text-base text-muted-foreground">
+              {t("products.label")}
+            </span>
+          </div>
           <PriceSortMenu
             sort={sort}
             onChange={(value) =>
@@ -125,25 +149,28 @@ const Products = () => {
           <div className="mb-4 text-sm flex items-center gap-3 flex-wrap">
             {(categoryFilter || categoryNameFilter) && (
               <span className="text-muted-foreground">
-                Filtered by{" "}
-                {categoryNameFilter ? `"${categoryNameFilter}"` : "category"}
+                {t("products.filteredBy")}{" "}
+                {categoryNameFilter
+                  ? `"${categoryNameFilter}"`
+                  : t("products.category")}
               </span>
             )}
             {searchTerm && (
               <span className="text-muted-foreground">
-                Search for "{searchTerm}"
+                {t("products.searchFor")} "{searchTerm}"
               </span>
             )}
             {sort && (
               <span className="text-muted-foreground">
-                Sorted by{" "}
+                {t("products.sortedBy")}{" "}
                 {sort === "price-asc"
-                  ? "price (Low to High)"
-                  : "price (High to Low)"}
+                  ? t("products.sort.lowToHigh")
+                  : t("products.sort.highToLow")}
               </span>
             )}
-            <button
-              className="px-2 py-1 rounded border text-foreground hover:bg-muted/20"
+            <Button
+              variant="outline"
+              className="px-3 py-1 h-8 rounded-md border-border text-foreground hover:bg-muted/20"
               onClick={() =>
                 setSearchParams((prev) => {
                   const next = new URLSearchParams(prev);
@@ -153,25 +180,28 @@ const Products = () => {
                   next.delete("search");
                   next.delete("name"); // clear `name` too
                   next.delete("sort"); // clear sort as well
+                  next.delete("page");
                   return next;
                 })
               }
             >
-              Clear
-            </button>
+              {t("products.clear")}
+            </Button>
           </div>
         )}
 
-        {loading && <div className="text-muted-foreground">Loading...</div>}
+        {loading && (
+          <div className="text-muted-foreground">{t("products.loading")}</div>
+        )}
         {error && <div className="text-red-600">{error}</div>}
 
         {!loading &&
           !error &&
           (sortedProducts.length === 0 ? (
-            <div className="text-muted-foreground">No products found.</div>
+            <div className="text-muted-foreground">{t("products.empty")}</div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {sortedProducts.map((product) => (
+              {pageProducts.map((product) => (
                 <ProductCard
                   key={product._id}
                   id={product._id}
@@ -183,6 +213,56 @@ const Products = () => {
               ))}
             </div>
           ))}
+
+        {/* Pagination */}
+        {!loading && !error && totalPages > 1 && (
+          <Pagination className="mt-8">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationLink
+                  href="#"
+                  className={`gap-1 pl-2.5 ${
+                    currentPage <= 1 ? "pointer-events-none opacity-50" : ""
+                  }`}
+                  aria-label={t("products.pagination.prev")}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (currentPage > 1) goToPage(currentPage - 1);
+                  }}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  <span>{t("products.pagination.prev")}</span>
+                </PaginationLink>
+              </PaginationItem>
+              <PaginationItem>
+                <span className="px-3 py-1 text-sm text-muted-foreground">
+                  {t("products.pagination.pageOf", {
+                    current: currentPage,
+                    total: totalPages,
+                  })}
+                </span>
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLink
+                  href="#"
+                  className={`gap-1 pr-2.5 ${
+                    currentPage >= totalPages
+                      ? "pointer-events-none opacity-50"
+                      : ""
+                  }`}
+                  aria-label={t("products.pagination.next")}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (currentPage < totalPages) goToPage(currentPage + 1);
+                  }}
+                >
+                  <span>{t("products.pagination.next")}</span>
+                  <ChevronRight className="h-4 w-4" />
+                </PaginationLink>
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
       </div>
     </>
   );
