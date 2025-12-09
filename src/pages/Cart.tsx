@@ -1,5 +1,3 @@
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 
