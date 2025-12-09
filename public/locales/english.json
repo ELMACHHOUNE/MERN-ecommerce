@@ -87,6 +87,15 @@
   "cart.addedTitle": "Added to cart",
   "cart.addedDesc": "{{name}} has been added to your cart.",
   "cart.addFailed": "Failed to add item to cart.",
+  "cart.title": "Your Cart",
+  "cart.empty": "Your cart is empty.",
+  "cart.remove": "Remove",
+  "cart.clear": "Clear cart",
+  "cart.subtotal": "Subtotal",
+  "cart.payWhatsapp": "Pay via WhatsApp",
+  "cart.redirectNote": "You will be redirected to WhatsApp to complete the order and payment.",
+  "cart.decreaseQty": "Decrease quantity",
+  "cart.increaseQty": "Increase quantity",
 
   "auth.loginRequired": "Please login to add items to cart.",
 

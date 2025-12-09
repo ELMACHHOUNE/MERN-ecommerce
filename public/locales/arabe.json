@@ -86,6 +86,15 @@
   "cart.addedTitle": "تمت الإضافة إلى السلة",
   "cart.addedDesc": "{{name}} تمت إضافته إلى سلة التسوق.",
   "cart.addFailed": "فشل في إضافة المنتج إلى السلة.",
+  "cart.title": "سلتك",
+  "cart.empty": "سلتك فارغة.",
+  "cart.remove": "إزالة",
+  "cart.clear": "مسح السلة",
+  "cart.subtotal": "المجموع الفرعي",
+  "cart.payWhatsapp": "الدفع عبر واتساب",
+  "cart.redirectNote": "سيتم تحويلك إلى واتساب لإتمام الطلب والدفع.",
+  "cart.decreaseQty": "تقليل الكمية",
+  "cart.increaseQty": "زيادة الكمية",
 
   "auth.loginRequired": "يرجى تسجيل الدخول لإضافة العناصر إلى السلة.",
 
