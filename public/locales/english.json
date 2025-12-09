@@ -79,5 +79,23 @@
   "products.empty": "No products found.",
   "products.pagination.prev": "Previous",
   "products.pagination.next": "Next",
-  "products.pagination.pageOf": "Page {{current}} of {{total}}"
+  "products.pagination.pageOf": "Page {{current}} of {{total}}",
+
+  "common.loading": "Loading...",
+  "common.error": "Error",
+
+  "cart.addedTitle": "Added to cart",
+  "cart.addedDesc": "{{name}} has been added to your cart.",
+  "cart.addFailed": "Failed to add item to cart.",
+
+  "auth.loginRequired": "Please login to add items to cart.",
+
+  "product.notFound": "Product not found",
+  "product.loadingError": "Failed to load product",
+  "product.noImage": "No image available",
+  "product.reviews": "reviews",
+  "product.description": "Description",
+  "product.features": "Features",
+  "product.quantity": "Quantity",
+  "product.addToCart": "Add to Cart"
 }

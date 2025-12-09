@@ -5,6 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { api, toApiURL } from "@/lib/api";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 type Product = {
   _id: string;
@@ -23,6 +24,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t, ready } = useTranslation();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -44,8 +46,9 @@ const ProductDetail = () => {
         if (!res.ok) throw new Error("Failed to load product");
         const data = await res.json();
         if (mounted) setProduct(data);
-      } catch (e: any) {
-        if (mounted) setError(e.message || "Failed to load product");
+      } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e);
+        if (mounted) setError(message || t("product.loadingError"));
       } finally {
         if (mounted) setLoading(false);
       }
@@ -53,15 +56,16 @@ const ProductDetail = () => {
     return () => {
       mounted = false;
     };
-  }, [id]);
+  }, [id, t]);
 
   useEffect(() => {
     setSelectedImage(0);
   }, [id]);
 
-  if (loading) return <div>Loading...</div>;
+  if (!ready) return <div>{t("common.loading")}</div>;
+  if (loading) return <div>{t("common.loading")}</div>;
   if (error) return <div>{error}</div>;
-  if (!product) return <div>Product not found</div>;
+  if (!product) return <div>{t("product.notFound")}</div>;
 
   const imageUrls = (product.images || []).map((u) => toApiURL(u));
 
@@ -77,21 +81,22 @@ const ProductDetail = () => {
         quantity
       );
       toast({
-        title: "Added to cart",
-        description: `${product.title} has been added to your cart.`,
+        title: t("cart.addedTitle"),
+        description: t("cart.addedDesc", { name: product.title }),
       });
-    } catch (error: any) {
-      if (error.message === "REQUIRE_AUTH") {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (message === "REQUIRE_AUTH") {
         toast({
-          title: "Login required",
-          description: "Please login to add items to cart.",
+          title: t("auth.errorTitle"),
+          description: t("auth.loginRequired"),
           variant: "destructive",
         });
         navigate("/auth", { state: { from: `/product/${id}` } });
       } else {
         toast({
-          title: "Error",
-          description: "Failed to add item to cart.",
+          title: t("common.error"),
+          description: t("cart.addFailed"),
           variant: "destructive",
         });
       }
@@ -112,7 +117,7 @@ const ProductDetail = () => {
                 />
               ) : (
                 <div className="h-full w-full flex items-center justify-center text-muted-foreground">
-                  No image available
+                  {t("product.noImage")}
                 </div>
               )}
             </div>
@@ -123,7 +128,7 @@ const ProductDetail = () => {
                     key={i}
                     type="button"
                     onClick={() => setSelectedImage(i)}
-                    className={`h-20 w-20 rounded-md overflow-hidden border flex-shrink-0 ${
+                    className={`h-20 w-20 rounded-md overflow-hidden border shrink-0 ${
                       i === selectedImage
                         ? "border-accent ring-2 ring-accent"
                         : "border-transparent"
@@ -164,7 +169,7 @@ const ProductDetail = () => {
                   ))}
                 </div>
                 <span className="text-sm text-muted-foreground">
-                  ({product.reviews || 0} reviews)
+                  ({product.reviews || 0} {t("product.reviews")})
                 </span>
               </div>
 
@@ -174,12 +179,12 @@ const ProductDetail = () => {
             </div>
 
             <div className="mb-6">
-              <h2 className="font-semibold mb-2">Description</h2>
+              <h2 className="font-semibold mb-2">{t("product.description")}</h2>
               <p className="text-muted-foreground">{product.description}</p>
             </div>
 
             <div className="mb-6">
-              <h2 className="font-semibold mb-2">Features</h2>
+              <h2 className="font-semibold mb-2">{t("product.features")}</h2>
               <ul className="space-y-2">
                 {product.features?.map((feature, index) => (
                   <li
@@ -194,7 +199,7 @@ const ProductDetail = () => {
             </div>
 
             <div className="mb-6">
-              <h2 className="font-semibold mb-3">Quantity</h2>
+              <h2 className="font-semibold mb-3">{t("product.quantity")}</h2>
               <div className="flex items-center gap-3">
                 <Button
                   variant="outline"
@@ -222,7 +227,7 @@ const ProductDetail = () => {
                 onClick={handleAddToCart}
               >
                 <ShoppingCart className="h-5 w-5" />
-                Add to Cart
+                {t("product.addToCart")}
               </Button>
               <Button
                 variant="outline"

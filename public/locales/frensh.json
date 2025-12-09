@@ -79,5 +79,19 @@
   "products.empty": "Aucun produit trouvé.",
   "products.pagination.prev": "Précédent",
   "products.pagination.next": "Suivant",
-  "products.pagination.pageOf": "Page {{current}} sur {{total}}"
+  "products.pagination.pageOf": "Page {{current}} sur {{total}}",
+  "common.loading": "Chargement...",
+  "common.error": "Erreur",
+  "cart.addedTitle": "Ajouté au panier",
+  "cart.addedDesc": "{{name}} a été ajouté à votre panier.",
+  "cart.addFailed": "Échec de l'ajout au panier.",
+  "auth.loginRequired": "Veuillez vous connecter pour ajouter des articles au panier.",
+  "product.notFound": "Produit introuvable",
+  "product.loadingError": "Échec du chargement du produit",
+  "product.noImage": "Aucune image disponible",
+  "product.reviews": "avis",
+  "product.description": "Description",
+  "product.features": "Caractéristiques",
+  "product.quantity": "Quantité",
+  "product.addToCart": "Ajouter au panier"
 }

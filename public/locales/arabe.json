@@ -29,11 +29,11 @@
   "auth.passwordLabel": "كلمة المرور",
   "auth.nameLabel": "الاسم الكامل",
   "auth.loginButton": "تسجيل الدخول",
-  "auth.loginLoading": "جاري تسجيل الدخول...",
+  "auth.loginLoading": "...جاري تسجيل الدخول",
   "auth.signupTitle": "إنشاء حساب",
   "auth.signupDesc": "سجل لتبدأ التسوق معنا",
   "auth.signupButton": "إنشاء حساب",
-  "auth.signupLoading": "جاري الإنشاء...",
+  "auth.signupLoading": "...جاري الإنشاء",
   "auth.backHome": "العودة إلى الصفحة الرئيسية",
   "auth.successLogin": "تم تسجيل الدخول بنجاح.",
   "auth.successSignup": "تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.",
@@ -75,9 +75,26 @@
   "products.sort.lowToHigh": "السعر (من الأقل إلى الأعلى)",
   "products.sort.highToLow": "السعر (من الأعلى إلى الأقل)",
   "products.clear": "مسح",
-  "products.loading": "جارٍ التحميل...",
+  "products.loading": "...جارٍ التحميل",
   "products.empty": "لا توجد منتجات.",
   "products.pagination.prev": "السابق",
   "products.pagination.next": "التالي",
-  "products.pagination.pageOf": "الصفحة {{current}} من {{total}}"
+  "products.pagination.pageOf": "{{current}} من  {{current}} الصفحة",
+  "common.loading": "...جارٍ التحميل",
+  "common.error": "خطأ",
+
+  "cart.addedTitle": "تمت الإضافة إلى السلة",
+  "cart.addedDesc": "{{name}} تمت إضافته إلى سلة التسوق.",
+  "cart.addFailed": "فشل في إضافة المنتج إلى السلة.",
+
+  "auth.loginRequired": "يرجى تسجيل الدخول لإضافة العناصر إلى السلة.",
+
+  "product.notFound": "المنتج غير موجود",
+  "product.loadingError": "فشل تحميل المنتج",
+  "product.noImage": "لا توجد صورة متاحة",
+  "product.reviews": "تقييمات",
+  "product.description": "الوصف",
+  "product.features": "المميزات",
+  "product.quantity": "الكمية",
+  "product.addToCart": "أضف إلى السلة"
 }
