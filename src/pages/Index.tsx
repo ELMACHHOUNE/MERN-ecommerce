@@ -60,7 +60,7 @@ const Index = () => {
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-2xl text-primary drop-shadow-md">
+          <div className="max-w-2xl text-primary drop-shadow-md animate-in fade-in slide-in-from-bottom-2 duration-500">
             <h1 className="text-4xl md:text-6xl font-bold mb-4 md:mb-6 leading-tight font-display">
               Keni Sweet Flowers
             </h1>
@@ -92,7 +92,7 @@ const Index = () => {
       <section className="py-16 bg-secondary/50">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="flex items-start gap-4">
+            <div className="flex items-start gap-4 animate-in fade-in slide-in-from-bottom-1 duration-300">
               <div className="p-3 rounded-lg bg-accent/10 text-accent">
                 <Truck className="h-6 w-6" />
               </div>
@@ -104,7 +104,7 @@ const Index = () => {
               </div>
             </div>
 
-            <div className="flex items-start gap-4">
+            <div className="flex items-start gap-4 animate-in fade-in slide-in-from-bottom-1 duration-300 delay-100">
               <div className="p-3 rounded-lg bg-accent/10 text-accent">
                 <Shield className="h-6 w-6" />
               </div>
@@ -116,7 +116,7 @@ const Index = () => {
               </div>
             </div>
 
-            <div className="flex items-start gap-4">
+            <div className="flex items-start gap-4 animate-in fade-in slide-in-from-bottom-1 duration-300 delay-200">
               <div className="p-3 rounded-lg bg-accent/10 text-accent">
                 <HeadphonesIcon className="h-6 w-6" />
               </div>
@@ -134,7 +134,7 @@ const Index = () => {
       {/* Featured Products Section */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 animate-in fade-in slide-in-from-bottom-2 duration-500">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Nos Créations Florales
             </h2>
@@ -164,18 +164,23 @@ const Index = () => {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 {products.slice(0, 8).map((product) => (
-                  <ProductCard
+                  <div
                     key={product._id}
-                    id={product._id}
-                    name={product.title}
-                    price={product.price}
-                    image={toApiURL(product.images?.[0])}
-                    category={product.category || ""}
-                  />
+                    className="animate-in fade-in slide-in-from-bottom-1 duration-300"
+                  >
+                    <ProductCard
+                      key={product._id}
+                      id={product._id}
+                      name={product.title}
+                      price={product.price}
+                      image={toApiURL(product.images?.[0])}
+                      category={product.category || ""}
+                    />
+                  </div>
                 ))}
               </div>
 
-              <div className="text-center">
+              <div className="text-center animate-in fade-in slide-in-from-bottom-1 duration-300">
                 <Link to="/products">
                   <Button variant="outline" size="lg" className="gap-2">
                     Voir toutes les créations
@@ -191,15 +196,19 @@ const Index = () => {
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 font-display">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 font-display animate-in fade-in slide-in-from-bottom-2 duration-500">
             Prêt(e) à commander ?
           </h2>
-          <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+          <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-500 delay-100">
             Commande 72h à l'avance. Contactez-nous en DM ou au
             <span className="font-semibold"> 0659444784</span>.
           </p>
           <Link to="/auth">
-            <Button variant="accent" size="lg" className="gap-2">
+            <Button
+              variant="accent"
+              size="lg"
+              className="gap-2 animate-in fade-in slide-in-from-bottom-1 duration-300"
+            >
               Créer un compte
               <ArrowRight className="h-5 w-5" />
             </Button>

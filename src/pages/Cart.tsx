@@ -1,12 +1,110 @@
+import { memo, useCallback } from "react";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+// Using tailwindcss-animate for lightweight motion
+
+type CartItem = {
+  id: string;
+  name: string;
+  price: number;
+  qty: number;
+  image?: string;
+};
+
+const CartItemRow = memo(function CartItemRow({
+  it,
+  decrease,
+  increase,
+  remove,
+  t,
+}: {
+  it: CartItem;
+  decrease: (id: string) => void;
+  increase: (id: string) => void;
+  remove: (id: string) => void;
+  t: (k: string) => string;
+}) {
+  return (
+    <div className="cart-item animate-in fade-in slide-in-from-bottom-1 duration-300 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 rounded-2xl bg-card/95 border border-border ring-1 ring-border/60 p-3 sm:p-4 shadow-sm">
+      {it.image && (
+        <img
+          src={it.image}
+          alt={it.name}
+          className="h-20 w-20 sm:h-16 sm:w-16 object-cover rounded-xl"
+        />
+      )}
+      <div className="flex-1">
+        <div className="font-medium text-foreground line-clamp-2">
+          {it.name}
+        </div>
+        <div className="text-sm text-muted-foreground">
+          ${it.price.toFixed(2)}
+        </div>
+      </div>
+      <div className="flex items-center gap-2 mt-2 sm:mt-0">
+        <Button
+          aria-label={t("cart.decreaseQty")}
+          variant="outline"
+          size="icon"
+          onClick={() => decrease(it.id)}
+        >
+          <Minus className="h-4 w-4" />
+        </Button>
+        <span className="w-8 text-center font-medium">{it.qty}</span>
+        <Button
+          aria-label={t("cart.increaseQty")}
+          variant="outline"
+          size="icon"
+          onClick={() => increase(it.id)}
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
+      </div>
+      <Button
+        aria-label={t("cart.remove")}
+        variant="ghost"
+        onClick={() => remove(it.id)}
+        className="text-destructive hover:text-destructive sm:ml-auto"
+      >
+        <Trash2 className="h-4 w-4 mr-2" /> {t("cart.remove")}
+      </Button>
+    </div>
+  );
+});
 
 const Cart = () => {
   const { items, subtotal, updateQty, removeItem, clear, checkoutViaWhatsApp } =
     useCart();
   const { t, ready } = useTranslation();
+
+  const decrease = useCallback(
+    (id: string) => {
+      const item = items.find((x) => x.id === id);
+      if (!item) return;
+      updateQty(id, Math.max(1, item.qty - 1));
+    },
+    [items, updateQty]
+  );
+
+  const increase = useCallback(
+    (id: string) => {
+      const item = items.find((x) => x.id === id);
+      if (!item) return;
+      updateQty(id, item.qty + 1);
+    },
+    [items, updateQty]
+  );
+
+  const remove = useCallback(
+    (id: string) => {
+      removeItem(id);
+    },
+    [removeItem]
+  );
+
+  // Motion handled via CSS utility classes for performance and simplicity
 
   if (!ready) {
     return (
@@ -36,53 +134,14 @@ const Cart = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         <div className="lg:col-span-2 space-y-3 sm:space-y-4">
           {items.map((it) => (
-            <div
+            <CartItemRow
               key={it.id}
-              className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 rounded-2xl bg-card/95 border border-border ring-1 ring-border/60 p-3 sm:p-4 shadow-sm"
-            >
-              {it.image && (
-                <img
-                  src={it.image}
-                  alt={it.name}
-                  className="h-20 w-20 sm:h-16 sm:w-16 object-cover rounded-xl"
-                />
-              )}
-              <div className="flex-1">
-                <div className="font-medium text-foreground line-clamp-2">
-                  {it.name}
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  ${it.price.toFixed(2)}
-                </div>
-              </div>
-              <div className="flex items-center gap-2 mt-2 sm:mt-0">
-                <Button
-                  aria-label={t("cart.decreaseQty")}
-                  variant="outline"
-                  size="icon"
-                  onClick={() => updateQty(it.id, Math.max(1, it.qty - 1))}
-                >
-                  <Minus className="h-4 w-4" />
-                </Button>
-                <span className="w-8 text-center font-medium">{it.qty}</span>
-                <Button
-                  aria-label={t("cart.increaseQty")}
-                  variant="outline"
-                  size="icon"
-                  onClick={() => updateQty(it.id, it.qty + 1)}
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-              <Button
-                aria-label={t("cart.remove")}
-                variant="ghost"
-                onClick={() => removeItem(it.id)}
-                className="text-destructive hover:text-destructive sm:ml-auto"
-              >
-                <Trash2 className="h-4 w-4 mr-2" /> {t("cart.remove")}
-              </Button>
-            </div>
+              it={it as CartItem}
+              decrease={decrease}
+              increase={increase}
+              remove={remove}
+              t={t}
+            />
           ))}
           <div className="flex flex-wrap gap-2">
             <Button

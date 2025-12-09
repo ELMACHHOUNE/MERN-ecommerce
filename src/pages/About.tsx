@@ -22,7 +22,7 @@ export default function About() {
         {/* Content Wrapper */}
         <div className="relative z-10 p-8 md:p-16 text-center space-y-12">
           {/* Header */}
-          <div className="space-y-4">
+          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
             <h1 className="text-4xl md:text-6xl font-bold font-display drop-shadow-sm text-primary">
               {t("about.title")}
             </h1>
@@ -33,7 +33,7 @@ export default function About() {
           </div>
 
           {/* Story */}
-          <div className="space-y-6 max-w-3xl mx-auto">
+          <div className="space-y-6 max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-500 delay-100">
             <h2 className="text-2xl font-bold font-display text-foreground">
               {t("about.story.title")}
             </h2>
@@ -44,7 +44,7 @@ export default function About() {
 
           {/* Values Grid */}
           <div className="grid md:grid-cols-3 gap-6 pt-4">
-            <div className="bg-blush-pop-100/90 backdrop-blur-md p-6 rounded-2xl border border-blush-pop-200 hover:bg-blush-pop-200/90 transition-colors shadow-sm">
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-400 bg-blush-pop-100/90 backdrop-blur-md p-6 rounded-2xl border border-blush-pop-200 hover:bg-blush-pop-200/90 transition-colors shadow-sm">
               <div className="w-12 h-12 mx-auto bg-white/60 rounded-full flex items-center justify-center text-primary mb-4">
                 <Star className="w-6 h-6" />
               </div>
@@ -56,7 +56,7 @@ export default function About() {
               </p>
             </div>
 
-            <div className="bg-blush-pop-100/90 backdrop-blur-md p-6 rounded-2xl border border-blush-pop-200 hover:bg-blush-pop-200/90 transition-colors shadow-sm">
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-400 delay-100 bg-blush-pop-100/90 backdrop-blur-md p-6 rounded-2xl border border-blush-pop-200 hover:bg-blush-pop-200/90 transition-colors shadow-sm">
               <div className="w-12 h-12 mx-auto bg-white/60 rounded-full flex items-center justify-center text-primary mb-4">
                 <Award className="w-6 h-6" />
               </div>
@@ -68,7 +68,7 @@ export default function About() {
               </p>
             </div>
 
-            <div className="bg-blush-pop-100/90 backdrop-blur-md p-6 rounded-2xl border border-blush-pop-200 hover:bg-blush-pop-200/90 transition-colors shadow-sm">
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-400 delay-200 bg-blush-pop-100/90 backdrop-blur-md p-6 rounded-2xl border border-blush-pop-200 hover:bg-blush-pop-200/90 transition-colors shadow-sm">
               <div className="w-12 h-12 mx-auto bg-white/60 rounded-full flex items-center justify-center text-primary mb-4">
                 <Heart className="w-6 h-6" />
               </div>
@@ -82,7 +82,7 @@ export default function About() {
           </div>
 
           {/* Contact */}
-          <div className="pt-8 border-t border-primary/20">
+          <div className="pt-8 border-t border-primary/20 animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200">
             <h2 className="text-2xl font-bold mb-4 font-display text-primary">
               {t("about.contact.title")}
             </h2>

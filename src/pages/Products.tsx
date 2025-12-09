@@ -113,10 +113,10 @@ const Products = () => {
       <div className="relative bg-primary/5 py-20 mb-12 overflow-hidden">
         <div className="absolute inset-0 bg-[url('/cover.webp')] bg-cover bg-center opacity-10" />
         <div className="container mx-auto px-4 relative z-10 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 font-display text-primary drop-shadow-sm">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 font-display text-primary drop-shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-500">
             {t("products.title")}
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground font-light max-w-2xl mx-auto">
+          <p className="text-xl md:text-2xl text-muted-foreground font-light max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-2 duration-500 delay-100">
             {t("products.subtitle")}
           </p>
           <div className="h-1 w-24 bg-primary mx-auto rounded-full mt-8" />
@@ -202,14 +202,19 @@ const Products = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {pageProducts.map((product) => (
-                <ProductCard
+                <div
                   key={product._id}
-                  id={product._id}
-                  name={product.title || product.name || ""} // support both fields
-                  price={product.price}
-                  image={toApiURL(product.images?.[0])}
-                  category={product.category || ""}
-                />
+                  className="animate-in fade-in slide-in-from-bottom-1 duration-300"
+                >
+                  <ProductCard
+                    key={product._id}
+                    id={product._id}
+                    name={product.title || product.name || ""} // support both fields
+                    price={product.price}
+                    image={toApiURL(product.images?.[0])}
+                    category={product.category || ""}
+                  />
+                </div>
               ))}
             </div>
           ))}

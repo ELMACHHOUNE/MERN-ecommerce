@@ -15,14 +15,16 @@ export default function Categories() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-semibold mb-6">Categories</h1>
+      <h1 className="text-2xl font-semibold mb-6 animate-in fade-in slide-in-from-bottom-2 duration-400">
+        Categories
+      </h1>
 
       {isLoading && (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={i}
-              className="border rounded-lg overflow-hidden animate-pulse"
+              className="border rounded-lg overflow-hidden animate-in fade-in slide-in-from-bottom-1 duration-300"
             >
               <div className="h-40 bg-muted/40" />
               <div className="p-3 space-y-2">
@@ -53,7 +55,7 @@ export default function Categories() {
                   to={`/products?category=${encodeURIComponent(
                     String((cat as any).id ?? (cat as any)._id ?? "")
                   )}&categoryName=${encodeURIComponent(cat.name)}`}
-                  className="border rounded-lg overflow-hidden bg-card hover:shadow transition block"
+                  className="border rounded-lg overflow-hidden bg-card hover:shadow transition block animate-in fade-in slide-in-from-bottom-1 duration-300"
                 >
                   {cat.imageUrl ? (
                     <img
