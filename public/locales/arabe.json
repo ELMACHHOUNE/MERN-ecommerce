@@ -61,6 +61,10 @@
   "about.values.passion.desc": "حب التفاصيل في كل بتلة",
   "about.contact.title": "اتصل بنا",
   "about.contact.desc": "لمناسباتكم الخاصة أو لمتعة الإهداء، اطلبوا قبل 72 ساعة.",
+  "footer.newsletter": "النشرة البريدية",
+  "footer.newsletter.desc": "اشترك للحصول على عروض خاصة وهدايا وصفقات لا تتكرر.",
+  "footer.newsletter.placeholder": "أدخل بريدك الإلكتروني",
+  "footer.copyright": "© {{year}} {{brand}}. جميع الحقوق محفوظة.",
   "products.title": "مجموعاتنا",
   "products.subtitle": "اكتشف كب كيك الزهور الفريد لدينا، المصنوع يدوياً بحب."
 }

@@ -61,6 +61,10 @@
   "about.values.passion.desc": "L'amour du détail dans chaque pétale",
   "about.contact.title": "Contactez-nous",
   "about.contact.desc": "Pour vos événements spéciaux ou pour le plaisir d'offrir, commandez 72h à l'avance.",
+  "footer.newsletter": "Newsletter",
+  "footer.newsletter.desc": "Abonnez-vous pour recevoir des offres spéciales, des cadeaux et des offres exceptionnelles.",
+  "footer.newsletter.placeholder": "Entrez votre email",
+  "footer.copyright": "© {{year}} {{brand}}. Tous droits réservés.",
   "products.title": "Nos Collections",
   "products.subtitle": "Découvrez nos cupcakes floraux uniques, faits main avec amour."
 }

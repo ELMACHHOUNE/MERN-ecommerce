@@ -61,6 +61,10 @@
   "about.values.passion.desc": "Love for detail in every petal",
   "about.contact.title": "Contact Us",
   "about.contact.desc": "For your special events or the joy of giving, order 72h in advance.",
+  "footer.newsletter": "Newsletter",
+  "footer.newsletter.desc": "Subscribe to get special offers, free giveaways, and once-in-a-lifetime deals.",
+  "footer.newsletter.placeholder": "Enter your email",
+  "footer.copyright": "© {{year}} {{brand}}. All rights reserved.",
   "products.title": "Our Collections",
   "products.subtitle": "Discover our unique floral cupcakes, handmade with love."
 }

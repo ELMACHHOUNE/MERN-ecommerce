@@ -92,14 +92,15 @@ export const Footer = () => {
           </div>
 
           <div className="flex flex-col items-center md:items-start">
-            <h4 className="font-semibold mb-4 text-foreground">Newsletter</h4>
+            <h4 className="font-semibold mb-4 text-foreground">
+              {t("footer.newsletter")}
+            </h4>
             <p className="text-sm text-muted-foreground mb-4 max-w-xs mx-auto md:mx-0">
-              Subscribe to get special offers, free giveaways, and
-              once-in-a-lifetime deals.
+              {t("footer.newsletter.desc")}
             </p>
             <div className="flex gap-2 justify-center md:justify-start w-full max-w-xs mx-auto md:mx-0">
               <Input
-                placeholder="Enter your email"
+                placeholder={t("footer.newsletter.placeholder")}
                 className="bg-white/50 border-primary/20 focus-visible:ring-primary"
               />
               <Button
@@ -113,7 +114,10 @@ export const Footer = () => {
         </div>
         <div className="border-t border-primary/10 pt-8 text-center text-sm text-muted-foreground">
           <p>
-            &copy; {new Date().getFullYear()} {t("brand")}. All rights reserved.
+            {t("footer.copyright", {
+              year: new Date().getFullYear(),
+              brand: t("brand"),
+            })}
           </p>
         </div>
       </div>
