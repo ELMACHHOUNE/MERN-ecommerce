@@ -17,8 +17,6 @@ function resolveApiBase(): string {
 
   if (!base && typeof window !== "undefined") {
     base = window.location.origin;
-    // eslint-disable-next-line no-console
-    console.warn("[users api] Falling back to window.location.origin:", base);
   }
 
   base = base.toString().trim().replace(/\/+$/, "");
@@ -27,16 +25,6 @@ function resolveApiBase(): string {
 }
 
 export const API_BASE = resolveApiBase();
-
-if (!API_BASE) {
-  // eslint-disable-next-line no-console
-  console.warn(
-    "[users api] API_BASE unresolved. Ensure VITE_API_URL set and dev server restarted."
-  );
-} else {
-  // eslint-disable-next-line no-console
-  console.info("[users api] Using API_BASE =", API_BASE);
-}
 
 function authHeaders(token?: string) {
   return token ? { Authorization: `Bearer ${token}` } : {};
