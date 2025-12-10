@@ -3,6 +3,8 @@ import {
   MantineReactTable,
   useMantineReactTable,
   type MRT_ColumnDef,
+  type MRT_Row,
+  type MRT_TableInstance,
 } from "mantine-react-table";
 import {
   fetchCategories,
@@ -12,14 +14,17 @@ import {
   type CategoryDTO,
 } from "@/api/categories";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAuth } from "@/context/AuthContext"; // assuming this returns { user, token }
-import { toast } from "sonner"; // if you use toast
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
+import { Plus, Edit, Trash2, Image as ImageIcon } from "lucide-react";
 
-export interface Category extends CategoryDTO {}
+export type Category = CategoryDTO;
 
 const CategoriesTable: React.FC = () => {
   const qc = useQueryClient();
   const { token } = useAuth();
+  const { t } = useTranslation();
   const [newName, setNewName] = useState("");
   const [newDesc, setNewDesc] = useState("");
   const [newImage, setNewImage] = useState<File | null>(null);
@@ -36,9 +41,9 @@ const CategoriesTable: React.FC = () => {
       setNewName("");
       setNewDesc("");
       setNewImage(null);
-      toast?.success?.("Category created");
+      toast.success(t("admin.toast.created"));
     },
-    onError: (e: any) => toast?.error?.(e.message || "Create failed"),
+    onError: (e: Error) => toast.error(e.message || t("admin.toast.error")),
   });
 
   const updateMut = useMutation({
@@ -56,45 +61,43 @@ const CategoriesTable: React.FC = () => {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["categories"] });
-      toast?.success?.("Category updated");
+      toast.success(t("admin.toast.updated"));
     },
-    onError: (e: any) => toast?.error?.(e.message || "Update failed"),
+    onError: (e: Error) => toast.error(e.message || t("admin.toast.error")),
   });
 
   const deleteMut = useMutation({
     mutationFn: (id: string) => deleteCategory(id, token),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["categories"] });
-      toast?.success?.("Category deleted");
+      toast.success(t("admin.toast.deleted"));
     },
-    onError: (e: any) => toast?.error?.(e.message || "Delete failed"),
+    onError: (e: Error) => toast.error(e.message || t("admin.toast.error")),
   });
 
   const columns = useMemo<MRT_ColumnDef<Category>[]>(
     () => [
       {
         accessorKey: "imageUrl",
-        header: "Image",
+        header: t("admin.table.image"),
         enableColumnFilter: false,
         enableSorting: false,
         Cell: ({ cell }) => {
           const src = cell.getValue<string>();
           return src ? (
-            <img
-              src={src}
-              alt="Category"
-              style={{
-                width: 48,
-                height: 48,
-                objectFit: "cover",
-                borderRadius: 6,
-              }}
-            />
+            <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-pink-100 shadow-sm group">
+              <img
+                src={src}
+                alt="Category"
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+              />
+            </div>
           ) : (
-            <span>—</span>
+            <div className="w-12 h-12 rounded-lg bg-pink-50 flex items-center justify-center text-pink-300">
+              <ImageIcon size={20} />
+            </div>
           );
         },
-        // Use 'Edit' (v2 API) to customize the edit cell
         Edit: ({ row }) => (
           <div className="flex items-center gap-2">
             <input
@@ -111,7 +114,7 @@ const CategoriesTable: React.FC = () => {
             />
             <button
               type="button"
-              className="px-2 py-1 text-xs border rounded"
+              className="px-3 py-1.5 text-xs font-medium bg-white border border-pink-200 text-pink-700 rounded-lg hover:bg-pink-50 transition-colors"
               onClick={() =>
                 document
                   .getElementById(`edit-cat-img-${row.original.id}`)
@@ -119,31 +122,42 @@ const CategoriesTable: React.FC = () => {
               }
               disabled={updateMut.isPending}
             >
-              Change image
+              {t("admin.table.changeImage")}
             </button>
           </div>
         ),
-        size: 70,
+        size: 100,
       },
       {
         accessorKey: "name",
-        header: "Name",
+        header: t("admin.table.name"),
+        muiTableBodyCellProps: {
+          className: "font-medium text-gray-900",
+        },
       },
       {
         accessorKey: "description",
-        header: "Description",
+        header: t("admin.table.description"),
         enableColumnFilter: false,
-        Cell: ({ cell }) => cell.getValue<string>() || "—",
+        Cell: ({ cell }) => (
+          <span className="text-gray-500 text-sm line-clamp-2">
+            {cell.getValue<string>() || "—"}
+          </span>
+        ),
       },
       {
         accessorKey: "createdAt",
-        header: "Created",
-        Cell: ({ cell }) => new Date(cell.getValue<string>()).toLocaleString(),
+        header: t("admin.table.created"),
+        Cell: ({ cell }) => (
+          <span className="text-gray-500 text-sm">
+            {new Date(cell.getValue<string>()).toLocaleDateString()}
+          </span>
+        ),
         enableEditing: false,
-        size: 180,
+        size: 120,
       },
     ],
-    [updateMut] // include updateMut so the handler isn't stale
+    [updateMut, t]
   );
 
   const handleCreate = (e: React.FormEvent) => {
@@ -162,8 +176,8 @@ const CategoriesTable: React.FC = () => {
     table,
   }: {
     values: Category;
-    row: any;
-    table: any;
+    row: MRT_Row<Category>;
+    table: MRT_TableInstance<Category>;
   }) => {
     updateMut.mutate(
       {
@@ -178,7 +192,7 @@ const CategoriesTable: React.FC = () => {
   };
 
   const handleDelete = (id: string) => {
-    if (!confirm("Delete this category?")) return;
+    if (!confirm(t("admin.confirmDelete"))) return;
     deleteMut.mutate(id);
   };
 
@@ -190,64 +204,94 @@ const CategoriesTable: React.FC = () => {
     editDisplayMode: "row",
     onEditingRowSave: handleSave,
     renderRowActions: ({ row }) => (
-      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+      <div className="flex gap-2">
         <button
-          className="px-2 py-1 text-xs border rounded"
+          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
           onClick={() => table.setEditingRow(row)}
           disabled={updateMut.isPending}
+          title={t("admin.table.edit")}
         >
-          Edit
+          <Edit size={18} />
         </button>
         <button
-          className="px-2 py-1 text-xs border rounded text-red-600"
+          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
           onClick={() => handleDelete(row.original.id)}
           disabled={deleteMut.isPending}
+          title={t("admin.table.delete")}
         >
-          Delete
+          <Trash2 size={18} />
         </button>
       </div>
     ),
     initialState: {
-      density: "sm",
+      density: "comfortable",
       sorting: [{ id: "createdAt", desc: true }],
+    },
+    muiTablePaperProps: {
+      elevation: 0,
+      className: "border border-pink-100 rounded-2xl overflow-hidden shadow-sm",
+    },
+    muiTableHeadCellProps: {
+      className: "bg-pink-50/50 text-pink-900 font-semibold",
     },
     getRowId: (row) => row.id,
   });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <form
         onSubmit={handleCreate}
-        className="flex flex-col gap-2 md:flex-row md:items-center"
+        className="bg-white p-6 rounded-2xl border border-pink-100 shadow-sm space-y-4"
       >
-        <input
-          placeholder="New category name"
-          className="border rounded px-3 py-2 flex-1"
-          value={newName}
-          onChange={(e) => setNewName(e.target.value)}
-          disabled={createMut.isPending}
-        />
-        <input
-          placeholder="Description (optional)"
-          className="border rounded px-3 py-2 flex-1"
-          value={newDesc}
-          onChange={(e) => setNewDesc(e.target.value)}
-          disabled={createMut.isPending}
-        />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setNewImage(e.target.files?.[0] || null)}
-          disabled={createMut.isPending}
-          className="text-sm"
-        />
-        <button
-          type="submit"
-          className="px-4 py-2 bg-black text-white rounded disabled:opacity-40"
-          disabled={!newName.trim() || createMut.isPending}
-        >
-          {createMut.isPending ? "Saving..." : "Add"}
-        </button>
+        <h3 className="font-medium text-pink-900 mb-2 flex items-center gap-2">
+          <Plus size={18} /> {t("admin.table.add")}
+        </h3>
+        <div className="grid gap-4 md:grid-cols-12 items-start">
+          <div className="md:col-span-3">
+            <input
+              placeholder={t("admin.form.name")}
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              disabled={createMut.isPending}
+            />
+          </div>
+          <div className="md:col-span-4">
+            <input
+              placeholder={t("admin.form.description")}
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
+              value={newDesc}
+              onChange={(e) => setNewDesc(e.target.value)}
+              disabled={createMut.isPending}
+            />
+          </div>
+          <div className="md:col-span-3">
+            <label className="flex items-center gap-2 w-full border border-gray-200 border-dashed rounded-xl px-4 py-2.5 cursor-pointer hover:bg-pink-50/50 hover:border-pink-300 transition-all text-gray-500 text-sm">
+              <ImageIcon size={16} />
+              <span className="truncate">
+                {newImage ? newImage.name : t("admin.form.images")}
+              </span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setNewImage(e.target.files?.[0] || null)}
+                disabled={createMut.isPending}
+                className="hidden"
+              />
+            </label>
+          </div>
+          <div className="md:col-span-2">
+            <button
+              type="submit"
+              className="w-full px-4 py-2.5 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md active:scale-95"
+              disabled={!newName.trim() || createMut.isPending}
+            >
+              {createMut.isPending
+                ? t("admin.form.saving")
+                : t("admin.table.add")}
+            </button>
+          </div>
+        </div>
       </form>
       <MantineReactTable table={table} />
     </div>

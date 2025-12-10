@@ -3,26 +3,30 @@ import {
   MantineReactTable,
   useMantineReactTable,
   type MRT_ColumnDef,
+  type MRT_Row,
+  type MRT_TableInstance,
 } from "mantine-react-table";
 import {
   fetchProducts,
   createProduct,
   updateProduct,
   deleteProduct,
-  type ProductDTO,
   fetchProductCategories,
-  type CategoryOption,
+  type ProductDTO,
 } from "@/api/products";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import { toApiURL } from "@/lib/api";
+import { useTranslation } from "react-i18next";
+import { Plus, Edit, Trash2, Image as ImageIcon, Upload } from "lucide-react";
 
-export interface Product extends ProductDTO {}
+export type Product = ProductDTO;
 
 const ProductsTable: React.FC = () => {
   const qc = useQueryClient();
-  const { token } = (useAuth && useAuth()) || { token: undefined };
+  const { token } = useAuth();
+  const { t } = useTranslation();
 
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState<string>("");
@@ -53,9 +57,9 @@ const ProductsTable: React.FC = () => {
       setStock("");
       setCategory("");
       setImageFiles(null);
-      toast?.success?.("Product created");
+      toast.success(t("admin.toast.created"));
     },
-    onError: (e: any) => toast?.error?.(e.message || "Create failed"),
+    onError: (e: Error) => toast.error(e.message || t("admin.toast.error")),
   });
 
   const updateMut = useMutation({
@@ -70,52 +74,56 @@ const ProductsTable: React.FC = () => {
             category: string;
           }>
         | FormData;
-    }) => updateProduct(vars.id, vars.data as any, token),
+    }) => updateProduct(vars.id, vars.data, token),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["products"] });
-      toast?.success?.("Product updated");
+      toast.success(t("admin.toast.updated"));
     },
-    onError: (e: any) => toast?.error?.(e.message || "Update failed"),
+    onError: (e: Error) => toast.error(e.message || t("admin.toast.error")),
   });
 
   const deleteMut = useMutation({
     mutationFn: (id: string) => deleteProduct(id, token),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["products"] });
-      toast?.success?.("Product deleted");
+      toast.success(t("admin.toast.deleted"));
     },
-    onError: (e: any) => toast?.error?.(e.message || "Delete failed"),
+    onError: (e: Error) => toast.error(e.message || t("admin.toast.error")),
   });
 
   const columns = useMemo<MRT_ColumnDef<Product>[]>(
     () => [
-      { accessorKey: "title", header: "Title" },
+      { accessorKey: "title", header: t("admin.form.title") },
       {
         accessorKey: "price",
-        header: "Price",
+        header: t("admin.form.price"),
         Cell: ({ cell }) => {
           const v = cell.getValue<number>();
           return typeof v === "number" ? `$${v.toFixed(2)}` : "—";
         },
       },
-      { accessorKey: "stock", header: "Stock" },
+      { accessorKey: "stock", header: t("admin.form.stock") },
       {
         accessorKey: "category",
-        header: "Category",
+        header: t("admin.form.category"),
         enableColumnFilter: false,
         editVariant: "select",
-        editSelectOptions: categoryOptions, // normalized {label,value}[]
+        editSelectOptions: categoryOptions,
         Cell: ({ cell }) => cell.getValue<string>() || "—",
       },
       {
         accessorKey: "description",
-        header: "Description",
+        header: t("admin.form.description"),
         enableColumnFilter: false,
-        Cell: ({ cell }) => cell.getValue<string>() || "—",
+        Cell: ({ cell }) => (
+          <span className="text-gray-500 text-sm line-clamp-2">
+            {cell.getValue<string>() || "—"}
+          </span>
+        ),
       },
       {
         accessorKey: "images",
-        header: "Images",
+        header: t("admin.form.images"),
         enableColumnFilter: false,
         enableEditing: false,
         Cell: ({ cell }) => {
@@ -123,36 +131,34 @@ const ProductsTable: React.FC = () => {
           const first = imgs[0];
           const src = first ? toApiURL(first) : "";
           return first ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-pink-100 shadow-sm group">
               <img
                 src={src}
-                alt=""
-                style={{
-                  width: 40,
-                  height: 40,
-                  objectFit: "cover",
-                  borderRadius: 4,
-                }}
+                alt="Product"
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
               />
-              <span className="text-xs text-muted-foreground">
-                {imgs.length > 1 ? `+${imgs.length - 1}` : ""}
-              </span>
             </div>
           ) : (
-            "—"
+            <div className="w-12 h-12 rounded-lg bg-pink-50 flex items-center justify-center text-pink-300">
+              <ImageIcon size={20} />
+            </div>
           );
         },
         size: 120,
       },
       {
         accessorKey: "createdAt",
-        header: "Created",
-        Cell: ({ cell }) => new Date(cell.getValue<string>()).toLocaleString(),
+        header: t("admin.table.created"),
+        Cell: ({ cell }) => (
+          <span className="text-gray-500 text-sm">
+            {new Date(cell.getValue<string>()).toLocaleDateString()}
+          </span>
+        ),
         enableEditing: false,
         size: 180,
       },
     ],
-    [categoryOptions]
+    [categoryOptions, t]
   );
 
   const handleCreate = (e: React.FormEvent) => {
@@ -163,11 +169,11 @@ const ProductsTable: React.FC = () => {
 
     const files = imageFiles ? Array.from(imageFiles) : [];
     if (files.length < 1 || files.length > 5) {
-      toast?.error?.("Please select between 1 and 5 images");
+      toast.error("Please select 1-5 images");
       return;
     }
     if (files.some((f) => !f.type.startsWith("image/"))) {
-      toast?.error?.("Only image files are allowed");
+      toast.error("Only image files allowed");
       return;
     }
 
@@ -189,8 +195,8 @@ const ProductsTable: React.FC = () => {
     table,
   }: {
     values: Product;
-    row: any;
-    table: any;
+    row: MRT_Row<Product>;
+    table: MRT_TableInstance<Product>;
   }) => {
     const priceNum = Number(values.price);
     const stockNum = Number(values.stock);
@@ -212,7 +218,7 @@ const ProductsTable: React.FC = () => {
   };
 
   const handleDelete = (id: string) => {
-    if (!confirm("Delete this product?")) return;
+    if (!confirm(t("admin.confirmDelete"))) return;
     deleteMut.mutate(id);
   };
 
@@ -227,13 +233,11 @@ const ProductsTable: React.FC = () => {
     const files = e.target.files ? Array.from(e.target.files) : [];
     if (!replaceId) return;
     if (files.length < 1 || files.length > 5) {
-      toast?.error?.("Please select between 1 and 5 images");
-      e.currentTarget.value = "";
+      toast.error("Please select 1-5 images");
       return;
     }
     if (files.some((f) => !f.type.startsWith("image/"))) {
-      toast?.error?.("Only image files are allowed");
-      e.currentTarget.value = "";
+      toast.error("Only image files allowed");
       return;
     }
     const fd = new FormData();
@@ -246,6 +250,7 @@ const ProductsTable: React.FC = () => {
           if (replaceInputRef.current) replaceInputRef.current.value = "";
         },
         onError: () => {
+          setReplaceId(null);
           if (replaceInputRef.current) replaceInputRef.current.value = "";
         },
       }
@@ -260,127 +265,150 @@ const ProductsTable: React.FC = () => {
     editDisplayMode: "row",
     onEditingRowSave: handleSave,
     renderRowActions: ({ row }) => (
-      <div style={{ display: "flex", gap: 8 }}>
+      <div className="flex gap-2">
         <button
-          className="px-2 py-1 text-xs border rounded"
+          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
           onClick={() => table.setEditingRow(row)}
           disabled={updateMut.isPending}
+          title={t("admin.table.edit")}
         >
-          Edit
+          <Edit size={18} />
         </button>
         <button
-          className="px-2 py-1 text-xs border rounded"
+          className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
           onClick={() => openReplaceImages(row.original.id)}
           disabled={updateMut.isPending}
+          title={t("admin.table.changeImage")}
         >
-          Images
+          <Upload size={18} />
         </button>
         <button
-          className="px-2 py-1 text-xs border rounded text-red-600"
+          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
           onClick={() => handleDelete(row.original.id)}
           disabled={deleteMut.isPending}
+          title={t("admin.table.delete")}
         >
-          Delete
+          <Trash2 size={18} />
         </button>
       </div>
     ),
     initialState: {
-      density: "sm",
+      density: "comfortable",
       sorting: [{ id: "createdAt", desc: true }],
+    },
+    muiTablePaperProps: {
+      elevation: 0,
+      className: "border border-pink-100 rounded-2xl overflow-hidden shadow-sm",
+    },
+    muiTableHeadCellProps: {
+      className: "bg-pink-50/50 text-pink-900 font-semibold",
     },
     getRowId: (row) => row.id,
   });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      {/* Hidden input for replacing images */}
       <input
-        ref={replaceInputRef}
         type="file"
-        accept="image/*"
         multiple
+        accept="image/*"
+        ref={replaceInputRef}
         className="hidden"
         onChange={onReplaceImagesChange}
       />
-      <form onSubmit={handleCreate} className="grid gap-2 md:grid-cols-6">
-        <input
-          placeholder="Title"
-          className="border rounded px-3 py-2 md:col-span-2"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          disabled={createMut.isPending}
-        />
-        <input
-          placeholder="Price"
-          type="number"
-          step="0.01"
-          className="border rounded px-3 py-2"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          disabled={createMut.isPending}
-        />
-        <input
-          placeholder="Stock"
-          type="number"
-          className="border rounded px-3 py-2"
-          value={stock}
-          onChange={(e) => setStock(e.target.value)}
-          disabled={createMut.isPending}
-        />
-        <select
-          className="border rounded px-3 py-2"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          disabled={createMut.isPending || catsLoading}
-        >
-          <option value="">
-            {catsLoading ? "Loading..." : "Select category"}
-          </option>
-          {categoryOptions
-            .filter(
-              (opt): opt is CategoryOption =>
-                !!opt &&
-                typeof opt.value === "string" &&
-                opt.value.trim().length > 0
-            )
-            .map((opt) => {
-              const val = String(opt.value);
-              const lbl = String(opt.label ?? opt.value);
-              return (
-                <option key={val} value={val}>
-                  {lbl}
+
+      <form
+        onSubmit={handleCreate}
+        className="bg-white p-6 rounded-2xl border border-pink-100 shadow-sm space-y-4"
+      >
+        <h3 className="font-medium text-pink-900 mb-2 flex items-center gap-2">
+          <Plus size={18} /> {t("admin.table.add")}
+        </h3>
+        <div className="grid gap-4 md:grid-cols-12 items-start">
+          <div className="md:col-span-3">
+            <input
+              placeholder={t("admin.form.title")}
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              disabled={createMut.isPending}
+            />
+          </div>
+          <div className="md:col-span-2">
+            <input
+              placeholder={t("admin.form.price")}
+              type="number"
+              step="0.01"
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              disabled={createMut.isPending}
+            />
+          </div>
+          <div className="md:col-span-2">
+            <input
+              placeholder={t("admin.form.stock")}
+              type="number"
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all"
+              value={stock}
+              onChange={(e) => setStock(e.target.value)}
+              disabled={createMut.isPending}
+            />
+          </div>
+          <div className="md:col-span-3">
+            <select
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all bg-white"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              disabled={createMut.isPending || catsLoading}
+            >
+              <option value="">{t("admin.form.selectCategory")}</option>
+              {categoryOptions.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
                 </option>
-              );
-            })}
-        </select>
-        <input
-          type="file"
-          accept="image/*"
-          multiple
-          className="border rounded px-3 py-2 md:col-span-3"
-          onChange={(e) => setImageFiles(e.target.files)}
-          disabled={createMut.isPending}
-        />
-        <input
-          placeholder="Description"
-          className="border rounded px-3 py-2 md:col-span-3"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          disabled={createMut.isPending}
-        />
-        <div className="md:col-span-6">
-          <button
-            type="submit"
-            className="px-4 py-2 bg-black text-white rounded disabled:opacity-40"
-            disabled={
-              !title.trim() ||
-              !price.trim() ||
-              !imageFiles ||
-              imageFiles.length < 1 ||
-              createMut.isPending
-            }
-          >
-            {createMut.isPending ? "Saving..." : "Add product"}
-          </button>
+              ))}
+            </select>
+          </div>
+          <div className="md:col-span-2">
+            <label className="flex items-center gap-2 w-full border border-gray-200 border-dashed rounded-xl px-4 py-2.5 cursor-pointer hover:bg-pink-50/50 hover:border-pink-300 transition-all text-gray-500 text-sm justify-center">
+              <ImageIcon size={16} />
+              <span className="truncate">
+                {imageFiles
+                  ? `${imageFiles.length} files`
+                  : t("admin.form.images")}
+              </span>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={(e) => setImageFiles(e.target.files)}
+                disabled={createMut.isPending}
+                className="hidden"
+              />
+            </label>
+          </div>
+          <div className="md:col-span-12">
+            <textarea
+              placeholder={t("admin.form.description")}
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 transition-all min-h-20"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              disabled={createMut.isPending}
+            />
+          </div>
+          <div className="md:col-span-12 flex justify-end">
+            <button
+              type="submit"
+              className="px-6 py-2.5 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md active:scale-95 flex items-center gap-2"
+              disabled={!title.trim() || createMut.isPending}
+            >
+              {createMut.isPending
+                ? t("admin.form.saving")
+                : t("admin.table.add")}
+            </button>
+          </div>
         </div>
       </form>
       <MantineReactTable table={table} />
