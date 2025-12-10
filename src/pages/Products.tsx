@@ -124,25 +124,36 @@ const Products = () => {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3">
-            <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
-              {sortedProducts.length}
-            </span>
-            <span className="text-sm md:text-base text-muted-foreground">
-              {t("products.label")}
-            </span>
+        {/* Filter & Sort Bar */}
+        <div className="flex justify-center mb-10 relative z-40">
+          <div className="inline-flex items-center gap-4 md:gap-8 bg-white/80 backdrop-blur-md border border-blush-pop-100 shadow-sm hover:shadow-md transition-all duration-300 rounded-full px-6 py-3">
+            {/* Product Counter */}
+            <div className="flex items-center gap-2">
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-blush-pop-100 text-blush-pop-700 font-bold text-sm">
+                {sortedProducts.length}
+              </span>
+              <span className="text-sm font-medium text-blush-pop-900 hidden sm:inline-block">
+                {t("products.label")}
+              </span>
+            </div>
+
+            {/* Vertical Separator */}
+            <div className="h-8 w-px bg-blush-pop-100" />
+
+            {/* Sort Menu */}
+            <div className="flex items-center">
+              <PriceSortMenu
+                sort={sort}
+                onChange={(value) =>
+                  setSearchParams((prev) => {
+                    const next = new URLSearchParams(prev);
+                    next.set("sort", value);
+                    return next;
+                  })
+                }
+              />
+            </div>
           </div>
-          <PriceSortMenu
-            sort={sort}
-            onChange={(value) =>
-              setSearchParams((prev) => {
-                const next = new URLSearchParams(prev);
-                next.set("sort", value);
-                return next;
-              })
-            }
-          />
         </div>
 
         {(categoryFilter || categoryNameFilter || searchTerm || sort) && (
