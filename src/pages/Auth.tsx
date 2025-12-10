@@ -19,7 +19,7 @@ import { ArrowLeft, Flower2 } from "lucide-react";
 const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { login, register } = useAuth();
+  const { login, register, isAuthenticated, loading: authLoading } = useAuth();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [loginEmail, setLoginEmail] = useState("");
@@ -28,7 +28,15 @@ const Auth = () => {
   const [signupPassword, setSignupPassword] = useState("");
   const [signupName, setSignupName] = useState("");
 
-  useEffect(() => {}, [navigate]);
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      navigate("/");
+    }
+  }, [authLoading, isAuthenticated, navigate]);
+
+  if (authLoading) {
+    return null; // Or a loading spinner
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,11 +50,12 @@ const Auth = () => {
         description: t("auth.successLogin"),
       });
       navigate("/");
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : "Failed to log in";
       toast({
         variant: "destructive",
         title: t("auth.errorTitle"),
-        description: error.message || "Failed to log in",
+        description: msg,
       });
     } finally {
       setLoading(false);
@@ -65,11 +74,13 @@ const Auth = () => {
         description: t("auth.successSignup"),
       });
       navigate("/");
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const msg =
+        error instanceof Error ? error.message : "Failed to create account";
       toast({
         variant: "destructive",
         title: t("auth.errorTitle"),
-        description: error.message || "Failed to create account",
+        description: msg,
       });
     } finally {
       setLoading(false);
