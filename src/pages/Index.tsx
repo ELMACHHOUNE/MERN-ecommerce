@@ -82,13 +82,15 @@ const Index = () => {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Button
-                variant="outline"
-                size="lg"
-                className="bg-transparent border-2 border-white text-white hover:bg-white/10 rounded-full px-8 h-14 text-lg font-medium backdrop-blur-sm transition-all duration-300 cursor-pointer"
-              >
-                {t("cta.info")}
-              </Button>
+              <Link to="/about">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="bg-transparent border-2 border-white text-white hover:bg-white/10 rounded-full px-8 h-14 text-lg font-medium backdrop-blur-sm transition-all duration-300 cursor-pointer"
+                >
+                  {t("cta.info")}
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
