@@ -55,97 +55,91 @@ export const ProductCard = ({
   };
 
   return (
-    <Card className="group overflow-hidden border border-border bg-card/95 hover:bg-card shadow-sm hover:shadow-lg transition-all duration-300 rounded-lg ring-1 ring-border hover:ring-primary/30">
-      <Link to={`/products/${id}`}>
-        <div className="aspect-square relative overflow-hidden bg-muted">
-          {/* Use CSS mask to avoid SVG <image> CORS issues and ensure visibility */}
-          <img
-            src={imgError ? fallbackImage : image}
-            alt={name}
-            loading="lazy"
-            decoding="async"
-            fetchPriority="low"
-            onError={() => setImgError(true)}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-            style={{
-              WebkitMaskImage:
-                'url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><g fill="black"><circle cx="50" cy="50" r="35"/><circle cx="50" cy="18" r="22"/><circle cx="80" cy="28" r="22"/><circle cx="88" cy="58" r="22"/><circle cx="72" cy="86" r="22"/><circle cx="28" cy="86" r="22"/><circle cx="12" cy="58" r="22"/><circle cx="20" cy="28" r="22"/></g></svg>\')',
-              maskImage:
-                'url(\'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><g fill="black"><circle cx="50" cy="50" r="35"/><circle cx="50" cy="18" r="22"/><circle cx="80" cy="28" r="22"/><circle cx="88" cy="58" r="22"/><circle cx="72" cy="86" r="22"/><circle cx="28" cy="86" r="22"/><circle cx="12" cy="58" r="22"/><circle cx="20" cy="28" r="22"/></g></svg>\')',
-              WebkitMaskSize: "contain",
-              maskSize: "contain",
-              WebkitMaskPosition: "center",
-              maskPosition: "center",
-              WebkitMaskRepeat: "no-repeat",
-              maskRepeat: "no-repeat",
-            }}
-          />
-          {/* subtle floral overlay */}
-          <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-primary/10 via-transparent to-transparent opacity-50" />
-          {/* decorative ring on hover */}
-          <div className="pointer-events-none absolute inset-0 ring-1 ring-border/50 group-hover:ring-primary/40 transition-all" />
-        </div>
-      </Link>
+    <div className="group relative">
+      {/* Card Container with Organic/Petal Shape */}
+      <div className="relative bg-white p-2.5 rounded-tl-[2.5rem] rounded-br-[2.5rem] rounded-tr-2xl rounded-bl-2xl shadow-sm border border-blush-pop-100 transition-all duration-500 hover:shadow-xl hover:shadow-blush-pop-200/40 hover:-translate-y-1">
+        {/* Image Area */}
+        <div className="relative aspect-4/5 overflow-hidden rounded-tl-4xl rounded-br-4xl rounded-tr-lg rounded-bl-lg bg-blush-pop-50">
+          <Link to={`/products/${id}`} className="block w-full h-full">
+            <img
+              src={imgError ? fallbackImage : image}
+              alt={name}
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              onError={() => setImgError(true)}
+            />
+          </Link>
 
-      <CardContent className="p-4">
-        <div className="mb-2 flex items-start justify-between">
-          <div className="flex-1">
-            <div className="mb-1">
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-almond-silk-100 text-foreground/70 border border-almond-silk-200 text-xs uppercase tracking-wide">
-                {category || t("products.category")}
-              </span>
-            </div>
-            <Link to={`/products/${id}`}>
-              <h3 className="font-semibold text-foreground group-hover:text-accent transition-colors line-clamp-2">
-                {name}
-              </h3>
-            </Link>
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 shrink-0"
-            onClick={() => setIsWishlisted(!isWishlisted)}
+          {/* Wishlist Button */}
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              setIsWishlisted(!isWishlisted);
+            }}
+            className="absolute top-3 right-3 p-2.5 rounded-full bg-white/80 backdrop-blur-sm text-blush-pop-900 hover:bg-white hover:scale-110 transition-all duration-300 shadow-sm z-10 cursor-pointer"
           >
             <Heart
               className={`h-4 w-4 transition-colors ${
-                isWishlisted
-                  ? "fill-accent text-accent"
-                  : "text-muted-foreground"
+                isWishlisted ? "fill-blush-pop-500 text-blush-pop-500" : ""
               }`}
             />
-          </Button>
-        </div>
+          </button>
 
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <p className="text-lg font-bold text-primary">
-              ${price.toFixed(2)}
-            </p>
-            <div className="hidden sm:flex items-center gap-0.5 text-vanilla-custard-700">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className={`h-3.5 w-3.5 ${
-                    i < Math.round(rating)
-                      ? "fill-vanilla-custard-400 text-vanilla-custard-400"
-                      : "text-muted-foreground"
-                  }`}
-                />
-              ))}
+          {/* Add to Cart - Slides up with floral gradient background */}
+          <div className="absolute inset-x-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-10">
+            <div className="bg-white/90 backdrop-blur-md py-4 px-4 flex justify-center border-t border-blush-pop-100">
+              <Button
+                onClick={handleAddToCart}
+                className="w-full rounded-full bg-blush-pop-900 text-white hover:bg-blush-pop-800 shadow-md h-10 font-medium cursor-pointer"
+              >
+                <ShoppingCart className="mr-2 h-4 w-4" />
+                {t("cta.shop")}
+              </Button>
             </div>
           </div>
-          <Button
-            size="sm"
-            variant="accent"
-            className="gap-1"
-            onClick={handleAddToCart}
-          >
-            <ShoppingCart className="h-3.5 w-3.5" />
-            {t("cta.shop")}
-          </Button>
         </div>
-      </CardContent>
-    </Card>
+
+        {/* Product Info */}
+        <div className="pt-4 pb-2 px-2 text-center">
+          <Link
+            to={`/products/${id}`}
+            className="block group-hover:text-blush-pop-700 transition-colors"
+          >
+            <h3 className="font-display text-lg font-bold text-blush-pop-950 line-clamp-1 mb-1">
+              {name}
+            </h3>
+          </Link>
+
+          <div className="flex items-center justify-center gap-3 text-sm">
+            <span className="font-bold text-blush-pop-600 text-base">
+              ${price.toFixed(2)}
+            </span>
+            {category && (
+              <>
+                <span className="w-1 h-1 rounded-full bg-blush-pop-300" />
+                <span className="text-blush-pop-400 uppercase text-[10px] tracking-widest font-medium">
+                  {category}
+                </span>
+              </>
+            )}
+          </div>
+
+          {/* Rating Stars */}
+          <div className="flex justify-center mt-2 gap-0.5">
+            {[...Array(5)].map((_, i) => (
+              <Star
+                key={i}
+                className={`h-3 w-3 ${
+                  i < Math.round(rating)
+                    ? "fill-blush-pop-300 text-blush-pop-300"
+                    : "text-gray-200"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
