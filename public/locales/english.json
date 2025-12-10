@@ -155,5 +155,10 @@
   "notFound.title": "404",
   "notFound.subtitle": "Oops! Page not found",
   "notFound.redirecting": "Redirecting to home in {{count}} seconds...",
-  "notFound.button": "Return Home Now"
+  "notFound.button": "Return Home Now",
+  "wishlist.title": "My Wishlist",
+  "wishlist.emptyTitle": "Your wishlist is empty",
+  "wishlist.emptySubtitle": "Explore our collection and find something you love!",
+  "wishlist.added": "Added to wishlist",
+  "wishlist.removed": "Removed from wishlist"
 }

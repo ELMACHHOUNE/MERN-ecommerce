@@ -1,9 +1,16 @@
-import { ShoppingCart, User, Menu as MenuIcon, LogOut } from "lucide-react";
+import {
+  ShoppingCart,
+  User,
+  Menu as MenuIcon,
+  LogOut,
+  Heart,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,6 +29,7 @@ import { useTranslation } from "react-i18next";
 export const Navbar = () => {
   const { user, logout } = useAuth();
   const { count: cartCount } = useCart();
+  const { items: wishlistItems } = useWishlist();
   const navigate = useNavigate();
   const [active, setActive] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -173,6 +181,17 @@ export const Navbar = () => {
               </Link>
             )}
 
+            <Link to="/wishlist">
+              <Button variant="ghost" size="icon" className="relative">
+                <Heart className="h-5 w-5" />
+                {wishlistItems.length > 0 && (
+                  <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-blush-pop-500 text-white text-xs flex items-center justify-center font-medium">
+                    {wishlistItems.length}
+                  </span>
+                )}
+              </Button>
+            </Link>
+
             <Link to="/cart">
               <Button variant="ghost" size="icon" className="relative">
                 <ShoppingCart className="h-5 w-5" />
@@ -268,6 +287,17 @@ export const Navbar = () => {
                   </Button>
                 </Link>
               )}
+
+              <Link to="/wishlist">
+                <Button variant="ghost" size="icon" className="relative">
+                  <Heart className="h-5 w-5" />
+                  {wishlistItems.length > 0 && (
+                    <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-blush-pop-500 text-white text-xs flex items-center justify-center font-medium">
+                      {wishlistItems.length}
+                    </span>
+                  )}
+                </Button>
+              </Link>
 
               <Link to="/cart">
                 <Button variant="ghost" size="icon" className="relative">

@@ -154,5 +154,10 @@
   "notFound.title": "404",
   "notFound.subtitle": "عفوا! الصفحة غير موجودة",
   "notFound.redirecting": "إعادة التوجيه إلى الصفحة الرئيسية خلال {{count}} ثواني...",
-  "notFound.button": "العودة إلى الصفحة الرئيسية الآن"
+  "notFound.button": "العودة إلى الصفحة الرئيسية الآن",
+  "wishlist.title": "قائمة أمنياتي",
+  "wishlist.emptyTitle": "قائمة أمنياتك فارغة",
+  "wishlist.emptySubtitle": "استكشف مجموعتنا واعثر على شيء تحبه!",
+  "wishlist.added": "تمت الإضافة إلى قائمة الأمنيات",
+  "wishlist.removed": "تمت الإزالة من قائمة الأمنيات"
 }

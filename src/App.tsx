@@ -7,10 +7,12 @@ import Index from "./pages/Index";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
+import Wishlist from "./pages/Wishlist";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
+import { WishlistProvider } from "@/context/WishlistContext";
 import Profile from "./pages/Profile";
 import RequireAuth from "@/routes/RequireAuth";
 import Admin from "./pages/Admin";
@@ -32,34 +34,37 @@ const App = () => {
           <BrowserRouter>
             <AuthProvider>
               <CartProvider>
-                <AppLayout>
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/products" element={<Products />} />
-                    <Route path="/products/:id" element={<ProductDetail />} />
-                    <Route path="/cart" element={<Cart />} />
-                    <Route path="/auth" element={<Auth />} />
-                    <Route path="/categories" element={<Categories />} />
-                    <Route path="/about" element={<About />} />
-                    <Route
-                      path="/profile"
-                      element={
-                        <RequireAuth>
-                          <Profile />
-                        </RequireAuth>
-                      }
-                    />
-                    <Route
-                      path="/admin"
-                      element={
-                        <RequireAdmin>
-                          <Admin />
-                        </RequireAdmin>
-                      }
-                    />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </AppLayout>
+                <WishlistProvider>
+                  <AppLayout>
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/products" element={<Products />} />
+                      <Route path="/products/:id" element={<ProductDetail />} />
+                      <Route path="/cart" element={<Cart />} />
+                      <Route path="/wishlist" element={<Wishlist />} />
+                      <Route path="/auth" element={<Auth />} />
+                      <Route path="/categories" element={<Categories />} />
+                      <Route path="/about" element={<About />} />
+                      <Route
+                        path="/profile"
+                        element={
+                          <RequireAuth>
+                            <Profile />
+                          </RequireAuth>
+                        }
+                      />
+                      <Route
+                        path="/admin"
+                        element={
+                          <RequireAdmin>
+                            <Admin />
+                          </RequireAdmin>
+                        }
+                      />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </AppLayout>
+                </WishlistProvider>
               </CartProvider>
             </AuthProvider>
           </BrowserRouter>

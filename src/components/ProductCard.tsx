@@ -4,6 +4,7 @@ import { ShoppingCart, Heart, Star } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 
@@ -25,7 +26,8 @@ export const ProductCard = ({
   rating = 4.5,
 }: ProductCardProps) => {
   const { t } = useTranslation();
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const { isInWishlist, toggleWishlist } = useWishlist();
+  const isWishlisted = isInWishlist(id);
   const [imgError, setImgError] = useState(false);
   const { addItem } = useCart();
   const navigate = useNavigate();
@@ -75,7 +77,7 @@ export const ProductCard = ({
           <button
             onClick={(e) => {
               e.preventDefault();
-              setIsWishlisted(!isWishlisted);
+              toggleWishlist({ id, name, price, image, category, rating });
             }}
             className="absolute top-3 right-3 p-2.5 rounded-full bg-white/80 backdrop-blur-sm text-blush-pop-900 hover:bg-white hover:scale-110 transition-all duration-300 shadow-sm z-10 cursor-pointer"
           >
