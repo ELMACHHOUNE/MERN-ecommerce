@@ -113,7 +113,7 @@ export const ProductCard = ({
 
           <div className="flex items-center justify-center gap-3 text-sm">
             <span className="font-bold text-blush-pop-600 text-base">
-              ${price.toFixed(2)}
+              {price.toFixed(2)} DH
             </span>
             {category && (
               <>

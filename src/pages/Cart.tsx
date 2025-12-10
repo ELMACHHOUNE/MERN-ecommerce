@@ -40,7 +40,7 @@ const CartItemRow = memo(function CartItemRow({
           {it.name}
         </div>
         <div className="text-sm text-muted-foreground">
-          ${it.price.toFixed(2)}
+          {it.price.toFixed(2)} DH
         </div>
       </div>
       <div className="flex items-center gap-2 mt-2 sm:mt-0">
@@ -159,7 +159,7 @@ const Cart = () => {
             <span className="font-medium text-foreground">
               {t("cart.subtotal")}
             </span>
-            <span className="font-semibold">${subtotal.toFixed(2)}</span>
+            <span className="font-semibold">{subtotal.toFixed(2)} DH</span>
           </div>
           <Button className="w-full" onClick={checkoutViaWhatsApp}>
             {t("cart.payWhatsapp")}

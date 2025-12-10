@@ -99,7 +99,7 @@ const ProductsTable: React.FC = () => {
         header: t("admin.form.price"),
         Cell: ({ cell }) => {
           const v = cell.getValue<number>();
-          return typeof v === "number" ? `$${v.toFixed(2)}` : "—";
+          return typeof v === "number" ? `${v.toFixed(2)} DH` : "—";
         },
       },
       { accessorKey: "stock", header: t("admin.form.stock") },
