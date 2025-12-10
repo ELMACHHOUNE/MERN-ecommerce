@@ -145,5 +145,10 @@
   "admin.toast.updated": "تم التحديث بنجاح",
   "admin.toast.deleted": "تم الحذف بنجاح",
   "admin.toast.error": "فشلت العملية",
-  "admin.confirmDelete": "هل أنت متأكد أنك تريد حذف هذا العنصر؟"
+  "admin.confirmDelete": "هل أنت متأكد أنك تريد حذف هذا العنصر؟",
+  "categories.title": "فئاتنا",
+  "categories.subtitle": "استكشف مجموعتنا الرائعة من الكب كيك الزهري والحلويات اللذيذة.",
+  "categories.error": "فشل تحميل الفئات",
+  "categories.empty": "لم يتم العثور على فئات.",
+  "categories.noDesc": "اكتشف إبداعاتنا اللذيذة في هذه الفئة."
 }

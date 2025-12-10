@@ -146,5 +146,10 @@
   "admin.toast.updated": "Updated successfully",
   "admin.toast.deleted": "Deleted successfully",
   "admin.toast.error": "Operation failed",
-  "admin.confirmDelete": "Are you sure you want to delete this item?"
+  "admin.confirmDelete": "Are you sure you want to delete this item?",
+  "categories.title": "Our Categories",
+  "categories.subtitle": "Explore our delightful collection of floral cupcakes and sweet treats.",
+  "categories.error": "Failed to load categories",
+  "categories.empty": "No categories found.",
+  "categories.noDesc": "Discover our delicious creations in this category."
 }

@@ -141,5 +141,10 @@
   "admin.toast.updated": "Mis à jour avec succès",
   "admin.toast.deleted": "Supprimé avec succès",
   "admin.toast.error": "L'opération a échoué",
-  "admin.confirmDelete": "Êtes-vous sûr de vouloir supprimer cet élément ?"
+  "admin.confirmDelete": "Êtes-vous sûr de vouloir supprimer cet élément ?",
+  "categories.title": "Nos Catégories",
+  "categories.subtitle": "Explorez notre délicieuse collection de cupcakes floraux et douceurs sucrées.",
+  "categories.error": "Échec du chargement des catégories",
+  "categories.empty": "Aucune catégorie trouvée.",
+  "categories.noDesc": "Découvrez nos délicieuses créations dans cette catégorie."
 }
