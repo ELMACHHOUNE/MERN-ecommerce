@@ -149,6 +149,7 @@ const ProductDetail = () => {
                     src={imageUrls[selectedImage]}
                     alt={`${product.title} - image ${selectedImage + 1}`}
                     className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                    loading="lazy"
                   />
                 ) : (
                   <div className="h-full w-full flex items-center justify-center text-blush-pop-300">
@@ -175,6 +176,7 @@ const ProductDetail = () => {
                         src={src}
                         alt={`Thumbnail ${i + 1}`}
                         className="h-full w-full object-cover"
+                        loading="lazy"
                       />
                     </button>
                   ))}

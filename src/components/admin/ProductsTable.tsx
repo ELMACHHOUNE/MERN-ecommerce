@@ -136,6 +136,7 @@ const ProductsTable: React.FC = () => {
                 src={src}
                 alt="Product"
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                loading="lazy"
               />
             </div>
           ) : (

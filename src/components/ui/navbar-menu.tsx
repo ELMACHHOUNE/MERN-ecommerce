@@ -86,6 +86,7 @@ export const ProductItem = ({
         height={70}
         alt={title}
         className="shrink-0 rounded-md shadow-2xl"
+        loading="lazy"
       />
       <div>
         <h4 className="text-xl font-bold mb-1 text-foreground">{title}</h4>

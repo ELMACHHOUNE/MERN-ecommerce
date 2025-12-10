@@ -150,6 +150,7 @@ export function ProductSearchBox() {
                           src={toApiURL((p as any).images?.[0]) || ""}
                           alt={titleOrName}
                           className="h-9 w-9 rounded object-cover bg-muted flex-shrink-0"
+                          loading="lazy"
                           onError={(e) => {
                             (
                               e.currentTarget as HTMLImageElement

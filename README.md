@@ -1,99 +1,122 @@
-# Buy Brisk Boutique
+# Keni Sweet Flowers 🌸
 
-Modern e-commerce frontend (Vite + React + TypeScript + Tailwind) with a Node/Express API.
+A beautiful, floral-themed e-commerce platform for "Keni Sweet Flowers", a floral cupcake business in Kenitra. Built with the MERN stack (MongoDB, Express, React, Node.js) and styled with Tailwind CSS.
 
 ## Repository
 
 - GitHub: https://github.com/ELMACHHOUNE/buy-brisk-boutique
 
-## Tech Stack
+## Features ✨
 
-- Vite, React, TypeScript
-- Tailwind CSS
-- Node.js, Express (server)
-- MongoDB (via Mongoose)
-- JWT auth
+- **Floral UI Design**: Custom "Petal" shapes, soft gradients, and a `blush-pop` color palette.
+- **Multi-language Support**: Full localization in English, French, and Arabic (`i18n`).
+- **Performance Optimized**: Lazy loading for pages and images to ensure fast load times.
+- **Wishlist**: Save your favorite floral arrangements locally.
+- **WhatsApp Checkout**: Seamless ordering process via WhatsApp integration.
+- **Admin Dashboard**: Manage products, categories, and users.
+- **Responsive Design**: Fully optimized for mobile, tablet, and desktop.
 
-## Project Structure
+## Tech Stack 🛠️
 
-- /src — frontend application
-- /server — Express API (package.json, nodemon, etc.)
-- /public — static assets
-- /scripts — maintenance scripts
+### Frontend
+
+- **Framework**: React 18 + Vite
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS, Shadcn/ui
+- **State Management**: React Context API (Cart, Wishlist, Auth)
+- **Data Fetching**: TanStack Query (React Query)
+- **Routing**: React Router DOM (with Lazy Loading)
+- **Internationalization**: react-i18next
+- **Icons**: Lucide React
+
+### Backend
+
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Database**: MongoDB (Mongoose)
+- **Authentication**: JWT (JSON Web Tokens)
+- **File Uploads**: Multer
+
+## Project Structure 📂
+
+- `/src` — Frontend application source code
+  - `/pages` — Lazy-loaded route components
+  - `/components` — Reusable UI components
+  - `/context` — Global state providers
+  - `/lib` — Utilities and API configuration
+  - `/locales` — Translation files (EN, FR, AR)
+- `/server` — Express API backend
+- `/public` — Static assets
 
 ## Prerequisites
 
 - Node.js 18+ and npm
-- MongoDB connection string (for the server)
+- MongoDB connection string
 
-## Setup
+## Setup & Installation 🚀
 
-Clone and install:
+1. **Clone the repository**
+
+   ```sh
+   git clone https://github.com/ELMACHHOUNE/buy-brisk-boutique.git
+   cd buy-brisk-boutique
+   ```
+
+2. **Install Frontend Dependencies**
+
+   ```sh
+   npm install
+   ```
+
+3. **Install Backend Dependencies**
+
+   ```sh
+   cd server
+   npm install
+   ```
+
+4. **Environment Configuration**
+
+   Create a `.env` file in the root directory:
+
+   ```env
+   VITE_API_URL=http://localhost:5000
+   ```
+
+   Create a `.env` file in the `server` directory:
+
+   ```env
+   PORT=5000
+   MONGO_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret_key
+   CORS_ORIGIN=http://localhost:8080
+   ```
+
+## Running the Application ▶️
+
+**Frontend** (from root):
 
 ```sh
-git clone https://github.com/ELMACHHOUNE/buy-brisk-boutique.git
-cd buy-brisk-boutique
-
-# Frontend deps
-npm i
-
-# API deps
-cd server && npm i
-```
-
-## Environment Variables
-
-Create the following files:
-
-- Frontend: .env (at project root)
-
-  - VITE_API_URL=http://localhost:5000
-
-- Server: server/.env
-  - PORT=5000
-  - MONGO_URI=<your_mongo_connection_string>
-  - JWT_SECRET=<your_secret>
-  - CORS_ORIGIN=http://localhost:8080
-
-## Scripts
-
-Frontend (run in project root):
-
-```sh
-# Dev server (Vite)
 npm run dev
-
-# Production build
-npm run build
-
-# Preview built app
-npm run preview
 ```
 
-Server (run in ./server):
+**Backend** (from `/server`):
 
 ```sh
-# Start in dev (nodemon)
 npm run dev
-
-# Start in prod
-npm start
 ```
 
-## Development
+## Contributing 🤝
 
-- Start API first (server/.env configured), then run the frontend.
-- Update VITE_API_URL if the API runs on a different host/port.
-
-## Contributing
-
-1. Fork the repo on GitHub (ELMACHHOUNE/buy-brisk-boutique).
+1. Fork the repository.
 2. Create a feature branch.
 3. Commit with clear messages.
 4. Open a Pull Request.
 
-## License
+## License 📄
 
-Add your license of choice (e.g., MIT) or specify “All rights reserved”.
+All rights reserved.
 
-by ELMACHHOUNE
+---
+
+_Developed by ELMACHHOUNE_
