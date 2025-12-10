@@ -1,34 +1,84 @@
-# Theme Palette and Usage
+# Keni Sweet Flowers - Theme & Design System 🌸
 
-This project uses Tailwind CSS v4 tokens and Mantine with a single, fixed color scheme (no dark mode).
+This project features a custom "Vintage Petal" design system, built with Tailwind CSS v4 tokens and a fixed color palette inspired by floral aesthetics.
 
-## Tailwind tokens (src/index.css)
+## Design Philosophy
 
-Tokens are defined with `@theme` in `src/index.css` and provide semantic roles:
+The design language mimics the organic curves of flower petals and the soft, romantic tones of a boutique bakery.
 
-- `--color-background`
-- `--color-foreground`
-- `--color-card` / `--color-card-foreground`
-- `--color-primary` / `--color-primary-foreground`
-- `--color-accent` / `--color-accent-foreground`
-- `--color-muted` / `--color-muted-foreground`
-- `--color-border` / `--color-input`
-- `--color-ring`
-- `--bg-image-opacity` (for global background image intensity)
+- **Shapes**: Organic, asymmetrical border radii (e.g., `rounded-tl-[2.5rem] rounded-br-[2.5rem]`) to resemble petals.
+- **Typography**: `BucklaneScript` (or serif fallbacks) for headings to evoke elegance; clean sans-serif for readability.
+- **Atmosphere**: Soft gradients, backdrop blurs, and subtle shadows (`shadow-blush-pop-100/20`).
 
-Use token-based utilities in components (examples):
+## Color Palette 🎨
 
-- Backgrounds: `bg-background`, `bg-card`, `bg-accent/10`
-- Text: `text-foreground`, `text-muted-foreground`, `text-primary`
-- Borders: `border`, `border-border`
-- Buttons: `bg-primary text-primary-foreground`
+The color system is defined in `src/index.css` using Tailwind v4 `@theme` directives.
 
-## Mantine theme (src/theme/mantineTheme.ts)
+### Primary Colors
 
-Mantine is configured to use the custom `brand` palette and a fixed color scheme. No runtime color scheme switching is used.
+- **Blush Pop** (`--color-blush-pop-*`): The core brand color. Used for primary buttons, highlights, and floral accents.
+  - Primary Action: `bg-blush-pop-600`
+  - Hover State: `bg-blush-pop-700`
+  - Light Backgrounds: `bg-blush-pop-50`
 
-## Notes
+### Secondary Colors
 
-- Prefer semantic token utilities over raw hex values.
-- If you introduce new UI states (e.g., warnings), consider adding semantic tokens in `src/index.css`.
-- The linter may warn about Tailwind v4 at-rules in CSS (e.g., `@theme`, `@plugin`); they are handled during the build by Tailwind’s Vite plugin.
+- **Vanilla Custard** (`--color-vanilla-custard-*`): Warm, creamy backgrounds.
+  - App Background: `bg-vanilla-custard-50`
+- **Almond Silk** (`--color-almond-silk-*`): Earthy neutrals for cards and borders.
+  - Card Background: `bg-almond-silk-50`
+  - Borders: `border-almond-silk-200`
+- **Plum** (`--color-plum-*`): Deep accents for contrast.
+- **Vintage Berry** (`--color-vintage-berry-*`): Muted tones for secondary text.
+
+### Semantic Tokens
+
+| Token                | Value                | Usage                                 |
+| -------------------- | -------------------- | ------------------------------------- |
+| `--color-background` | `vanilla-custard-50` | Main app background                   |
+| `--color-foreground` | `ink-900`            | Primary text color                    |
+| `--color-primary`    | `blush-pop-600`      | Call-to-action buttons, active states |
+| `--color-card`       | `almond-silk-50`     | Card backgrounds                      |
+| `--color-muted`      | `vintage-berry-200`  | Disabled states, subtle borders       |
+| `--color-accent`     | `plum-500`           | Highlights, badges                    |
+
+## Typography ✍️
+
+- **Headings** (`font-display`): `BucklaneScript`, `Segoe Script`, `Brush Script MT`, cursive.
+  - Used for: Page titles, hero sections, "Our Story".
+- **Body** (`font-body`): System UI, `Segoe UI`, sans-serif.
+  - Used for: Product descriptions, prices, interface text.
+
+## UI Components & Patterns
+
+### The "Petal" Card
+
+A signature card style used for products and containers.
+
+```tsx
+<div className="rounded-tl-[2.5rem] rounded-br-[2.5rem] rounded-tr-2xl rounded-bl-2xl border border-blush-pop-100 shadow-xl shadow-blush-pop-100/20">
+  {/* Content */}
+</div>
+```
+
+### Buttons
+
+- **Primary**: `bg-primary text-primary-foreground hover:bg-primary/90` (Pink/Magenta)
+- **Ghost**: `hover:bg-pink-50 hover:text-pink-600` (Soft hover effect)
+
+### Shadows
+
+Custom colored shadows are used to create depth without harshness.
+
+- `shadow-blush-pop-100/20`
+- `shadow-pink-200`
+
+## Mantine Integration
+
+Mantine is configured in `src/theme/mantineTheme.ts` to match the Tailwind palette, ensuring consistency across complex components like modals or inputs if used.
+
+## Usage Guidelines
+
+1. **Always use semantic tokens** (`bg-background`, `text-primary`) when possible.
+2. **Use the "Petal" radius** for main containers to maintain brand identity.
+3. **Images**: Apply `loading="lazy"` and `rounded-tl-[1.2rem] rounded-br-[1.2rem]` to product thumbnails.
