@@ -150,5 +150,9 @@
   "categories.subtitle": "استكشف مجموعتنا الرائعة من الكب كيك الزهري والحلويات اللذيذة.",
   "categories.error": "فشل تحميل الفئات",
   "categories.empty": "لم يتم العثور على فئات.",
-  "categories.noDesc": "اكتشف إبداعاتنا اللذيذة في هذه الفئة."
+  "categories.noDesc": "اكتشف إبداعاتنا اللذيذة في هذه الفئة.",
+  "notFound.title": "404",
+  "notFound.subtitle": "عفوا! الصفحة غير موجودة",
+  "notFound.redirecting": "إعادة التوجيه إلى الصفحة الرئيسية خلال {{count}} ثواني...",
+  "notFound.button": "العودة إلى الصفحة الرئيسية الآن"
 }

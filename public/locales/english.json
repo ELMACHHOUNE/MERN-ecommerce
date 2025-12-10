@@ -151,5 +151,9 @@
   "categories.subtitle": "Explore our delightful collection of floral cupcakes and sweet treats.",
   "categories.error": "Failed to load categories",
   "categories.empty": "No categories found.",
-  "categories.noDesc": "Discover our delicious creations in this category."
+  "categories.noDesc": "Discover our delicious creations in this category.",
+  "notFound.title": "404",
+  "notFound.subtitle": "Oops! Page not found",
+  "notFound.redirecting": "Redirecting to home in {{count}} seconds...",
+  "notFound.button": "Return Home Now"
 }

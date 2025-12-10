@@ -146,5 +146,9 @@
   "categories.subtitle": "Explorez notre délicieuse collection de cupcakes floraux et douceurs sucrées.",
   "categories.error": "Échec du chargement des catégories",
   "categories.empty": "Aucune catégorie trouvée.",
-  "categories.noDesc": "Découvrez nos délicieuses créations dans cette catégorie."
+  "categories.noDesc": "Découvrez nos délicieuses créations dans cette catégorie.",
+  "notFound.title": "404",
+  "notFound.subtitle": "Oups ! Page non trouvée",
+  "notFound.redirecting": "Redirection vers l'accueil dans {{count}} secondes...",
+  "notFound.button": "Retourner à l'accueil maintenant"
 }
