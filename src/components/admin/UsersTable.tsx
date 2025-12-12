@@ -65,7 +65,8 @@ const UsersTable: React.FC = () => {
         role: "user" | "admin";
       }>;
     }) => updateUser(vars.id, vars.data, token),
-    onSuccess: () => {
+    onSuccess: (updated) => {
+      // Optimistically update any users queries
       qc.invalidateQueries({ queryKey: ["users"] });
       toast.success(t("admin.toast.updated"));
     },
@@ -93,8 +94,18 @@ const UsersTable: React.FC = () => {
       {
         accessorKey: "role",
         header: t("admin.form.role"),
-        editVariant: "select",
-        editSelectOptions: ["user", "admin"],
+        // Provide an explicit select during row edit mode
+        editVariant: undefined,
+        renderEditCell: ({ row }) => (
+          <select
+            name="role"
+            defaultValue={(row.original.role || "user").toLowerCase()}
+            className="w-full border border-gray-200 rounded-xl px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500"
+          >
+            <option value="user">user</option>
+            <option value="admin">admin</option>
+          </select>
+        ),
         Cell: ({ cell }) => {
           const role = cell.getValue<string>();
           return (
@@ -148,7 +159,7 @@ const UsersTable: React.FC = () => {
     row: MRT_Row<User>;
     table: MRT_TableInstance<User>;
   }) => {
-    const r = (values.role || "user").trim() as "user" | "admin";
+    const r = (values.role || "user").trim().toLowerCase() as "user" | "admin";
     if (!roleSet.has(r)) {
       toast.error("Role must be user or admin");
       return;
@@ -201,7 +212,6 @@ const UsersTable: React.FC = () => {
       </div>
     ),
     initialState: {
-      density: "comfortable",
       sorting: [{ id: "createdAt", desc: true }],
     },
     muiTablePaperProps: {

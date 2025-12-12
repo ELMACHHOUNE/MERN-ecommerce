@@ -34,7 +34,7 @@ router.post("/", async (req, res, next) => {
   try {
     const email = (req.body?.email || "").trim().toLowerCase();
     const fullName = (req.body?.fullName || "").trim();
-    const role = (req.body?.role || "user").trim();
+    const role = (req.body?.role || "user").trim().toLowerCase();
     const passwordRaw = (req.body?.password || "").trim();
 
     if (!email) return res.status(400).json({ error: "Email is required" });
@@ -64,7 +64,7 @@ router.put("/:id", async (req, res, next) => {
     if (typeof req.body?.fullName === "string")
       updates.fullName = req.body.fullName.trim();
     if (typeof req.body?.role === "string") {
-      const role = req.body.role.trim();
+      const role = req.body.role.trim().toLowerCase();
       if (!["user", "admin"].includes(role))
         return res.status(400).json({ error: "Invalid role" });
       updates.role = role;
@@ -81,7 +81,11 @@ router.put("/:id", async (req, res, next) => {
       if (dup) return res.status(409).json({ error: "Email already in use" });
     }
 
-    const user = await User.findByIdAndUpdate(id, updates, { new: true });
+    const user = await User.findByIdAndUpdate(
+      id,
+      { $set: updates },
+      { new: true, runValidators: true }
+    );
     if (!user) return res.status(404).json({ error: "User not found" });
     res.json(sanitize(user));
   } catch (e) {
