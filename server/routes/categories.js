@@ -10,8 +10,14 @@ const router = express.Router();
 
 // Ensure upload dir exists
 const uploadDir = path.join(__dirname, "..", "uploads", "categories");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+try {
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+} catch (error) {
+  console.log(
+    "Warning: Could not create upload directory (expected in read-only environments like Vercel). Uploads may fail."
+  );
 }
 
 // Multer storage

@@ -10,7 +10,13 @@ const router = express.Router();
 
 // uploads config
 const UPLOAD_DIR = path.join(__dirname, "..", "uploads", "products");
-fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+try {
+  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+} catch (error) {
+  console.log(
+    "Warning: Could not create upload directory (expected in read-only environments like Vercel). Uploads may fail."
+  );
+}
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, UPLOAD_DIR),
