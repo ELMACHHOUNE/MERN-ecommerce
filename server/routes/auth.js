@@ -7,7 +7,12 @@ const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
 
+if (!JWT_SECRET) {
+  console.error("FATAL ERROR: JWT_SECRET is not defined in environment variables.");
+}
+
 function sign(user) {
+  if (!JWT_SECRET) throw new Error("JWT_SECRET is missing");
   return jwt.sign({ role: user.role, id: user.id }, JWT_SECRET, {
     subject: user.id,
     expiresIn: JWT_EXPIRES_IN,
@@ -72,7 +77,7 @@ router.post("/login", async (req, res) => {
     });
   } catch (e) {
     console.error("Login error:", e);
-    return res.status(500).json({ error: "Login failed" });
+    return res.status(500).json({ error: "Login failed", details: e.message });
   }
 });
 

@@ -26,5 +26,5 @@ package-lock.json
 package-lock
 .env
 
-/uploads
+
 .vercel
