@@ -34,8 +34,11 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-// Properly handle preflight with CORS headers via cors middleware
-app.options("*", cors(corsOptions));
+// Handle preflight for all routes on Express v5 (no "*" path support)
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+  next();
+});
 
 app.use(express.json({ limit: "1mb" }));
 
@@ -55,6 +58,15 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Health
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
+// Root endpoint
+app.get("/", (req, res) => {
+  res.json({
+    message: "Welcome to the MERN E-commerce API",
+    status: "running",
+    documentation: "/api/health",
+  });
+});
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
@@ -66,7 +78,12 @@ app.use("/api/users", usersRoutes);
 app.use("/api/cart", cartRoutes);
 
 // Not found
-app.use((req, res) => res.status(404).json({ error: "Not Found" }));
+app.use((req, res) => {
+  res.status(404).json({
+    error: "Not Found",
+    message: `The requested URL ${req.originalUrl} was not found on this server.`,
+  });
+});
 
 // Error handler
 app.use((err, _req, res, _next) => {
