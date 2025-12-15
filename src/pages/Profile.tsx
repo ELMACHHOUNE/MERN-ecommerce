@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 // If your AuthContext exposes a hook, prefer it; else fallback to localStorage.
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner"; // add
+import { api } from "@/lib/api";
 
 const Profile = () => {
   const auth =
@@ -27,9 +28,7 @@ const Profile = () => {
   const { data, error, isFetching } = useQuery({
     queryKey: ["profile"],
     queryFn: async () => {
-      const res = await fetch("/api/profile", { headers: { ...authHeader } });
-      if (!res.ok) throw new Error("Failed to load profile");
-      return res.json();
+      return api.get("/api/profile");
     },
     enabled: !!token,
     // keepPreviousData: true, // optional
@@ -58,16 +57,7 @@ const Profile = () => {
       email: string;
       password?: string;
     }) => {
-      const res = await fetch("/api/profile", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", ...authHeader },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) {
-        const msg = await res.text();
-        throw new Error(msg || "Failed to update profile");
-      }
-      return res.json();
+      return api.put("/api/profile", payload);
     },
     onSuccess: (updated) => {
       queryClient.setQueryData(["profile"], updated);

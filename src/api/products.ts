@@ -156,7 +156,7 @@ export async function searchProductsSuggestions(q: string, limit = 5): Promise<P
   };
 
   // Single endpoint to avoid hitting /products/:id
-  const raw = await tryGet(`/products?${params.toString()}`);
+  const raw = await tryGet(`/api/products?${params.toString()}`);
   if (!raw.length) return [];
 
   const norm = raw.map(normalize);
