@@ -19,7 +19,7 @@ function toClient(cat: any): CategoryDTO {
   const id = cat._id || cat.id;
   const rawImage = cat.imageUrl || "";
   const imageUrl =
-    rawImage && !/^https?:\/\//i.test(rawImage)
+    rawImage && !/^https?:\/\//i.test(rawImage) && !/^data:/i.test(rawImage)
       ? `${API_ORIGIN}${rawImage}`
       : rawImage || "";
   return { id, name: cat.name, description: cat.description, slug: cat.slug, imageUrl, createdAt: cat.createdAt, updatedAt: cat.updatedAt };
