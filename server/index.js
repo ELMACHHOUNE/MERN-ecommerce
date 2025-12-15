@@ -1,5 +1,5 @@
-const express = require("express");
-const app = express();
+// Vercel entrypoint for the API (Serverless Function handler)
+// Export the Express app; Vercel will invoke it as a handler
+const app = require("./app");
 
-app.use(express.json());
-app.use("/api/me", require("./routes/me"));
+module.exports = app;
