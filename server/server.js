@@ -39,7 +39,7 @@ app.use((req, res, next) => {
   if (req.method === "OPTIONS") return res.sendStatus(204);
   next();
 });
-app.use(express.json({ limit: "1mb" }));
+app.use(express.json({ limit: "10mb" }));
 
 // Serve uploaded files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

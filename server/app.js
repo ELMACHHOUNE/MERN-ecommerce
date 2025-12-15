@@ -40,7 +40,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.json({ limit: "1mb" }));
+app.use(express.json({ limit: "10mb" }));
 
 // Ensure DB connection for each invocation (cached across warm lambdas)
 app.use(async (req, _res, next) => {
