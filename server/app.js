@@ -34,11 +34,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-// Preflight
-app.use((req, res, next) => {
-  if (req.method === "OPTIONS") return res.sendStatus(204);
-  next();
-});
+// Properly handle preflight with CORS headers via cors middleware
+app.options("*", cors(corsOptions));
 
 app.use(express.json({ limit: "1mb" }));
 
