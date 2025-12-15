@@ -21,18 +21,7 @@ try {
 }
 
 // Multer storage
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, uploadDir),
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const base = path
-      .basename(file.originalname, ext)
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .slice(0, 40);
-    cb(null, `${Date.now()}-${base}${ext}`);
-  },
-});
+const storage = multer.memoryStorage();
 const upload = multer({
   storage,
   limits: { fileSize: 2 * 1024 * 1024 },
@@ -45,14 +34,8 @@ const upload = multer({
 });
 
 function deleteFileIfExists(fileUrl) {
-  try {
-    if (!fileUrl) return;
-    const filename = path.basename(fileUrl);
-    const fullPath = path.join(uploadDir, filename);
-    if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
-  } catch (e) {
-    console.warn("Failed to delete file:", e.message);
-  }
+  // No-op for memory storage / base64
+  return;
 }
 
 // Public list
@@ -105,9 +88,15 @@ router.post(
       if (!name) return res.status(400).json({ error: "Name is required" });
 
       const slug = slugify(name) || `cat-${Date.now()}`;
-      const imageUrl = req.file
-        ? `/uploads/categories/${req.file.filename}`
-        : "";
+      let imageUrl = "";
+
+      if (req.file) {
+        // Convert buffer to base64 data URI
+        const b64 = Buffer.from(req.file.buffer).toString("base64");
+        let mime = req.file.mimetype;
+        imageUrl = `data:${mime};base64,${b64}`;
+      }
+
       const created = await Category.create({
         name,
         slug,
@@ -153,10 +142,10 @@ router.put(
 
       if (req.file) {
         // Replace image
-        if (cat.imageUrl) {
-          deleteFileIfExists(cat.imageUrl);
-        }
-        cat.imageUrl = `/uploads/categories/${req.file.filename}`;
+        // Convert buffer to base64 data URI
+        const b64 = Buffer.from(req.file.buffer).toString("base64");
+        let mime = req.file.mimetype;
+        cat.imageUrl = `data:${mime};base64,${b64}`;
       }
 
       await cat.save();
