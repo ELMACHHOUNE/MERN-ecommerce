@@ -29,7 +29,7 @@ const API_ORIGIN = API_URL.origin;
 
 export function toApiURL(p?: string): string {
   if (!p) return '';
-  if (/^https?:\/\//i.test(p)) return p;
+  if (/^https?:\/\//i.test(p) || /^data:/i.test(p)) return p;
   const path = p.startsWith('/') ? p : `/${p}`;
   return `${API_ORIGIN}${path}`;
 }
