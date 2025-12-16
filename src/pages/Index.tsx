@@ -6,6 +6,7 @@ import heroBanner from "/cover.webp";
 import { useEffect, useState } from "react";
 import { api, toApiURL } from "@/lib/api";
 import { useTranslation } from "react-i18next";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Product = {
   _id: string;
@@ -165,7 +166,7 @@ const Index = () => {
       <section className="py-24 bg-linear-to-b from-white to-blush-pop-50/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 animate-in fade-in slide-in-from-bottom-2 duration-500">
-            <span className="text-blush-pop-500 font-medium tracking-wider uppercase text-sm mb-2 block">
+            <span className="text-blush-pop-600 font-medium tracking-wider uppercase text-sm mb-2 block">
               {t("section.featured.subtitle", "Our Collection")}
             </span>
             <h2 className="text-4xl md:text-5xl font-bold mb-6 font-display text-blush-pop-950">
@@ -177,7 +178,19 @@ const Index = () => {
           </div>
 
           {loading && (
-            <div className="text-center py-12">Loading products...</div>
+            <div className="rounded-2xl bg-card/95 border border-border ring-1 ring-border/60 shadow-lg shadow-primary/10 p-4 sm:p-6 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="space-y-4">
+                    <Skeleton className="h-[300px] w-full rounded-xl" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-[250px]" />
+                      <Skeleton className="h-4 w-[200px]" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
 
           {error && (
@@ -233,7 +246,7 @@ const Index = () => {
 
       {/* CTA Section */}
       <section className="py-24 bg-linear-to-r from-blush-pop-900 to-blush-pop-800 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1490750967868-58cb75069ed6?auto=format&fit=crop&q=80')] opacity-10 bg-cover bg-center mix-blend-overlay" />
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1507290439931-a861b5a38200?auto=format&fit=crop&q=80')] opacity-10 bg-cover bg-center mix-blend-overlay" />
         <div className="container mx-auto px-4 text-center relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 font-display animate-in fade-in slide-in-from-bottom-2 duration-500">
             {t("ctaSection.title")}

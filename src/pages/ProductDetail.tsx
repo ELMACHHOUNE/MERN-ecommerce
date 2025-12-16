@@ -192,7 +192,7 @@ const ProductDetail = () => {
                     {product.category}
                   </span>
                   <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-blush-pop-300 text-blush-pop-300" />
+                    <Star className="h-4 w-4 fill-blush-pop-400 text-blush-pop-400" />
                     <span className="text-sm font-medium text-blush-pop-900">
                       {product.rating || 4.5}
                     </span>

@@ -185,34 +185,34 @@ export const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link to="/auth" aria-label="Login">
-                <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" asChild>
+                <Link to="/auth" aria-label="Login">
                   <User className="h-5 w-5" />
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             )}
 
-            <Link to="/wishlist" aria-label="Wishlist">
-              <Button variant="ghost" size="icon" className="relative">
+            <Button variant="ghost" size="icon" className="relative" asChild>
+              <Link to="/wishlist" aria-label="Wishlist">
                 <Heart className="h-5 w-5" />
                 {wishlistItems.length > 0 && (
                   <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-blush-pop-500 text-white text-xs flex items-center justify-center font-medium">
                     {wishlistItems.length}
                   </span>
                 )}
-              </Button>
-            </Link>
+              </Link>
+            </Button>
 
-            <Link to="/cart" aria-label="Shopping Cart">
-              <Button variant="ghost" size="icon" className="relative">
+            <Button variant="ghost" size="icon" className="relative" asChild>
+              <Link to="/cart" aria-label="Shopping Cart">
                 <ShoppingCart className="h-5 w-5" />
                 {cartCount > 0 && (
                   <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-accent text-accent-foreground text-xs flex items-center justify-center font-medium">
                     {cartCount}
                   </span>
                 )}
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </div>
         </Menu>
       </div>

@@ -140,7 +140,7 @@ export const ProductCard = ({
                 key={i}
                 className={`h-3 w-3 ${
                   i < Math.round(rating)
-                    ? "fill-blush-pop-300 text-blush-pop-300"
+                    ? "fill-blush-pop-400 text-blush-pop-400"
                     : "text-gray-200"
                 }`}
               />
