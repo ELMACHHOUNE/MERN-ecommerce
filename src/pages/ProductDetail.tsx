@@ -199,7 +199,9 @@ const ProductDetail = () => {
                       <img
                         src={
                           src &&
-                          (src.startsWith("/") || /^https?:\/\//i.test(src))
+                          (src.startsWith("/") ||
+                            /^https?:\/\//i.test(src) ||
+                            /^data:image\//i.test(src))
                             ? src
                             : undefined
                         }
