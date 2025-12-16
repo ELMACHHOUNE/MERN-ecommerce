@@ -68,6 +68,8 @@ export const ProductCard = ({
               alt={name}
               loading="lazy"
               decoding="async"
+              width="400"
+              height="500"
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
               onError={() => setImgError(true)}
             />
@@ -79,6 +81,9 @@ export const ProductCard = ({
               e.preventDefault();
               toggleWishlist({ id, name, price, image, category, rating });
             }}
+            aria-label={
+              isWishlisted ? "Remove from wishlist" : "Add to wishlist"
+            }
             className="absolute top-3 right-3 p-2.5 rounded-full bg-white/80 backdrop-blur-sm text-blush-pop-900 hover:bg-white hover:scale-110 transition-all duration-300 shadow-sm z-10 cursor-pointer"
           >
             <Heart

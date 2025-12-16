@@ -54,17 +54,20 @@ export const Navbar = () => {
             >
               <img
                 src="/flour.webp"
-                alt="logo"
+                alt="Keni Sweet Flowers Logo"
                 className="h-8 w-8 rounded-full object-contain"
-                loading="lazy"
+                width="32"
+                height="32"
+                loading="eager"
                 decoding="async"
-                fetchPriority="low"
+                fetchPriority="high"
               />
             </Link>
             <Link
               to="/"
               onClick={() => setActive(null)}
               className="text-foreground"
+              aria-label={t("navbar.home")}
             >
               <MenuItem
                 setActive={setActive}
@@ -76,6 +79,7 @@ export const Navbar = () => {
               to="/products"
               onClick={() => setActive(null)}
               className="text-foreground"
+              aria-label={t("navbar.products")}
             >
               <MenuItem
                 setActive={setActive}
@@ -87,6 +91,7 @@ export const Navbar = () => {
               to="/categories"
               onClick={() => setActive(null)}
               className="text-foreground"
+              aria-label={t("navbar.categories")}
             >
               <MenuItem
                 setActive={setActive}
@@ -98,6 +103,7 @@ export const Navbar = () => {
               to="/about"
               onClick={() => setActive(null)}
               className="text-foreground"
+              aria-label={t("navbar.about")}
             >
               <MenuItem
                 setActive={setActive}
@@ -117,7 +123,12 @@ export const Navbar = () => {
             {/* Language Toggle */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" title="Language">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  title="Language"
+                  aria-label="Select Language"
+                >
                   <Globe className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
@@ -142,7 +153,7 @@ export const Navbar = () => {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
+                  <Button variant="ghost" size="icon" aria-label="User Account">
                     <User className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -174,14 +185,14 @@ export const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link to="/auth">
+              <Link to="/auth" aria-label="Login">
                 <Button variant="ghost" size="icon">
                   <User className="h-5 w-5" />
                 </Button>
               </Link>
             )}
 
-            <Link to="/wishlist">
+            <Link to="/wishlist" aria-label="Wishlist">
               <Button variant="ghost" size="icon" className="relative">
                 <Heart className="h-5 w-5" />
                 {wishlistItems.length > 0 && (
@@ -192,7 +203,7 @@ export const Navbar = () => {
               </Button>
             </Link>
 
-            <Link to="/cart">
+            <Link to="/cart" aria-label="Shopping Cart">
               <Button variant="ghost" size="icon" className="relative">
                 <ShoppingCart className="h-5 w-5" />
                 {cartCount > 0 && (
@@ -224,7 +235,12 @@ export const Navbar = () => {
               {/* Language Toggle (mobile) */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" title="Language">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    title="Language"
+                    aria-label="Select Language"
+                  >
                     <Globe className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -249,7 +265,11 @@ export const Navbar = () => {
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label="User Account"
+                    >
                       <User className="h-5 w-5" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -281,14 +301,14 @@ export const Navbar = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <Link to="/auth">
+                <Link to="/auth" aria-label="Login">
                   <Button variant="ghost" size="icon">
                     <User className="h-5 w-5" />
                   </Button>
                 </Link>
               )}
 
-              <Link to="/wishlist">
+              <Link to="/wishlist" aria-label="Wishlist">
                 <Button variant="ghost" size="icon" className="relative">
                   <Heart className="h-5 w-5" />
                   {wishlistItems.length > 0 && (
@@ -299,7 +319,7 @@ export const Navbar = () => {
                 </Button>
               </Link>
 
-              <Link to="/cart">
+              <Link to="/cart" aria-label="Shopping Cart">
                 <Button variant="ghost" size="icon" className="relative">
                   <ShoppingCart className="h-5 w-5" />
                   {cartCount > 0 && (
@@ -314,6 +334,7 @@ export const Navbar = () => {
                 variant="ghost"
                 size="icon"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Toggle Mobile Menu"
               >
                 <MenuIcon className="h-5 w-5" />
               </Button>

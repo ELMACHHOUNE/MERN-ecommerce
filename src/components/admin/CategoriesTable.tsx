@@ -82,13 +82,13 @@ const CategoriesTable: React.FC = () => {
         header: t("admin.table.image"),
         enableColumnFilter: false,
         enableSorting: false,
-        Cell: ({ cell }) => {
+        Cell: ({ cell, row }) => {
           const src = cell.getValue<string>();
           return src ? (
             <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-pink-100 shadow-sm group">
               <img
                 src={src}
-                alt="Category"
+                alt={row.original.name || "Category"}
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 loading="lazy"
               />
@@ -211,6 +211,7 @@ const CategoriesTable: React.FC = () => {
           onClick={() => table.setEditingRow(row)}
           disabled={updateMut.isPending}
           title={t("admin.table.edit")}
+          aria-label={t("admin.table.edit")}
         >
           <Edit size={18} />
         </button>
@@ -219,6 +220,7 @@ const CategoriesTable: React.FC = () => {
           onClick={() => handleDelete(row.original.id)}
           disabled={deleteMut.isPending}
           title={t("admin.table.delete")}
+          aria-label={t("admin.table.delete")}
         >
           <Trash2 size={18} />
         </button>

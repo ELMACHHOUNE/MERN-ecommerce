@@ -28,7 +28,8 @@ export default defineConfig(({ mode }) => ({
       output: {
         manualChunks: {
           vendor: ["react", "react-dom", "react-router-dom"],
-          mantine: ["@mantine/core", "@mantine/hooks", "mantine-react-table"],
+          mantine: ["@mantine/core", "@mantine/hooks"],
+          table: ["mantine-react-table"],
           ui: [
             "@radix-ui/react-accordion",
             "@radix-ui/react-alert-dialog",

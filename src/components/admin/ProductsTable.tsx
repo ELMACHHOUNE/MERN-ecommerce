@@ -124,7 +124,7 @@ const ProductsTable: React.FC = () => {
         header: t("admin.form.images"),
         enableColumnFilter: false,
         enableSorting: false,
-        Cell: ({ cell }) => {
+        Cell: ({ cell, row }) => {
           const imgs = (cell.getValue<string[]>() || []) as string[];
           const first = imgs[0];
           const src = first ? toApiURL(first) : "";
@@ -132,7 +132,7 @@ const ProductsTable: React.FC = () => {
             <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-pink-100 shadow-sm group">
               <img
                 src={src}
-                alt="Product"
+                alt={row.original.title || "Product"}
                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 loading="lazy"
               />
@@ -270,6 +270,7 @@ const ProductsTable: React.FC = () => {
           onClick={() => table.setEditingRow(row)}
           disabled={updateMut.isPending}
           title={t("admin.table.edit")}
+          aria-label={t("admin.table.edit")}
         >
           <Edit size={18} />
         </button>
@@ -278,6 +279,7 @@ const ProductsTable: React.FC = () => {
           onClick={() => handleDelete(row.original.id)}
           disabled={deleteMut.isPending}
           title={t("admin.table.delete")}
+          aria-label={t("admin.table.delete")}
         >
           <Trash2 size={18} />
         </button>

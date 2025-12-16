@@ -23,6 +23,7 @@ export const Footer = () => {
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 hover:text-primary hover:bg-primary/10"
+                aria-label="Facebook"
               >
                 <Facebook className="h-4 w-4" />
               </Button>
@@ -30,6 +31,7 @@ export const Footer = () => {
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 hover:text-primary hover:bg-primary/10"
+                aria-label="Twitter"
               >
                 <Twitter className="h-4 w-4" />
               </Button>
@@ -37,6 +39,7 @@ export const Footer = () => {
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 hover:text-primary hover:bg-primary/10"
+                aria-label="Instagram"
               >
                 <Instagram className="h-4 w-4" />
               </Button>
@@ -106,6 +109,7 @@ export const Footer = () => {
               <Button
                 size="icon"
                 className="bg-primary hover:bg-primary/90 shrink-0"
+                aria-label="Subscribe to newsletter"
               >
                 <Mail className="h-4 w-4" />
               </Button>

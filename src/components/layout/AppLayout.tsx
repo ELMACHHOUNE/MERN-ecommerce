@@ -5,6 +5,7 @@ import { SocialSidebar } from "@/components/SocialSidebar";
 import React from "react";
 import { useLocation } from "react-router-dom";
 
+
 interface AppLayoutProps {
   children: React.ReactNode;
 }

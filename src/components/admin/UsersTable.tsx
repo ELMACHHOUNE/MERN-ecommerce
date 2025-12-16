@@ -198,6 +198,7 @@ const UsersTable: React.FC = () => {
           onClick={() => table.setEditingRow(row)}
           disabled={updateMut.isPending}
           title={t("admin.table.edit")}
+          aria-label={t("admin.table.edit")}
         >
           <Edit size={18} />
         </button>
@@ -206,6 +207,7 @@ const UsersTable: React.FC = () => {
           onClick={() => handleDelete(row.original.id)}
           disabled={deleteMut.isPending}
           title={t("admin.table.delete")}
+          aria-label={t("admin.table.delete")}
         >
           <Trash2 size={18} />
         </button>

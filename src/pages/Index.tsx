@@ -55,6 +55,9 @@ const Index = () => {
             alt="Floral cupcakes cover"
             className="h-full w-full object-cover object-center scale-105 animate-in fade-in zoom-in-105 duration-1000"
             loading="eager"
+            fetchPriority="high"
+            width="1920"
+            height="1080"
           />
           {/* Floral gradient overlay */}
           <div className="absolute inset-0 bg-linear-to-r from-blush-pop-950/80 via-blush-pop-900/40 to-transparent" />
@@ -118,9 +121,9 @@ const Index = () => {
                 <Truck className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="font-display font-semibold text-lg mb-2 text-blush-pop-950">
+                <h2 className="font-display font-semibold text-lg mb-2 text-blush-pop-950">
                   Free Shipping
-                </h3>
+                </h2>
                 <p className="text-sm text-blush-pop-900/70 leading-relaxed">
                   {t("features.freeShipping.desc")}
                 </p>
@@ -132,9 +135,9 @@ const Index = () => {
                 <Shield className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="font-display font-semibold text-lg mb-2 text-blush-pop-950">
+                <h2 className="font-display font-semibold text-lg mb-2 text-blush-pop-950">
                   {t("features.securePayment")}
-                </h3>
+                </h2>
                 <p className="text-sm text-blush-pop-900/70 leading-relaxed">
                   {t("features.securePayment.desc")}
                 </p>
@@ -146,9 +149,9 @@ const Index = () => {
                 <HeadphonesIcon className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="font-display font-semibold text-lg mb-2 text-blush-pop-950">
+                <h2 className="font-display font-semibold text-lg mb-2 text-blush-pop-950">
                   {t("features.support")}
-                </h3>
+                </h2>
                 <p className="text-sm text-blush-pop-900/70 leading-relaxed">
                   {t("features.support.desc")}
                 </p>
