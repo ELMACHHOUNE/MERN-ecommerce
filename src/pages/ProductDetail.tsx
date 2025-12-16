@@ -196,7 +196,7 @@ const ProductDetail = () => {
                     <span className="text-sm font-medium text-blush-pop-900">
                       {product.rating || 4.5}
                     </span>
-                    <span className="text-xs text-blush-pop-400 ml-1">
+                    <span className="text-xs text-blush-pop-600 ml-1">
                       ({product.reviews || 12} {t("product.reviews")})
                     </span>
                   </div>

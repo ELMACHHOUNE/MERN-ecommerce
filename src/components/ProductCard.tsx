@@ -99,6 +99,7 @@ export const ProductCard = ({
               <Button
                 onClick={handleAddToCart}
                 className="w-full rounded-full bg-blush-pop-900 text-white hover:bg-blush-pop-800 shadow-md h-10 font-medium cursor-pointer"
+                aria-label={`Add ${name} to cart`}
               >
                 <ShoppingCart className="mr-2 h-4 w-4" />
                 {t("cta.shop")}
@@ -125,7 +126,7 @@ export const ProductCard = ({
             {category && (
               <>
                 <span className="w-1 h-1 rounded-full bg-blush-pop-300" />
-                <span className="text-blush-pop-400 uppercase text-[10px] tracking-widest font-medium">
+                <span className="text-blush-pop-600 uppercase text-[10px] tracking-widest font-medium">
                   {category}
                 </span>
               </>

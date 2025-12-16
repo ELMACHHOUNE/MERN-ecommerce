@@ -76,7 +76,7 @@ const Index = () => {
               {t("hero.subtitle")}
             </p>
             <div className="flex gap-4 flex-wrap">
-              <Link to="/products">
+              <Link to="/products" aria-label={t("cta.shop")}>
                 <Button
                   size="lg"
                   className="bg-white text-blush-pop-900 hover:bg-blush-pop-50 border-none rounded-full px-8 h-14 text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
@@ -85,7 +85,7 @@ const Index = () => {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Link to="/about">
+              <Link to="/about" aria-label={t("cta.info")}>
                 <Button
                   variant="outline"
                   size="lg"

@@ -45,7 +45,7 @@ export function PriceSortMenu({ sort, onChange, label }: PriceSortMenuProps) {
       </Button>
       {open && (
         <div className="absolute right-0 mt-2 w-56 bg-white border border-blush-pop-100 rounded-xl shadow-lg shadow-blush-pop-100/50 z-20 overflow-hidden">
-          <div className="px-4 py-3 text-xs font-bold uppercase tracking-wider text-blush-pop-400 bg-blush-pop-50/50 border-b border-blush-pop-50">
+          <div className="px-4 py-3 text-xs font-bold uppercase tracking-wider text-blush-pop-600 bg-blush-pop-50/50 border-b border-blush-pop-50">
             {t("products.sortedBy")}
           </div>
           <div className="p-1">

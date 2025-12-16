@@ -40,7 +40,7 @@ export const SocialSidebar = () => {
               hover:w-12 hover:bg-blush-pop-50 hover:text-blush-pop-900
               group
             "
-            aria-label={link.name}
+            aria-label={`Visit our ${link.name} page`}
           >
             <link.icon className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
           </a>
@@ -56,7 +56,7 @@ export const SocialSidebar = () => {
             target="_blank"
             rel="noopener noreferrer"
             className="text-blush-pop-600 hover:text-blush-pop-900 hover:scale-125 transition-all duration-300"
-            aria-label={link.name}
+            aria-label={`Visit our ${link.name} page`}
           >
             <link.icon className="w-6 h-6" />
           </a>

@@ -1,20 +1,17 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-
-async function loadLocale(path: string) {
-  // Add timestamp to prevent caching of translation files
-  const res = await fetch(`${path}?t=${Date.now()}`);
-  return res.json();
-}
+import fr from "./locales/frensh.json";
+import en from "./locales/english.json";
+import ar from "./locales/arabe.json";
 
 export async function setupI18n(defaultLang: string = "fr") {
   const savedLang = localStorage.getItem("language");
   const initialLang = savedLang || defaultLang;
 
-  const resources: Record<string, { translation: any }> = {
-    fr: { translation: await loadLocale("/locales/frensh.json") },
-    en: { translation: await loadLocale("/locales/english.json") },
-    ar: { translation: await loadLocale("/locales/arabe.json") },
+  const resources = {
+    fr: { translation: fr },
+    en: { translation: en },
+    ar: { translation: ar },
   };
 
   await i18n
