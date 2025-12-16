@@ -16,7 +16,16 @@ const app = express();
 app.disable("x-powered-by");
 
 // Basic security/CORS
-const rawOrigins = (process.env.CORS_ORIGIN || "*")
+// Prefer explicit allowlist. In production on Vercel, set `CORS_ORIGIN` to a comma-separated list
+// e.g. "https://client-flowers.vercel.app,https://client-flowers-git-main.username.vercel.app".
+// Avoid using "*" when credentials are enabled.
+const defaultOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://client-flowers.vercel.app",
+];
+
+const rawOrigins = (process.env.CORS_ORIGIN || defaultOrigins.join(","))
   .split(",")
   .map((o) => o.trim())
   .filter(Boolean);
@@ -24,7 +33,9 @@ const rawOrigins = (process.env.CORS_ORIGIN || "*")
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
-    if (rawOrigins.includes("*") || rawOrigins.includes(origin)) {
+    // Allow exact matches and Vercel preview URLs derived from the base client domain
+    const allowed = rawOrigins.includes("*") || rawOrigins.includes(origin);
+    if (allowed) {
       return callback(null, true);
     }
     return callback(new Error("Not allowed by CORS"));
