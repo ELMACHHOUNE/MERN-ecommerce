@@ -167,7 +167,8 @@ export function ProductSearchBox() {
                           src={
                             rawUrl &&
                             (rawUrl.startsWith("/") ||
-                              /^https?:\/\//i.test(rawUrl))
+                              /^https?:\/\//i.test(rawUrl) ||
+                              /^data:image\//i.test(rawUrl))
                               ? rawUrl
                               : undefined
                           }

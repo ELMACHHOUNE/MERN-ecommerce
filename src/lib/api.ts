@@ -29,7 +29,9 @@ const API_ORIGIN = API_URL.origin;
 
 export function toApiURL(p?: string): string {
   if (!p) return '';
-  // Allow only http/https absolute URLs; disallow data: to avoid XSS vectors
+  // Allow data: images as-is
+  if (/^data:image\//i.test(p)) return p;
+  // Allow only http/https absolute URLs
   if (/^https?:\/\//i.test(p)) return p;
   const path = p.startsWith('/') ? p : `/${p}`;
   return `${API_ORIGIN}${path}`;

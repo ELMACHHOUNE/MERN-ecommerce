@@ -163,7 +163,10 @@ const ProductDetail = () => {
                   <img
                     src={(() => {
                       const s = (imageUrls[selectedImage] || "").trim();
-                      return s && (s.startsWith("/") || /^https?:\/\//i.test(s))
+                      return s &&
+                        (s.startsWith("/") ||
+                          /^https?:\/\//i.test(s) ||
+                          /^data:image\//i.test(s))
                         ? s
                         : "/cover.webp";
                     })()}
