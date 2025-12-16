@@ -7,7 +7,7 @@ export function getToken() {
   return localStorage.getItem(TOKEN_KEY) || '';
 }
 
-export function setAuth(token: string, user?: any) {
+export function setAuth(token: string, user?: unknown) {
   if (token) localStorage.setItem(TOKEN_KEY, token);
   if (user) localStorage.setItem(USER_KEY, JSON.stringify(user));
 }
@@ -17,9 +17,9 @@ export function clearAuth() {
   localStorage.removeItem(USER_KEY);
 }
 
-export function getStoredUser<T = any>(): T | null {
+export function getStoredUser<T = unknown>(): T | null {
   const raw = localStorage.getItem(USER_KEY);
-  try { return raw ? JSON.parse(raw) as T : null; } catch { return null; }
+  try { return raw ? JSON.parse(raw) as T : null; } catch (_e) { return null; }
 }
 
 const API_URL = (() => {
@@ -29,7 +29,8 @@ const API_ORIGIN = API_URL.origin;
 
 export function toApiURL(p?: string): string {
   if (!p) return '';
-  if (/^https?:\/\//i.test(p) || /^data:/i.test(p)) return p;
+  // Allow only http/https absolute URLs; disallow data: to avoid XSS vectors
+  if (/^https?:\/\//i.test(p)) return p;
   const path = p.startsWith('/') ? p : `/${p}`;
   return `${API_ORIGIN}${path}`;
 }
@@ -56,11 +57,11 @@ async function request(path: string, options: RequestInit = {}) {
 }
 
 export const api = {
-  get: <T = any>(path: string) => request(path) as Promise<T>,
-  post: <T = any>(path: string, body?: any) =>
+  get: <T = unknown>(path: string) => request(path) as Promise<T>,
+  post: <T = unknown>(path: string, body?: unknown) =>
     request(path, { method: 'POST', body: JSON.stringify(body || {}) }) as Promise<T>,
-  put: <T = any>(path: string, body?: any) =>
+  put: <T = unknown>(path: string, body?: unknown) =>
     request(path, { method: 'PUT', body: JSON.stringify(body || {}) }) as Promise<T>,
-  delete: <T = any>(path: string) =>
+  delete: <T = unknown>(path: string) =>
     request(path, { method: 'DELETE' }) as Promise<T>,
 };

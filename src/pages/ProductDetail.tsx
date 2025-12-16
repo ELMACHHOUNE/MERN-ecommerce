@@ -161,11 +161,12 @@ const ProductDetail = () => {
               <div className="aspect-square overflow-hidden rounded-tl-4xl rounded-br-4xl rounded-tr-lg rounded-bl-lg bg-blush-pop-50 relative shadow-inner">
                 {imageUrls.length > 0 ? (
                   <img
-                    src={
-                      isSafeUrl(imageUrls[selectedImage])
-                        ? imageUrls[selectedImage]
-                        : undefined
-                    }
+                    src={(() => {
+                      const s = (imageUrls[selectedImage] || "").trim();
+                      return s && (s.startsWith("/") || /^https?:\/\//i.test(s))
+                        ? s
+                        : "/cover.webp";
+                    })()}
                     alt={`${product.title} - image ${selectedImage + 1}`}
                     className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
                     loading="lazy"
@@ -192,7 +193,12 @@ const ProductDetail = () => {
                       aria-label={`Show image ${i + 1}`}
                     >
                       <img
-                        src={isSafeUrl(src) ? src : undefined}
+                        src={
+                          src &&
+                          (src.startsWith("/") || /^https?:\/\//i.test(src))
+                            ? src
+                            : undefined
+                        }
                         alt={`Thumbnail ${i + 1}`}
                         className="h-full w-full object-cover"
                         loading="lazy"
