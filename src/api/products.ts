@@ -44,7 +44,11 @@ function mapProduct(p: any): ProductDTO {
     title: p.title,
     description: p.description,
     price: p.price,
-    images: p.images,
+    images: (p.images || []).map((img: string) => {
+      if (!img) return "";
+      if (/^https?:\/\//i.test(img) || /^data:/i.test(img)) return img;
+      return `${API_BASE}${img}`;
+    }),
     stock: p.stock,
     category: p.category,
     createdAt: p.createdAt,

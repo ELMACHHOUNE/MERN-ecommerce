@@ -18,14 +18,7 @@ try {
   );
 }
 
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, UPLOAD_DIR),
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname) || "";
-    const name = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
-    cb(null, name);
-  },
-});
+const storage = multer.memoryStorage();
 const fileFilter = (_req, file, cb) => {
   if (/^image\//.test(file.mimetype)) return cb(null, true);
   cb(new Error("Only image files are allowed"));
@@ -33,7 +26,7 @@ const fileFilter = (_req, file, cb) => {
 const upload = multer({ storage, fileFilter });
 
 // serve static images at /api/products/images/*
-router.use("/images", express.static(UPLOAD_DIR));
+// router.use("/images", express.static(UPLOAD_DIR));
 
 function escapeRegex(s) {
   return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -119,7 +112,11 @@ router.post(
       if (files.length < 1)
         return res.status(400).json({ error: "At least 1 image is required" });
 
-      const imageUrls = files.map((f) => `/api/products/images/${f.filename}`);
+      const imageUrls = files.map((f) => {
+        const b64 = Buffer.from(f.buffer).toString("base64");
+        const mime = f.mimetype;
+        return `data:${mime};base64,${b64}`;
+      });
 
       const created = await Product.create({
         title,
@@ -157,14 +154,11 @@ router.put(
 
       // replace images if new ones uploaded
       if (files.length > 0) {
-        // delete old files
-        for (const url of existing.images || []) {
-          const filename = path.basename(url || "");
-          if (!filename) continue;
-          const fp = path.join(UPLOAD_DIR, filename);
-          fs.promises.unlink(fp).catch(() => {});
-        }
-        updates.images = files.map((f) => `/api/products/images/${f.filename}`);
+        updates.images = files.map((f) => {
+          const b64 = Buffer.from(f.buffer).toString("base64");
+          const mime = f.mimetype;
+          return `data:${mime};base64,${b64}`;
+        });
       }
 
       const updated = await Product.findByIdAndUpdate(req.params.id, updates, {
@@ -184,14 +178,7 @@ router.delete("/:id", authRequired, requireRole("admin"), async (req, res) => {
     const existing = await Product.findById(req.params.id);
     if (!existing) return res.status(404).json({ error: "Product not found" });
 
-    // delete files
-    for (const url of existing.images || []) {
-      const filename = path.basename(url || "");
-      if (!filename) continue;
-      const fp = path.join(UPLOAD_DIR, filename);
-      fs.promises.unlink(fp).catch(() => {});
-    }
-
+    // No file deletion needed for base64
     await Product.findByIdAndDelete(req.params.id);
     return res.json({ success: true });
   } catch (e) {
