@@ -14,3 +14,8 @@ export function sanitizeUrl(url: string): string {
   // If it doesn't match expected patterns, return empty or a placeholder
   return "";
 }
+
+export function isValidUrl(url: string): boolean {
+  if (!url) return false;
+  return /^(https?:\/\/|\/)/i.test(url);
+}
