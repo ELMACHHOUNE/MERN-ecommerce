@@ -14,6 +14,7 @@ function isSafeUrl(url: string): boolean {
   if (!url) return false;
   try {
     if (url.startsWith("/")) return true;
+    if (/^data:image\//i.test(url)) return true;
     const u = new URL(url, window.location.origin);
     return u.protocol === "http:" || u.protocol === "https:";
   } catch {

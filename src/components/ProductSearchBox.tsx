@@ -11,6 +11,7 @@ function isSafeUrl(url: string): boolean {
   try {
     // Treat relative URLs as safe and allow only http/https schemes for absolute URLs
     if (url.startsWith("/")) return true;
+    if (/^data:image\//i.test(url)) return true;
     const u = new URL(url, window.location.origin);
     return u.protocol === "http:" || u.protocol === "https:";
   } catch {
