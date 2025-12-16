@@ -9,6 +9,18 @@ import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 import { sanitizeUrl } from "@/lib/utils";
 
+// Local URL allow-list check to make dataflow explicit for static analysis
+function isSafeUrl(url: string): boolean {
+  if (!url) return false;
+  try {
+    if (url.startsWith("/")) return true;
+    const u = new URL(url, window.location.origin);
+    return u.protocol === "http:" || u.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 type Product = {
   _id: string;
   title: string;
@@ -87,7 +99,9 @@ const ProductDetail = () => {
       </div>
     );
 
-  const imageUrls = (product.images || []).map((u) => toApiURL(u));
+  const imageUrls = (product.images || [])
+    .map((u) => toApiURL(u))
+    .filter((u) => isSafeUrl(u));
   const isWishlisted = product ? isInWishlist(product._id) : false;
 
   const handleAddToCart = () => {
@@ -147,7 +161,11 @@ const ProductDetail = () => {
               <div className="aspect-square overflow-hidden rounded-tl-4xl rounded-br-4xl rounded-tr-lg rounded-bl-lg bg-blush-pop-50 relative shadow-inner">
                 {imageUrls.length > 0 ? (
                   <img
-                    src={sanitizeUrl(imageUrls[selectedImage])}
+                    src={
+                      isSafeUrl(imageUrls[selectedImage])
+                        ? imageUrls[selectedImage]
+                        : undefined
+                    }
                     alt={`${product.title} - image ${selectedImage + 1}`}
                     className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
                     loading="lazy"
@@ -174,7 +192,7 @@ const ProductDetail = () => {
                       aria-label={`Show image ${i + 1}`}
                     >
                       <img
-                        src={sanitizeUrl(src)}
+                        src={isSafeUrl(src) ? src : undefined}
                         alt={`Thumbnail ${i + 1}`}
                         className="h-full w-full object-cover"
                         loading="lazy"

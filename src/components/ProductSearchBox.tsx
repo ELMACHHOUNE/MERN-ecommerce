@@ -4,7 +4,19 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { searchProductsSuggestions, ProductDTO } from "@/api/products";
 import { toApiURL } from "@/lib/api";
-import { sanitizeUrl } from "@/lib/utils";
+
+// Local, explicit URL allow-list check so static analyzers can see the guard.
+function isSafeUrl(url: string): boolean {
+  if (!url) return false;
+  try {
+    // Treat relative URLs as safe and allow only http/https schemes for absolute URLs
+    if (url.startsWith("/")) return true;
+    const u = new URL(url, window.location.origin);
+    return u.protocol === "http:" || u.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
 
 export function ProductSearchBox() {
   const navigate = useNavigate();
@@ -141,6 +153,8 @@ export function ProductSearchBox() {
                 {suggestions.map((p: ProductDTO) => {
                   const product = p as unknown as ProductSuggestion;
                   const titleOrName = product.title || product.name || "";
+                  const rawUrl = toApiURL(product.images?.[0]) || "";
+
                   return (
                     <li key={product.id}>
                       <button
@@ -150,7 +164,7 @@ export function ProductSearchBox() {
                         className="w-full flex items-center gap-3 px-3 py-2 hover:bg-accent hover:text-accent-foreground text-left"
                       >
                         <img
-                          src={sanitizeUrl(toApiURL(product.images?.[0]) || "")}
+                          src={isSafeUrl(rawUrl) ? rawUrl : undefined}
                           alt={titleOrName}
                           className="h-9 w-9 rounded object-cover bg-muted shrink-0"
                           loading="lazy"

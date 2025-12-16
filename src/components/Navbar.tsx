@@ -53,7 +53,7 @@ export const Navbar = () => {
               className="flex items-center gap-2"
             >
               <img
-                src="/flour.webp"
+                src="/flower.webp"
                 alt="Keni Sweet Flowers Logo"
                 className="h-8 w-8 rounded-full object-contain"
                 width="32"
@@ -223,7 +223,7 @@ export const Navbar = () => {
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center">
               <img
-                src="/flour.webp"
+                src="/flower.webp"
                 alt="logo"
                 className="h-8 w-8 rounded-full object-contain"
                 loading="lazy"
