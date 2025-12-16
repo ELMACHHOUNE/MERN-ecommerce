@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { searchProductsSuggestions, ProductDTO } from "@/api/products";
 import { toApiURL } from "@/lib/api";
+import { sanitizeUrl } from "@/lib/utils";
 
 export function ProductSearchBox() {
   const navigate = useNavigate();
@@ -97,7 +98,8 @@ export function ProductSearchBox() {
       window.clearTimeout(blurTimer.current);
       blurTimer.current = null;
     }
-    const titleOrName = (p as any).title || (p as any).name || "";
+    const product = p as unknown as ProductSuggestion;
+    const titleOrName = product.title || product.name || "";
     navigate(buildNextUrl(titleOrName));
     setOpen(false);
   };
@@ -136,10 +138,11 @@ export function ProductSearchBox() {
             )}
             {!loading && suggestions.length > 0 && (
               <ul className="max-h-80 overflow-auto py-1">
-                {suggestions.map((p) => {
-                  const titleOrName = (p as any).title || (p as any).name || "";
+                {suggestions.map((p: ProductDTO) => {
+                  const product = p as unknown as ProductSuggestion;
+                  const titleOrName = product.title || product.name || "";
                   return (
-                    <li key={p.id}>
+                    <li key={product.id}>
                       <button
                         type="button"
                         onMouseDown={(ev) => ev.preventDefault()}
@@ -147,23 +150,20 @@ export function ProductSearchBox() {
                         className="w-full flex items-center gap-3 px-3 py-2 hover:bg-accent hover:text-accent-foreground text-left"
                       >
                         <img
-                          src={toApiURL((p as any).images?.[0]) || ""}
+                          src={sanitizeUrl(toApiURL(product.images?.[0]) || "")}
                           alt={titleOrName}
-                          className="h-9 w-9 rounded object-cover bg-muted flex-shrink-0"
+                          className="h-9 w-9 rounded object-cover bg-muted shrink-0"
                           loading="lazy"
                           onError={(e) => {
-                            (
-                              e.currentTarget as HTMLImageElement
-                            ).style.visibility = "hidden";
+                            e.currentTarget.style.visibility = "hidden";
                           }}
                         />
                         <div className="min-w-0">
-                          <div className="truncate text-sm font-medium">
+                          <div className="text-sm font-medium truncate">
                             {titleOrName}
                           </div>
-                          <div className="text-xs text-muted-foreground truncate">
-                            $
-                            {(p as any).price?.toFixed?.(2) ?? (p as any).price}
+                          <div className="text-xs text-muted-foreground">
+                            {product.price?.toFixed(2) ?? product.price} DH
                           </div>
                         </div>
                       </button>
@@ -177,4 +177,12 @@ export function ProductSearchBox() {
       </form>
     </div>
   );
+}
+
+interface ProductSuggestion {
+  id: string;
+  title?: string;
+  name?: string;
+  images?: string[];
+  price?: number;
 }

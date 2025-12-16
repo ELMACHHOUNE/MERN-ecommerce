@@ -13,6 +13,7 @@ const usersRoutes = require("./routes/users"); // add
 const cartRoutes = require("./routes/cart"); // add
 
 const app = express();
+app.disable("x-powered-by");
 
 // Basic security/CORS
 const rawOrigins = (process.env.CORS_ORIGIN || "*")

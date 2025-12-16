@@ -32,10 +32,18 @@ router.get("/", async (_req, res, next) => {
 
 router.post("/", async (req, res, next) => {
   try {
-    const email = (req.body?.email || "").trim().toLowerCase();
-    const fullName = (req.body?.fullName || "").trim();
-    const role = (req.body?.role || "user").trim().toLowerCase();
-    const passwordRaw = (req.body?.password || "").trim();
+    const email =
+      typeof req.body?.email === "string"
+        ? req.body.email.trim().toLowerCase()
+        : "";
+    const fullName =
+      typeof req.body?.fullName === "string" ? req.body.fullName.trim() : "";
+    const role =
+      typeof req.body?.role === "string"
+        ? req.body.role.trim().toLowerCase()
+        : "user";
+    const passwordRaw =
+      typeof req.body?.password === "string" ? req.body.password.trim() : "";
 
     if (!email) return res.status(400).json({ error: "Email is required" });
     if (!["user", "admin"].includes(role))

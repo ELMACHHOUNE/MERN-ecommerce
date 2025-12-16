@@ -66,8 +66,8 @@ router.get("/:id", async (req, res) => {
 });
 
 function slugify(str) {
+  if (typeof str !== "string") return "";
   return str
-    .toString()
     .trim()
     .toLowerCase()
     .replace(/['"]/g, "")
