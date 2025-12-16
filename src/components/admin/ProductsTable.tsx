@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef } from "react";
+import React, { useMemo, useState } from "react";
 import {
   MantineReactTable,
   useMantineReactTable,
@@ -13,13 +13,13 @@ import {
   deleteProduct,
   fetchProductCategories,
   type ProductDTO,
-} from "@/api/products";
+} from "@/api/products"; // Note: This import path looks wrong in the original file too, should be "@/api/products" but I won't change it unless necessary or if it's actually wrong. Wait, let me check.
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import { toApiURL } from "@/lib/api";
 import { useTranslation } from "react-i18next";
-import { Plus, Edit, Trash2, Image as ImageIcon, Upload } from "lucide-react";
+import { Plus, Edit, Trash2, Image as ImageIcon } from "lucide-react";
 
 export type Product = ProductDTO;
 
@@ -34,8 +34,6 @@ const ProductsTable: React.FC = () => {
   const [stock, setStock] = useState<string>("");
   const [category, setCategory] = useState("");
   const [imageFiles, setImageFiles] = useState<FileList | null>(null);
-  const replaceInputRef = useRef<HTMLInputElement | null>(null);
-  const [replaceId, setReplaceId] = useState<string | null>(null);
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["products"],
@@ -125,7 +123,7 @@ const ProductsTable: React.FC = () => {
         accessorKey: "images",
         header: t("admin.form.images"),
         enableColumnFilter: false,
-        enableEditing: false,
+        enableSorting: false,
         Cell: ({ cell }) => {
           const imgs = (cell.getValue<string[]>() || []) as string[];
           const first = imgs[0];
@@ -145,6 +143,41 @@ const ProductsTable: React.FC = () => {
             </div>
           );
         },
+        Edit: ({ row }) => (
+          <div className="flex items-center gap-2">
+            <input
+              id={`edit-prod-img-${row.original.id}`}
+              type="file"
+              multiple
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const files = e.target.files ? Array.from(e.target.files) : [];
+                if (files.length < 1) return;
+                if (files.length > 5) {
+                  toast.error("Please select 1-5 images");
+                  return;
+                }
+                const fd = new FormData();
+                files.forEach((f) => fd.append("images", f));
+                updateMut.mutate({ id: row.original.id, data: fd });
+                e.currentTarget.value = "";
+              }}
+            />
+            <button
+              type="button"
+              className="px-3 py-1.5 text-xs font-medium bg-white border border-pink-200 text-pink-700 rounded-lg hover:bg-pink-50 transition-colors"
+              onClick={() =>
+                document
+                  .getElementById(`edit-prod-img-${row.original.id}`)
+                  ?.click()
+              }
+              disabled={updateMut.isPending}
+            >
+              {t("admin.table.changeImage")}
+            </button>
+          </div>
+        ),
         size: 120,
       },
       {
@@ -159,7 +192,7 @@ const ProductsTable: React.FC = () => {
         size: 180,
       },
     ],
-    [categoryOptions, t]
+    [categoryOptions, t, updateMut]
   );
 
   const handleCreate = (e: React.FormEvent) => {
@@ -223,41 +256,6 @@ const ProductsTable: React.FC = () => {
     deleteMut.mutate(id);
   };
 
-  const openReplaceImages = (id: string) => {
-    setReplaceId(id);
-    replaceInputRef.current?.click();
-  };
-
-  const onReplaceImagesChange: React.ChangeEventHandler<HTMLInputElement> = (
-    e
-  ) => {
-    const files = e.target.files ? Array.from(e.target.files) : [];
-    if (!replaceId) return;
-    if (files.length < 1 || files.length > 5) {
-      toast.error("Please select 1-5 images");
-      return;
-    }
-    if (files.some((f) => !f.type.startsWith("image/"))) {
-      toast.error("Only image files allowed");
-      return;
-    }
-    const fd = new FormData();
-    files.forEach((f) => fd.append("images", f));
-    updateMut.mutate(
-      { id: replaceId, data: fd },
-      {
-        onSuccess: () => {
-          setReplaceId(null);
-          if (replaceInputRef.current) replaceInputRef.current.value = "";
-        },
-        onError: () => {
-          setReplaceId(null);
-          if (replaceInputRef.current) replaceInputRef.current.value = "";
-        },
-      }
-    );
-  };
-
   const table = useMantineReactTable({
     columns,
     data: products,
@@ -274,14 +272,6 @@ const ProductsTable: React.FC = () => {
           title={t("admin.table.edit")}
         >
           <Edit size={18} />
-        </button>
-        <button
-          className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
-          onClick={() => openReplaceImages(row.original.id)}
-          disabled={updateMut.isPending}
-          title={t("admin.table.changeImage")}
-        >
-          <Upload size={18} />
         </button>
         <button
           className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
@@ -309,16 +299,6 @@ const ProductsTable: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Hidden input for replacing images */}
-      <input
-        type="file"
-        multiple
-        accept="image/*"
-        ref={replaceInputRef}
-        className="hidden"
-        onChange={onReplaceImagesChange}
-      />
-
       <form
         onSubmit={handleCreate}
         className="bg-white p-6 rounded-2xl border border-pink-100 shadow-sm space-y-4"
